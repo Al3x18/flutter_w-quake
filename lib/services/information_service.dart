@@ -8,7 +8,7 @@ class InformationService {
   static const String _appName = 'W-Quake';
   static const String _appDescription = 'Real-time earthquake monitoring app';
   static const String _developerName = 'Alex De Pasquale';
-  static const String _appWebsite = '';
+  static const String _appWebsite = 'https://github.com/Al3x18/flutter_w-quake';
   static const String _privacyPolicyUrl = '';
   static const String _termsOfServiceUrl = '';
   static const String _ingvApiUrl = 'https://webservices.ingv.it/';
