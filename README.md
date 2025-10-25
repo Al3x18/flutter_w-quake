@@ -65,18 +65,20 @@ For more information, visit: [INGV Web Services Documentation](https://webservic
 
 ### ✅ Implemented
 
-- Real-time earthquake data fetching from INGV API
+- Real-time earthquake data from INGV API
 - Multi-language support (English/Italian)
 - Dark theme with custom styling
-- Advanced filter system (geographic area, magnitude, date range)
-- Statistics display
+- Advanced filtering (geographic area, magnitude, date range)
+- Statistics display with expandable cards
 - Settings management with persistent storage
+- MVVM architecture with Riverpod state management
 
-### 🚧 In Development
+### 🚧 Planned Features
 
-- Earthquake detail pages
-- Enhanced settings functionality
-- Push notifications
+- **Earthquake detail pages** with comprehensive event information
+- **Interactive map view** showing earthquake locations
+- **Push notifications** maybe with Firebase integration
+- **Map integration** maybe with Google Maps
 
 ## Project Structure
 
@@ -103,10 +105,9 @@ lib/
 - `go_router: ^16.3.0` - Navigation
 - `riverpod: ^3.0.3` - State management
 - `http: ^1.2.2` - API calls
-- `json_annotation: ^4.9.0` - JSON serialization
-- `google_fonts: ^6.2.1` - Typography
 - `shared_preferences: ^2.3.2` - Local storage
-- `intl: ^0.20.2` - Internationalization
+- `package_info_plus: ^9.0.0` - App info
+- `url_launcher: ^6.3.2` - External links
 
 ## Contributing
 
