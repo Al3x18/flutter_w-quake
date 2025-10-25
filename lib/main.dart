@@ -26,9 +26,9 @@ class MainApp extends ConsumerWidget {
       localizationsDelegates: const [AppLocalizations.delegate, GlobalMaterialLocalizations.delegate, GlobalWidgetsLocalizations.delegate, GlobalCupertinoLocalizations.delegate],
       supportedLocales: const [Locale('en'), Locale('it')],
       theme: ThemeData.dark().copyWith(
-        // Tema completamente nero
+        // Completely black theme
         scaffoldBackgroundColor: Colors.black,
-        // Font generale per tutta l'app
+        // General font for the entire app
         textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme),
         appBarTheme: AppBarTheme(
           backgroundColor: Colors.black,

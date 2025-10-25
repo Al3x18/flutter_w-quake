@@ -24,7 +24,7 @@ class _SettingsPageState extends State<SettingsPage> {
             Text(l10n.manageAppSettings, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey[300])),
             const SizedBox(height: 18),
 
-            // Filtri Card
+            // Filters Card
             _buildSettingsCard(
               icon: Icons.filter_list,
               title: l10n.defaultFilters,
@@ -35,7 +35,7 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             const SizedBox(height: 16),
 
-            // Notifiche Card (unified)
+            // Notifications Card (unified)
             _buildSettingsCard(
               icon: Icons.notifications,
               title: l10n.notifications,
@@ -46,7 +46,7 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             const SizedBox(height: 16),
 
-            // Lingua Card
+            // Language Card
             _buildSettingsCard(
               icon: Icons.language,
               title: l10n.appLanguage,
@@ -57,7 +57,7 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             const SizedBox(height: 16),
 
-            // Informazioni Card
+            // Information Card
             _buildSettingsCard(
               icon: Icons.info,
               title: l10n.information,

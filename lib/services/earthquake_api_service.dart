@@ -6,7 +6,7 @@ import '../models/earthquake.dart';
 class EarthquakeApiService {
   static const String _baseUrl = 'https://webservices.ingv.it/fdsnws/event/1/query';
 
-  // Logging per sviluppo (solo in debug)
+  // Logging for development (debug only)
   void _log(String message) {
     debugPrint('[EarthquakeApiService] $message');
   }

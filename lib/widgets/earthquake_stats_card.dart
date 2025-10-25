@@ -58,7 +58,7 @@ class _EarthquakeStatsCardState extends State<EarthquakeStatsCard> with SingleTi
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Header sempre visibile
+                // Header always visible
                 Row(
                   children: [
                     Icon(Icons.analytics, color: Colors.orange, size: 20),
@@ -71,7 +71,7 @@ class _EarthquakeStatsCardState extends State<EarthquakeStatsCard> with SingleTi
                     Icon(_isExpanded ? Icons.expand_less : Icons.expand_more, color: Colors.grey[400], size: 20),
                   ],
                 ),
-                // Contenuto espandibile
+                // Expandable content
                 SizeTransition(
                   sizeFactor: _expandAnimation,
                   child: Column(
