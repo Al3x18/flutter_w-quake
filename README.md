@@ -80,6 +80,7 @@ For more information, visit: [INGV Web Services Documentation](https://webservic
 - **Push notifications** maybe with Firebase integration
 - **Map integration** maybe with Google Maps
 - **App icon** and **splash screen** design and implementation
+- **Multiple data sources** for earthquake events (USGS, EMSC, etc.)
 
 ## Project Structure
 
