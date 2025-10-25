@@ -1,0 +1,501 @@
+{
+  "@@locale": "en",
+  "appTitle": "W-Quake",
+  "@appTitle": {
+    "description": "The title of the application"
+  },
+  "recentEvents": "Recent Events",
+  "@recentEvents": {
+    "description": "Title for recent events section"
+  },
+  "filteredEvents": "Filtered Events",
+  "@filteredEvents": {
+    "description": "Title for filtered events section"
+  },
+  "loadingEvents": "Loading events...",
+  "@loadingEvents": {
+    "description": "Loading message for events"
+  },
+  "noEventsFound": "No events found",
+  "@noEventsFound": {
+    "description": "Message when no events are found"
+  },
+  "filterEvents": "Filter events",
+  "@filterEvents": {
+    "description": "Tooltip for filter button"
+  },
+  "settings": "Settings",
+  "@settings": {
+    "description": "Settings page title and button"
+  },
+  "defaultFilters": "Default Filters",
+  "@defaultFilters": {
+    "description": "Default filters settings title"
+  },
+  "geographicArea": "Geographic Area",
+  "@geographicArea": {
+    "description": "Geographic area selection label"
+  },
+  "minimumMagnitude": "Minimum Magnitude",
+  "@minimumMagnitude": {
+    "description": "Minimum magnitude slider label"
+  },
+  "timePeriod": "Time Period",
+  "@timePeriod": {
+    "description": "Time period selection label"
+  },
+  "lastDays": "Last days",
+  "@lastDays": {
+    "description": "Last days option"
+  },
+  "customRange": "Custom range",
+  "@customRange": {
+    "description": "Custom date range option"
+  },
+  "defaultDays": "Default Days",
+  "@defaultDays": {
+    "description": "Default days selection label"
+  },
+  "customDateRange": "Custom Date Range",
+  "@customDateRange": {
+    "description": "Custom date range label"
+  },
+  "startDate": "Start Date",
+  "@startDate": {
+    "description": "Start date picker label"
+  },
+  "endDate": "End Date",
+  "@endDate": {
+    "description": "End date picker label"
+  },
+  "resetDates": "Reset Dates",
+  "@resetDates": {
+    "description": "Reset dates button"
+  },
+  "saveSettings": "Save Settings",
+  "@saveSettings": {
+    "description": "Save settings button"
+  },
+  "resetToDefaults": "Reset to Defaults",
+  "@resetToDefaults": {
+    "description": "Reset to defaults button"
+  },
+  "apply": "Apply",
+  "@apply": {
+    "description": "Apply button"
+  },
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Cancel button"
+  },
+  "defaultButton": "Default",
+  "@defaultButton": {
+    "description": "Default button"
+  },
+  "removeFilters": "Remove filters",
+  "@removeFilters": {
+    "description": "Remove filters button tooltip"
+  },
+  "notifications": "Notifications",
+  "@notifications": {
+    "description": "Notifications settings title"
+  },
+  "notificationFilters": "Notification Filters",
+  "@notificationFilters": {
+    "description": "Notification filters settings title"
+  },
+  "appLanguage": "App Language",
+  "@appLanguage": {
+    "description": "App language settings title"
+  },
+  "information": "Information",
+  "@information": {
+    "description": "Information settings title"
+  },
+  "manageAppSettings": "Manage application settings",
+  "@manageAppSettings": {
+    "description": "Settings page subtitle"
+  },
+  "setDefaultFilters": "Set default filters for loading earthquakes",
+  "@setDefaultFilters": {
+    "description": "Default filters card subtitle"
+  },
+  "enableNotifications": "Enable and manage event notifications",
+  "@enableNotifications": {
+    "description": "Notifications card subtitle"
+  },
+  "customizeNotificationFilters": "Customize notification filters for events",
+  "@customizeNotificationFilters": {
+    "description": "Notification filters card subtitle"
+  },
+  "selectAppLanguage": "Select application language",
+  "@selectAppLanguage": {
+    "description": "App language card subtitle"
+  },
+  "viewAppInfo": "View app version, credits and legal information",
+  "@viewAppInfo": {
+    "description": "Information card subtitle"
+  },
+  "settingsSavedSuccessfully": "Settings saved successfully",
+  "@settingsSavedSuccessfully": {
+    "description": "Success message when settings are saved"
+  },
+  "settingsResetToDefaults": "Settings reset to default values",
+  "@settingsResetToDefaults": {
+    "description": "Success message when settings are reset"
+  },
+  "eventsInArea": "Events in {area}",
+  "@eventsInArea": {
+    "description": "Events in specific area",
+    "placeholders": {
+      "area": {
+        "type": "String"
+      }
+    }
+  },
+  "eventsInAreaLastDays": "Events in {area} of the last {days} days (mag ≥ {magnitude})",
+  "@eventsInAreaLastDays": {
+    "description": "Events in area for last days",
+    "placeholders": {
+      "area": {
+        "type": "String"
+      },
+      "days": {
+        "type": "int"
+      },
+      "magnitude": {
+        "type": "double"
+      }
+    }
+  },
+  "eventsInAreaLast24Hours": "Events in {area} of the last 24 hours (mag ≥ {magnitude})",
+  "@eventsInAreaLast24Hours": {
+    "description": "Events in area for last 24 hours",
+    "placeholders": {
+      "area": {
+        "type": "String"
+      },
+      "magnitude": {
+        "type": "double"
+      }
+    }
+  },
+  "eventsInAreaFromDate": "Events in {area} from {startDate} (mag ≥ {magnitude})",
+  "@eventsInAreaFromDate": {
+    "description": "Events in area from specific date",
+    "placeholders": {
+      "area": {
+        "type": "String"
+      },
+      "startDate": {
+        "type": "String"
+      },
+      "magnitude": {
+        "type": "double"
+      }
+    }
+  },
+  "eventsInAreaUntilDate": "Events in {area} until {endDate} (mag ≥ {magnitude})",
+  "@eventsInAreaUntilDate": {
+    "description": "Events in area until specific date",
+    "placeholders": {
+      "area": {
+        "type": "String"
+      },
+      "endDate": {
+        "type": "String"
+      },
+      "magnitude": {
+        "type": "double"
+      }
+    }
+  },
+  "eventsInAreaDateRange": "Events in {area} from {startDate} to {endDate} (mag ≥ {magnitude})",
+  "@eventsInAreaDateRange": {
+    "description": "Events in area for date range",
+    "placeholders": {
+      "area": {
+        "type": "String"
+      },
+      "startDate": {
+        "type": "String"
+      },
+      "endDate": {
+        "type": "String"
+      },
+      "magnitude": {
+        "type": "double"
+      }
+    }
+  },
+  "lastEventsInItaly": "Last events in Italy and surrounding areas",
+  "@lastEventsInItaly": {
+    "description": "Default description for Italy events"
+  },
+  "selectDate": "Select date",
+  "@selectDate": {
+    "description": "Date picker placeholder"
+  },
+  "oneDay": "1 day",
+  "@oneDay": {
+    "description": "One day option"
+  },
+  "threeDays": "3 days",
+  "@threeDays": {
+    "description": "Three days option"
+  },
+  "oneWeek": "1 week",
+  "@oneWeek": {
+    "description": "One week option"
+  },
+  "twoWeeks": "2 weeks",
+  "@twoWeeks": {
+    "description": "Two weeks option"
+  },
+  "oneMonth": "1 month",
+  "@oneMonth": {
+    "description": "One month option"
+  },
+  "threeMonths": "3 months",
+  "@threeMonths": {
+    "description": "Three months option"
+  },
+  "sixMonths": "6 months",
+  "@sixMonths": {
+    "description": "Six months option"
+  },
+  "oneYear": "1 year",
+  "@oneYear": {
+    "description": "One year option"
+  },
+  "english": "English",
+  "@english": {
+    "description": "English language option"
+  },
+  "italian": "Italian",
+  "@italian": {
+    "description": "Italian language option"
+  },
+  "world": "World",
+  "@world": {
+    "description": "World geographic area"
+  },
+  "italy": "Italy",
+  "@italy": {
+    "description": "Italy geographic area"
+  },
+  "europe": "Europe",
+  "@europe": {
+    "description": "Europe geographic area"
+  },
+  "asia": "Asia",
+  "@asia": {
+    "description": "Asia geographic area"
+  },
+  "americas": "Americas",
+  "@americas": {
+    "description": "Americas geographic area"
+  },
+  "daysAgo": "{days} days ago",
+  "@daysAgo": {
+    "description": "Time elapsed in days",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "hoursAgo": "{hours} hours ago",
+  "@hoursAgo": {
+    "description": "Time elapsed in hours",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "hrsAgo": "{hours} hrs ago",
+  "@hrsAgo": {
+    "description": "Time elapsed in hours (short)",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "oneHourAgo": "1 hour ago",
+  "@oneHourAgo": {
+    "description": "One hour ago"
+  },
+  "oneAndHalfHoursAgo": "1½ hours ago",
+  "@oneAndHalfHoursAgo": {
+    "description": "One and a half hours ago"
+  },
+  "hoursAndHalfAgo": "{hours}½ hours ago",
+  "@hoursAndHalfAgo": {
+    "description": "Hours and a half ago",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "minutesAgo": "{minutes} minutes ago",
+  "@minutesAgo": {
+    "description": "Time elapsed in minutes",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "minsAgo": "{minutes} mins ago",
+  "@minsAgo": {
+    "description": "Time elapsed in minutes (short)",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "now": "Now",
+  "@now": {
+    "description": "Current moment"
+  },
+  "justNow": "Just now",
+  "@justNow": {
+    "description": "Very recent time"
+  },
+  "unknown": "unknown",
+  "@unknown": {
+    "description": "Unknown value"
+  },
+  "invalidDate": "Invalid date",
+  "@invalidDate": {
+    "description": "Error message for invalid date"
+  },
+  "unknownDate": "Unknown date",
+  "@unknownDate": {
+    "description": "Message when date is not available"
+  },
+  "todaysEvents": "Today's events",
+  "@todaysEvents": {
+    "description": "Section header for today's events"
+  },
+  "yesterdaysEvents": "Yesterday's events",
+  "@yesterdaysEvents": {
+    "description": "Section header for yesterday's events"
+  },
+  "previousDaysEvents": "Previous days events",
+  "@previousDaysEvents": {
+    "description": "Section header for events from previous days"
+  },
+  "enablePushNotifications": "Enable push notifications for earthquake events",
+  "@enablePushNotifications": {
+    "description": "Description for enabling push notifications"
+  },
+  "setMinimumMagnitudeForNotifications": "Set minimum magnitude for notifications",
+  "@setMinimumMagnitudeForNotifications": {
+    "description": "Description for setting minimum magnitude for notifications"
+  },
+  "minMagnitude": "Min Magnitude",
+  "@minMagnitude": {
+    "description": "Label for minimum magnitude slider"
+  },
+  "notificationSettingsSaved": "Notification settings saved",
+  "@notificationSettingsSaved": {
+    "description": "Success message when notification settings are saved"
+  },
+  "notificationArea": "Notification Area",
+  "@notificationArea": {
+    "description": "Label for notification area selection"
+  },
+  "selectNotificationArea": "Select geographic area for notifications",
+  "@selectNotificationArea": {
+    "description": "Description for selecting notification area"
+  },
+  "appVersion": "App Version",
+  "@appVersion": {
+    "description": "Label for app version"
+  },
+  "developer": "Developer",
+  "@developer": {
+    "description": "Label for developer information"
+  },
+  "dataSource": "Data Source",
+  "@dataSource": {
+    "description": "Label for data source information"
+  },
+  "credits": "Credits",
+  "@credits": {
+    "description": "Label for credits section"
+  },
+  "legalInformation": "Legal Information",
+  "@legalInformation": {
+    "description": "Label for legal information section"
+  },
+  "privacyPolicy": "Privacy Policy",
+  "@privacyPolicy": {
+    "description": "Label for privacy policy"
+  },
+  "termsOfService": "Terms of Service",
+  "@termsOfService": {
+    "description": "Label for terms of service"
+  },
+  "openWebsite": "Open Website",
+  "@openWebsite": {
+    "description": "Button text to open website"
+  },
+  "viewDocumentation": "View Documentation",
+  "@viewDocumentation": {
+    "description": "Button text to view documentation"
+  },
+  "ingvInstitute": "INGV (Istituto Nazionale di Geofisica e Vulcanologia)",
+  "@ingvInstitute": {
+    "description": "Full name of INGV institute"
+  },
+  "earthquakeDataProvider": "Earthquake Data Provider",
+  "@earthquakeDataProvider": {
+    "description": "Description for earthquake data provider"
+  },
+  "openDataLicense": "Open Data License",
+  "@openDataLicense": {
+    "description": "Description for data license"
+  },
+  "statistics": "Statistics",
+  "@statistics": {
+    "description": "Statistics section title"
+  },
+  "total": "Total",
+  "@total": {
+    "description": "Total events label"
+  },
+  "maxMagnitude": "Max Magnitude",
+  "@maxMagnitude": {
+    "description": "Maximum magnitude label"
+  },
+  "minMagnitude": "Min Magnitude",
+  "@minMagnitude": {
+    "description": "Minimum magnitude label"
+  },
+  "average": "Average",
+  "@average": {
+    "description": "Average magnitude label"
+  },
+  "version": "Version",
+  "@version": {
+    "description": "App version label"
+  },
+  "build": "Build",
+  "@build": {
+    "description": "Build number label"
+  },
+  "dataProvider": "Data Provider",
+  "@dataProvider": {
+    "description": "Data provider label"
+  },
+  "license": "License",
+  "@license": {
+    "description": "License label"
+  }
+}
