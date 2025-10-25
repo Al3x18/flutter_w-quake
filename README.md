@@ -79,6 +79,7 @@ For more information, visit: [INGV Web Services Documentation](https://webservic
 - **Interactive map view** showing earthquake locations
 - **Push notifications** maybe with Firebase integration
 - **Map integration** maybe with Google Maps
+- **App icon** and **splash screen** design and implementation
 
 ## Project Structure
 
