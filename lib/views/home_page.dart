@@ -45,38 +45,61 @@ class _HomePageState extends ConsumerState<HomePage> {
               child: const Icon(Icons.waves, color: Colors.orange, size: 24),
             ),
             const SizedBox(width: 12),
-            // App title with style
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
+            // App title with LIVE next to it
+            Row(
               children: [
-                Row(
-                  children: [
-                    const Text('W', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, letterSpacing: 0.5)),
-                    const SizedBox(width: 6),
-                    Container(
-                      width: 4,
-                      height: 4,
-                      decoration: const BoxDecoration(color: Colors.orange, shape: BoxShape.circle),
-                    ),
-                    const SizedBox(width: 6),
-                    const Text('QUAKE', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, letterSpacing: 0.5)),
-                  ],
+                Text(
+                  'W',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 1.0,
+                    color: Colors.white,
+                    shadows: [Shadow(color: Colors.orange.withValues(alpha: 0.3), offset: const Offset(0, 2), blurRadius: 4)],
+                  ),
                 ),
-                // Live indicator
-                Row(
-                  children: [
-                    Container(
-                      width: 6,
-                      height: 6,
-                      decoration: const BoxDecoration(color: Colors.green, shape: BoxShape.circle),
-                    ),
-                    const SizedBox(width: 4),
-                    const Text(
-                      'LIVE',
-                      style: TextStyle(fontSize: 9, fontWeight: FontWeight.w600, color: Colors.green, letterSpacing: 1.2),
-                    ),
-                  ],
+                const SizedBox(width: 8),
+                Container(
+                  width: 5,
+                  height: 5,
+                  decoration: BoxDecoration(
+                    color: Colors.orange,
+                    shape: BoxShape.circle,
+                    boxShadow: [BoxShadow(color: Colors.orange.withValues(alpha: 0.5), blurRadius: 6, spreadRadius: 1)],
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  'QUAKE',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 1.0,
+                    color: Colors.white,
+                    shadows: [Shadow(color: Colors.orange.withValues(alpha: 0.3), offset: const Offset(0, 2), blurRadius: 4)],
+                  ),
+                ),
+                const SizedBox(width: 12),
+                // Live indicator next to title
+                Container(
+                  width: 7,
+                  height: 7,
+                  decoration: BoxDecoration(
+                    color: Colors.green,
+                    shape: BoxShape.circle,
+                    boxShadow: [BoxShadow(color: Colors.green.withValues(alpha: 0.6), blurRadius: 8, spreadRadius: 1)],
+                  ),
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  'LIVE',
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.green,
+                    letterSpacing: 1.5,
+                    shadows: [Shadow(color: Colors.green.withValues(alpha: 0.4), offset: const Offset(0, 1), blurRadius: 3)],
+                  ),
                 ),
               ],
             ),
@@ -121,7 +144,7 @@ class _HomePageState extends ConsumerState<HomePage> {
           ),
         ],
       ),
-      body: RefreshIndicator(
+      body: RefreshIndicator.adaptive(
         onRefresh: () async {
           await ref.read(earthquakeListProvider.notifier).refreshEarthquakes();
         },
@@ -173,7 +196,7 @@ class _HomePageState extends ConsumerState<HomePage> {
             ),
             // Earthquake list
             if (earthquakeState.isLoading)
-              const SliverFillRemaining(child: LoadingWidget(message: 'Caricamento eventi...'))
+              SliverFillRemaining(child: LoadingWidget(message: l10n.loadingEvents))
             else if (earthquakeState.error != null)
               SliverFillRemaining(
                 child: custom.ErrorWidget(
@@ -258,7 +281,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                                   const SizedBox(width: 6),
                                   Text(
                                     separatorText.toUpperCase(),
-                                    style: const TextStyle(color: Colors.black, fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.5),
+                                    style: const TextStyle(color: Colors.black, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1.5),
                                   ),
                                 ],
                               ),
