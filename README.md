@@ -72,13 +72,15 @@ For more information, visit: [INGV Web Services Documentation](https://webservic
 - Statistics display with expandable cards
 - Settings management with persistent storage
 - MVVM architecture with Riverpod state management
+- **Interactive earthquake detail screen** with expandable container
+- **Interactive map view** with earthquake locations and markers
+- **User location display** and auto-centering functionality
+- **Location permission management** with adaptive UI
+- **Adaptive UI components** (RefreshIndicator, Switch) for cross-platform consistency
 
 ### 🚧 Planned Features
 
-- **Earthquake detail pages** with comprehensive event information
-- **Interactive map view** showing earthquake locations
 - **Push notifications** maybe with Firebase integration
-- **Map integration** maybe with Google Maps
 - **App icon** and **splash screen** design and implementation
 - **Multiple data sources** for earthquake events (USGS, EMSC, etc.)
 
@@ -110,6 +112,11 @@ lib/
 - `shared_preferences: ^2.3.2` - Local storage
 - `package_info_plus: ^9.0.0` - App info
 - `url_launcher: ^6.3.2` - External links
+- `flutter_map: ^7.0.2` - Interactive maps
+- `latlong2: ^0.9.1` - Geographic coordinates
+- `geolocator: ^13.0.1` - Location services
+- `permission_handler: ^11.3.1` - Permission management
+- `google_fonts: ^6.2.1` - Custom typography
 
 ## Contributing
 
