@@ -474,10 +474,6 @@
   "@maxMagnitude": {
     "description": "Maximum magnitude label"
   },
-  "minMagnitude": "Min Magnitude",
-  "@minMagnitude": {
-    "description": "Minimum magnitude label"
-  },
   "average": "Average",
   "@average": {
     "description": "Average magnitude label"
@@ -497,5 +493,224 @@
   "license": "License",
   "@license": {
     "description": "License label"
+  },
+  "magnitudeStrong": "strong",
+  "@magnitudeStrong": {
+    "description": "Strong magnitude description"
+  },
+  "magnitudeModerate": "moderate",
+  "@magnitudeModerate": {
+    "description": "Moderate magnitude description"
+  },
+  "magnitudeLight": "light",
+  "@magnitudeLight": {
+    "description": "Light magnitude description"
+  },
+  "magnitudeMinor": "minor",
+  "@magnitudeMinor": {
+    "description": "Minor magnitude description"
+  },
+  "magnitudeMicro": "micro",
+  "@magnitudeMicro": {
+    "description": "Micro magnitude description"
+  },
+  "depthDeep": "deep",
+  "@depthDeep": {
+    "description": "Deep depth description"
+  },
+  "depthIntermediate": "intermediate",
+  "@depthIntermediate": {
+    "description": "Intermediate depth description"
+  },
+  "depthShallow": "shallow",
+  "@depthShallow": {
+    "description": "Shallow depth description"
+  },
+  "intensityVeryStrong": "very strong",
+  "@intensityVeryStrong": {
+    "description": "Very strong intensity description"
+  },
+  "intensityStrong": "strong",
+  "@intensityStrong": {
+    "description": "Strong intensity description"
+  },
+  "intensityModerate": "moderate",
+  "@intensityModerate": {
+    "description": "Moderate intensity description"
+  },
+  "intensityLight": "light",
+  "@intensityLight": {
+    "description": "Light intensity description"
+  },
+  "intensityWeak": "weak",
+  "@intensityWeak": {
+    "description": "Weak intensity description"
+  },
+  "intensityMicro": "micro",
+  "@intensityMicro": {
+    "description": "Micro intensity description"
+  },
+  "magnitude": "Magnitude",
+  "@magnitude": {
+    "description": "Magnitude section title"
+  },
+  "technicalDetails": "Technical Details",
+  "@technicalDetails": {
+    "description": "Technical details section title"
+  },
+  "coordinates": "Coordinates",
+  "@coordinates": {
+    "description": "Coordinates section title"
+  },
+  "description": "Description",
+  "@description": {
+    "description": "Description section title"
+  },
+  "eventId": "Event ID",
+  "@eventId": {
+    "description": "Event ID label"
+  },
+  "originId": "Origin ID",
+  "@originId": {
+    "description": "Origin ID label"
+  },
+  "author": "Author",
+  "@author": {
+    "description": "Author label"
+  },
+  "type": "Type",
+  "@type": {
+    "description": "Type label"
+  },
+  "reviewStatus": "Review Status",
+  "@reviewStatus": {
+    "description": "Review status label"
+  },
+  "stations": "Stations",
+  "@stations": {
+    "description": "Stations label"
+  },
+  "phases": "Phases",
+  "@phases": {
+    "description": "Phases label"
+  },
+  "decimalDegrees": "Decimal Degrees",
+  "@decimalDegrees": {
+    "description": "Decimal degrees format label"
+  },
+  "dmsFormat": "DMS Format",
+  "@dmsFormat": {
+    "description": "DMS format label"
+  },
+  "preciseDecimal": "Precise Decimal",
+  "@preciseDecimal": {
+    "description": "Precise decimal label"
+  },
+  "depth": "Depth",
+  "@depth": {
+    "description": "Depth label"
+  },
+  "intensityLevel": "Intensity Level",
+  "@intensityLevel": {
+    "description": "Intensity level label"
+  },
+  "unknownLocation": "Unknown Location",
+  "@unknownLocation": {
+    "description": "Unknown location fallback text"
+  },
+  "locationPermission": "Location Permission",
+  "@locationPermission": {
+    "description": "Location permission title"
+  },
+  "locationPermissionDescription": "This app needs access to location to show your position on the earthquake map.",
+  "@locationPermissionDescription": {
+    "description": "Location permission description"
+  },
+  "enableLocation": "Enable Location",
+  "@enableLocation": {
+    "description": "Enable location button text"
+  },
+  "locationDisabled": "Location services disabled",
+  "@locationDisabled": {
+    "description": "Location services disabled title"
+  },
+  "locationDisabledDescription": "Location services are disabled. Enable them in settings to see your position on the map.",
+  "@locationDisabledDescription": {
+    "description": "Location services disabled description"
+  },
+  "locationPermissionDenied": "Location permission denied",
+  "@locationPermissionDenied": {
+    "description": "Location permission denied title"
+  },
+  "locationPermissionDeniedDescription": "Location permission was denied. Enable it to see your position on the map.",
+  "@locationPermissionDeniedDescription": {
+    "description": "Location permission denied description"
+  },
+  "locationPermissionPermanentlyDenied": "Location permission permanently denied",
+  "@locationPermissionPermanentlyDenied": {
+    "description": "Location permission permanently denied title"
+  },
+  "locationPermissionPermanentlyDeniedDescription": "Location permission was permanently denied. Enable it in app settings.",
+  "@locationPermissionPermanentlyDeniedDescription": {
+    "description": "Location permission permanently denied description"
+  },
+  "unableToGetLocation": "Unable to get location",
+  "@unableToGetLocation": {
+    "description": "Unable to get location title"
+  },
+  "unableToGetLocationDescription": "An error occurred while retrieving location. Please try again later.",
+  "@unableToGetLocationDescription": {
+    "description": "Unable to get location description"
+  },
+  "yourLocation": "Your location",
+  "@yourLocation": {
+    "description": "Your location label"
+  },
+  "distanceFromYou": "Distance from you",
+  "@distanceFromYou": {
+    "description": "Distance from you label"
+  },
+  "showMyLocation": "Show my location",
+  "@showMyLocation": {
+    "description": "Show my location button text"
+  },
+  "hideMyLocation": "Hide my location",
+  "@hideMyLocation": {
+    "description": "Hide my location button text"
+  },
+  "centerOnMyLocation": "Center on my location",
+  "@centerOnMyLocation": {
+    "description": "Center on my location button text"
+  },
+  "locationPermissionRequired": "Location permission required",
+  "@locationPermissionRequired": {
+    "description": "Location permission required title"
+  },
+  "locationPermissionRequiredMessage": "To center on your location, grant permission in settings",
+  "@locationPermissionRequiredMessage": {
+    "description": "Location permission required message"
+  },
+  "earthquakeDescription": "This earthquake has a magnitude of {magnitude} {magType}, which is classified as {magnitudeDescription}.",
+  "@earthquakeDescription": {
+    "description": "Earthquake description with magnitude and classification",
+    "placeholders": {
+      "magnitude": {
+        "type": "String"
+      },
+      "magType": {
+        "type": "String"
+      },
+      "magnitudeDescription": {
+        "type": "String"
+      }
+    }
+  },
+  "dayAgo": "day ago",
+  "@dayAgo": {
+    "description": "One day ago"
+  },
+  "minuteAgo": "minute ago",
+  "@minuteAgo": {
+    "description": "One minute ago"
   }
 }
