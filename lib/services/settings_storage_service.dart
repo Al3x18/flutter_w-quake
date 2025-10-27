@@ -7,19 +7,21 @@ import '../models/earthquake_filter.dart';
 class SettingsStorageService {
   static const String _defaultFilterKey = 'default_filter_settings';
   static const String _isInitializedKey = 'settings_initialized';
+  static const String _locationEnabledKey = 'location_enabled';
+  static const String _showUserLocationKey = 'show_user_location';
 
   /// Save default filter settings to persistent storage
   Future<void> saveDefaultFilter(EarthquakeFilter filter) async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      
+
       // Convert filter to JSON
       final filterJson = _filterToJson(filter);
-      
+
       // Save to SharedPreferences
       await prefs.setString(_defaultFilterKey, filterJson);
       await prefs.setBool(_isInitializedKey, true);
-      
+
       debugPrint('[SettingsStorageService] Default filter saved successfully');
     } catch (e) {
       debugPrint('[SettingsStorageService ERROR] Failed to save default filter: $e');
@@ -31,25 +33,25 @@ class SettingsStorageService {
   Future<EarthquakeFilter?> loadDefaultFilter() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      
+
       // Check if settings have been initialized
       final isInitialized = prefs.getBool(_isInitializedKey) ?? false;
       if (!isInitialized) {
         debugPrint('[SettingsStorageService] No saved settings found');
         return null;
       }
-      
+
       // Load filter from SharedPreferences
       final filterJson = prefs.getString(_defaultFilterKey);
       if (filterJson == null) {
         debugPrint('[SettingsStorageService] No filter data found');
         return null;
       }
-      
+
       // Convert JSON to filter
       final filter = _jsonToFilter(filterJson);
       debugPrint('[SettingsStorageService] Default filter loaded successfully');
-      
+
       return filter;
     } catch (e) {
       debugPrint('[SettingsStorageService ERROR] Failed to load default filter: $e');
@@ -74,10 +76,58 @@ class SettingsStorageService {
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove(_defaultFilterKey);
       await prefs.remove(_isInitializedKey);
+      await prefs.remove(_locationEnabledKey);
+      await prefs.remove(_showUserLocationKey);
       debugPrint('[SettingsStorageService] Settings cleared successfully');
     } catch (e) {
       debugPrint('[SettingsStorageService ERROR] Failed to clear settings: $e');
       rethrow;
+    }
+  }
+
+  /// Save location enabled setting
+  Future<void> saveLocationEnabled(bool enabled) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool(_locationEnabledKey, enabled);
+      debugPrint('[SettingsStorageService] Location enabled setting saved: $enabled');
+    } catch (e) {
+      debugPrint('[SettingsStorageService ERROR] Failed to save location enabled: $e');
+      rethrow;
+    }
+  }
+
+  /// Load location enabled setting
+  Future<bool> loadLocationEnabled() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      return prefs.getBool(_locationEnabledKey) ?? false;
+    } catch (e) {
+      debugPrint('[SettingsStorageService ERROR] Failed to load location enabled: $e');
+      return false;
+    }
+  }
+
+  /// Save show user location setting
+  Future<void> saveShowUserLocation(bool show) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool(_showUserLocationKey, show);
+      debugPrint('[SettingsStorageService] Show user location setting saved: $show');
+    } catch (e) {
+      debugPrint('[SettingsStorageService ERROR] Failed to save show user location: $e');
+      rethrow;
+    }
+  }
+
+  /// Load show user location setting
+  Future<bool> loadShowUserLocation() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      return prefs.getBool(_showUserLocationKey) ?? false;
+    } catch (e) {
+      debugPrint('[SettingsStorageService ERROR] Failed to load show user location: $e');
+      return false;
     }
   }
 
@@ -103,25 +153,22 @@ class SettingsStorageService {
       'customStartDate': filter.customStartDate?.toIso8601String(),
       'customEndDate': filter.customEndDate?.toIso8601String(),
     };
-    
+
     return jsonEncode(json);
   }
 
   /// Convert JSON string to EarthquakeFilter
   EarthquakeFilter _jsonToFilter(String jsonString) {
     final Map<String, dynamic> json = jsonDecode(jsonString);
-    
+
     // Parse area
     final areaName = json['area'] as String;
-    final area = EarthquakeFilterArea.values.firstWhere(
-      (a) => a.name == areaName,
-      orElse: () => EarthquakeFilterArea.defaultArea,
-    );
-    
+    final area = EarthquakeFilterArea.values.firstWhere((a) => a.name == areaName, orElse: () => EarthquakeFilterArea.defaultArea);
+
     // Parse dates
     DateTime? customStartDate;
     DateTime? customEndDate;
-    
+
     if (json['customStartDate'] != null) {
       try {
         customStartDate = DateTime.parse(json['customStartDate']);
@@ -129,7 +176,7 @@ class SettingsStorageService {
         debugPrint('[SettingsStorageService] Error parsing customStartDate: $e');
       }
     }
-    
+
     if (json['customEndDate'] != null) {
       try {
         customEndDate = DateTime.parse(json['customEndDate']);
@@ -137,7 +184,7 @@ class SettingsStorageService {
         debugPrint('[SettingsStorageService] Error parsing customEndDate: $e');
       }
     }
-    
+
     return EarthquakeFilter(
       area: area,
       minMagnitude: (json['minMagnitude'] as num).toDouble(),
