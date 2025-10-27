@@ -29,12 +29,12 @@ class MainApp extends ConsumerWidget {
         // Completely black theme
         scaffoldBackgroundColor: Colors.black,
         // General font for the entire app
-        textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme),
+        textTheme: GoogleFonts.titilliumWebTextTheme(ThemeData.dark().textTheme),
         appBarTheme: AppBarTheme(
           backgroundColor: Colors.black,
           foregroundColor: Colors.white,
           elevation: 0,
-          titleTextStyle: GoogleFonts.inter(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+          titleTextStyle: GoogleFonts.titilliumWeb(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
         ),
         cardTheme: CardThemeData(
           color: Colors.black,
