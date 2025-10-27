@@ -6,6 +6,7 @@ import '../services/earthquake_api_service.dart';
 import '../services/settings_storage_service.dart';
 import '../viewmodels/earthquake_viewmodel.dart';
 import '../viewmodels/settings_viewmodel.dart';
+import '../viewmodels/earthquake_detail_viewmodel.dart';
 
 // API Service provider
 final earthquakeApiServiceProvider = Provider<EarthquakeApiService>((ref) {
@@ -320,4 +321,9 @@ class DefaultSettingsNotifier extends Notifier<DefaultSettingsState> {
 // Default settings provider
 final defaultSettingsProvider = NotifierProvider<DefaultSettingsNotifier, DefaultSettingsState>(() {
   return DefaultSettingsNotifier();
+});
+
+// Earthquake Detail ViewModel provider
+final earthquakeDetailViewModelProvider = Provider.family<EarthquakeDetailViewModel, Earthquake>((ref, earthquake) {
+  return EarthquakeDetailViewModel(earthquake: earthquake);
 });
