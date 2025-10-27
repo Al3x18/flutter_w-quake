@@ -6,6 +6,8 @@ import '../views/settings/filters_settings_page.dart';
 import '../views/settings/language_settings_page.dart';
 import '../views/settings/notifications_settings_page.dart';
 import '../views/settings/information_settings_page.dart';
+import '../views/settings/location_settings_page.dart';
+import '../views/earthquake_detail_page.dart';
 
 class AppRouter {
   static const String home = '/';
@@ -14,6 +16,7 @@ class AppRouter {
   static const String languageSettings = '/settings/language';
   static const String notificationsSettings = '/settings/notifications';
   static const String informationSettings = '/settings/information';
+  static const String locationSettings = '/settings/location';
   static const String earthquakeDetail = '/earthquake/:id';
 
   static final GoRouter router = GoRouter(
@@ -25,6 +28,15 @@ class AppRouter {
       GoRoute(path: languageSettings, name: 'language-settings', builder: (context, state) => const LanguageSettingsPage()),
       GoRoute(path: notificationsSettings, name: 'notifications-settings', builder: (context, state) => const NotificationsSettingsPage()),
       GoRoute(path: informationSettings, name: 'information-settings', builder: (context, state) => const InformationSettingsPage()),
+      GoRoute(path: locationSettings, name: 'location-settings', builder: (context, state) => const LocationSettingsPage()),
+      GoRoute(
+        path: earthquakeDetail,
+        name: 'earthquake-detail',
+        builder: (context, state) {
+          final earthquakeId = state.pathParameters['id'] ?? '';
+          return EarthquakeDetailPage(earthquakeId: earthquakeId);
+        },
+      ),
     ],
     errorBuilder: (context, state) => Scaffold(
       body: Center(
