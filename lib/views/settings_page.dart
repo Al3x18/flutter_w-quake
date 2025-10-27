@@ -57,6 +57,17 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             const SizedBox(height: 16),
 
+            // Location Card
+            _buildSettingsCard(
+              icon: Icons.location_on,
+              title: l10n.locationPermission,
+              subtitle: l10n.locationPermissionDescription,
+              onTap: () {
+                context.push('/settings/location');
+              },
+            ),
+            const SizedBox(height: 16),
+
             // Information Card
             _buildSettingsCard(
               icon: Icons.info,
