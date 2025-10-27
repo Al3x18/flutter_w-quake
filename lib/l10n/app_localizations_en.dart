@@ -334,4 +334,162 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get license => 'License';
+
+  @override
+  String get magnitudeStrong => 'strong';
+
+  @override
+  String get magnitudeModerate => 'moderate';
+
+  @override
+  String get magnitudeLight => 'light';
+
+  @override
+  String get magnitudeMinor => 'minor';
+
+  @override
+  String get magnitudeMicro => 'micro';
+
+  @override
+  String get depthDeep => 'deep';
+
+  @override
+  String get depthIntermediate => 'intermediate';
+
+  @override
+  String get depthShallow => 'shallow';
+
+  @override
+  String get intensityVeryStrong => 'very strong';
+
+  @override
+  String get intensityStrong => 'strong';
+
+  @override
+  String get intensityModerate => 'moderate';
+
+  @override
+  String get intensityLight => 'light';
+
+  @override
+  String get intensityWeak => 'weak';
+
+  @override
+  String get intensityMicro => 'micro';
+
+  @override
+  String get magnitude => 'Magnitude';
+
+  @override
+  String get technicalDetails => 'Technical Details';
+
+  @override
+  String get coordinates => 'Coordinates';
+
+  @override
+  String get description => 'Description';
+
+  @override
+  String get eventId => 'Event ID';
+
+  @override
+  String get originId => 'Origin ID';
+
+  @override
+  String get author => 'Author';
+
+  @override
+  String get type => 'Type';
+
+  @override
+  String get reviewStatus => 'Review Status';
+
+  @override
+  String get stations => 'Stations';
+
+  @override
+  String get phases => 'Phases';
+
+  @override
+  String get decimalDegrees => 'Decimal Degrees';
+
+  @override
+  String get dmsFormat => 'DMS Format';
+
+  @override
+  String get preciseDecimal => 'Precise Decimal';
+
+  @override
+  String get depth => 'Depth';
+
+  @override
+  String get intensityLevel => 'Intensity Level';
+
+  @override
+  String get unknownLocation => 'Unknown Location';
+
+  @override
+  String get locationPermission => 'Location Permission';
+
+  @override
+  String get locationPermissionDescription => 'This app needs access to location to show your position on the earthquake map.';
+
+  @override
+  String get enableLocation => 'Enable Location';
+
+  @override
+  String get locationDisabled => 'Location services disabled';
+
+  @override
+  String get locationDisabledDescription => 'Location services are disabled. Enable them in settings to see your position on the map.';
+
+  @override
+  String get locationPermissionDenied => 'Location permission denied';
+
+  @override
+  String get locationPermissionDeniedDescription => 'Location permission was denied. Enable it to see your position on the map.';
+
+  @override
+  String get locationPermissionPermanentlyDenied => 'Location permission permanently denied';
+
+  @override
+  String get locationPermissionPermanentlyDeniedDescription => 'Location permission was permanently denied. Enable it in app settings.';
+
+  @override
+  String get unableToGetLocation => 'Unable to get location';
+
+  @override
+  String get unableToGetLocationDescription => 'An error occurred while retrieving location. Please try again later.';
+
+  @override
+  String get yourLocation => 'Your location';
+
+  @override
+  String get distanceFromYou => 'Distance from you';
+
+  @override
+  String get showMyLocation => 'Show my location';
+
+  @override
+  String get hideMyLocation => 'Hide my location';
+
+  @override
+  String get centerOnMyLocation => 'Center on my location';
+
+  @override
+  String get locationPermissionRequired => 'Location permission required';
+
+  @override
+  String get locationPermissionRequiredMessage => 'To center on your location, grant permission in settings';
+
+  @override
+  String earthquakeDescription(String magnitude, String magType, String magnitudeDescription) {
+    return 'This earthquake has a magnitude of $magnitude $magType, which is classified as $magnitudeDescription.';
+  }
+
+  @override
+  String get dayAgo => 'day ago';
+
+  @override
+  String get minuteAgo => 'minute ago';
 }

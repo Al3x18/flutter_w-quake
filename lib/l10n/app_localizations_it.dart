@@ -264,7 +264,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get setMinimumMagnitudeForNotifications => 'Imposta magnitudo minima per le notifiche';
 
   @override
-  String get minMagnitude => 'Min Magnitudo';
+  String get minMagnitude => 'Magnitudo Min';
 
   @override
   String get notificationSettingsSaved => 'Impostazioni notifiche salvate';
@@ -318,7 +318,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get total => 'Totale';
 
   @override
-  String get maxMagnitude => 'Max Magnitudo';
+  String get maxMagnitude => 'Magnitudo Max';
 
   @override
   String get average => 'Media';
@@ -334,4 +334,162 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get license => 'Licenza';
+
+  @override
+  String get magnitudeStrong => 'forte';
+
+  @override
+  String get magnitudeModerate => 'moderato';
+
+  @override
+  String get magnitudeLight => 'leggero';
+
+  @override
+  String get magnitudeMinor => 'minore';
+
+  @override
+  String get magnitudeMicro => 'micro';
+
+  @override
+  String get depthDeep => 'profondo';
+
+  @override
+  String get depthIntermediate => 'intermedio';
+
+  @override
+  String get depthShallow => 'superficiale';
+
+  @override
+  String get intensityVeryStrong => 'molto forte';
+
+  @override
+  String get intensityStrong => 'forte';
+
+  @override
+  String get intensityModerate => 'moderato';
+
+  @override
+  String get intensityLight => 'leggero';
+
+  @override
+  String get intensityWeak => 'debole';
+
+  @override
+  String get intensityMicro => 'micro';
+
+  @override
+  String get magnitude => 'Magnitudo';
+
+  @override
+  String get technicalDetails => 'Dettagli Tecnici';
+
+  @override
+  String get coordinates => 'Coordinate';
+
+  @override
+  String get description => 'Descrizione';
+
+  @override
+  String get eventId => 'ID Evento';
+
+  @override
+  String get originId => 'ID Origine';
+
+  @override
+  String get author => 'Autore';
+
+  @override
+  String get type => 'Tipo';
+
+  @override
+  String get reviewStatus => 'Stato Revisione';
+
+  @override
+  String get stations => 'Stazioni';
+
+  @override
+  String get phases => 'Fasi';
+
+  @override
+  String get decimalDegrees => 'Gradi Decimali';
+
+  @override
+  String get dmsFormat => 'Formato DMS';
+
+  @override
+  String get preciseDecimal => 'Decimale Preciso';
+
+  @override
+  String get depth => 'Profondità';
+
+  @override
+  String get intensityLevel => 'Livello Intensità';
+
+  @override
+  String get unknownLocation => 'Posizione Sconosciuta';
+
+  @override
+  String get locationPermission => 'Permessi di Posizione';
+
+  @override
+  String get locationPermissionDescription => 'Questa app ha bisogno dell\'accesso alla posizione per mostrare la tua posizione sulla mappa dei terremoti.';
+
+  @override
+  String get enableLocation => 'Abilita Posizione';
+
+  @override
+  String get locationDisabled => 'Servizi di posizione disabilitati';
+
+  @override
+  String get locationDisabledDescription => 'I servizi di posizione sono disabilitati. Abilitali nelle impostazioni per vedere la tua posizione sulla mappa.';
+
+  @override
+  String get locationPermissionDenied => 'Permesso di posizione negato';
+
+  @override
+  String get locationPermissionDeniedDescription => 'Il permesso di posizione è stato negato. Abilitalo per vedere la tua posizione sulla mappa.';
+
+  @override
+  String get locationPermissionPermanentlyDenied => 'Permesso di posizione negato permanentemente';
+
+  @override
+  String get locationPermissionPermanentlyDeniedDescription => 'Il permesso di posizione è stato negato permanentemente. Abilitalo nelle impostazioni dell\'app.';
+
+  @override
+  String get unableToGetLocation => 'Impossibile ottenere la posizione';
+
+  @override
+  String get unableToGetLocationDescription => 'Si è verificato un errore nel recupero della posizione. Riprova più tardi.';
+
+  @override
+  String get yourLocation => 'La tua posizione';
+
+  @override
+  String get distanceFromYou => 'Distanza da te';
+
+  @override
+  String get showMyLocation => 'Mostra la mia posizione';
+
+  @override
+  String get hideMyLocation => 'Nascondi la mia posizione';
+
+  @override
+  String get centerOnMyLocation => 'Centra sulla mia posizione';
+
+  @override
+  String get locationPermissionRequired => 'Autorizzazione posizione richiesta';
+
+  @override
+  String get locationPermissionRequiredMessage => 'Per centrare sulla tua posizione, concedi l\'autorizzazione nelle impostazioni';
+
+  @override
+  String earthquakeDescription(String magnitude, String magType, String magnitudeDescription) {
+    return 'Questo terremoto ha una magnitudo di $magnitude $magType, che è classificata come $magnitudeDescription.';
+  }
+
+  @override
+  String get dayAgo => 'giorno fa';
+
+  @override
+  String get minuteAgo => 'minuto fa';
 }

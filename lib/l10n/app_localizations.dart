@@ -113,7 +113,7 @@ abstract class AppLocalizations {
   /// **'Filtered Events'**
   String get filteredEvents;
 
-  /// Loading message for events
+  /// Loading message for earthquake events
   ///
   /// In en, this message translates to:
   /// **'Loading events...'**
@@ -557,7 +557,7 @@ abstract class AppLocalizations {
   /// **'Set minimum magnitude for notifications'**
   String get setMinimumMagnitudeForNotifications;
 
-  /// Minimum magnitude label
+  /// Label for minimum magnitude slider
   ///
   /// In en, this message translates to:
   /// **'Min Magnitude'**
@@ -700,6 +700,318 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'License'**
   String get license;
+
+  /// Strong magnitude description
+  ///
+  /// In en, this message translates to:
+  /// **'strong'**
+  String get magnitudeStrong;
+
+  /// Moderate magnitude description
+  ///
+  /// In en, this message translates to:
+  /// **'moderate'**
+  String get magnitudeModerate;
+
+  /// Light magnitude description
+  ///
+  /// In en, this message translates to:
+  /// **'light'**
+  String get magnitudeLight;
+
+  /// Minor magnitude description
+  ///
+  /// In en, this message translates to:
+  /// **'minor'**
+  String get magnitudeMinor;
+
+  /// Micro magnitude description
+  ///
+  /// In en, this message translates to:
+  /// **'micro'**
+  String get magnitudeMicro;
+
+  /// Deep depth description
+  ///
+  /// In en, this message translates to:
+  /// **'deep'**
+  String get depthDeep;
+
+  /// Intermediate depth description
+  ///
+  /// In en, this message translates to:
+  /// **'intermediate'**
+  String get depthIntermediate;
+
+  /// Shallow depth description
+  ///
+  /// In en, this message translates to:
+  /// **'shallow'**
+  String get depthShallow;
+
+  /// Very strong intensity description
+  ///
+  /// In en, this message translates to:
+  /// **'very strong'**
+  String get intensityVeryStrong;
+
+  /// Strong intensity description
+  ///
+  /// In en, this message translates to:
+  /// **'strong'**
+  String get intensityStrong;
+
+  /// Moderate intensity description
+  ///
+  /// In en, this message translates to:
+  /// **'moderate'**
+  String get intensityModerate;
+
+  /// Light intensity description
+  ///
+  /// In en, this message translates to:
+  /// **'light'**
+  String get intensityLight;
+
+  /// Weak intensity description
+  ///
+  /// In en, this message translates to:
+  /// **'weak'**
+  String get intensityWeak;
+
+  /// Micro intensity description
+  ///
+  /// In en, this message translates to:
+  /// **'micro'**
+  String get intensityMicro;
+
+  /// Magnitude section title
+  ///
+  /// In en, this message translates to:
+  /// **'Magnitude'**
+  String get magnitude;
+
+  /// Technical details section title
+  ///
+  /// In en, this message translates to:
+  /// **'Technical Details'**
+  String get technicalDetails;
+
+  /// Coordinates section title
+  ///
+  /// In en, this message translates to:
+  /// **'Coordinates'**
+  String get coordinates;
+
+  /// Description section title
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get description;
+
+  /// Event ID label
+  ///
+  /// In en, this message translates to:
+  /// **'Event ID'**
+  String get eventId;
+
+  /// Origin ID label
+  ///
+  /// In en, this message translates to:
+  /// **'Origin ID'**
+  String get originId;
+
+  /// Author label
+  ///
+  /// In en, this message translates to:
+  /// **'Author'**
+  String get author;
+
+  /// Type label
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get type;
+
+  /// Review status label
+  ///
+  /// In en, this message translates to:
+  /// **'Review Status'**
+  String get reviewStatus;
+
+  /// Stations label
+  ///
+  /// In en, this message translates to:
+  /// **'Stations'**
+  String get stations;
+
+  /// Phases label
+  ///
+  /// In en, this message translates to:
+  /// **'Phases'**
+  String get phases;
+
+  /// Decimal degrees format label
+  ///
+  /// In en, this message translates to:
+  /// **'Decimal Degrees'**
+  String get decimalDegrees;
+
+  /// DMS format label
+  ///
+  /// In en, this message translates to:
+  /// **'DMS Format'**
+  String get dmsFormat;
+
+  /// Precise decimal label
+  ///
+  /// In en, this message translates to:
+  /// **'Precise Decimal'**
+  String get preciseDecimal;
+
+  /// Depth label
+  ///
+  /// In en, this message translates to:
+  /// **'Depth'**
+  String get depth;
+
+  /// Intensity level label
+  ///
+  /// In en, this message translates to:
+  /// **'Intensity Level'**
+  String get intensityLevel;
+
+  /// Unknown location fallback text
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown Location'**
+  String get unknownLocation;
+
+  /// Location permission title
+  ///
+  /// In en, this message translates to:
+  /// **'Location Permission'**
+  String get locationPermission;
+
+  /// Location permission description
+  ///
+  /// In en, this message translates to:
+  /// **'This app needs access to location to show your position on the earthquake map.'**
+  String get locationPermissionDescription;
+
+  /// Enable location button text
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Location'**
+  String get enableLocation;
+
+  /// Location services disabled title
+  ///
+  /// In en, this message translates to:
+  /// **'Location services disabled'**
+  String get locationDisabled;
+
+  /// Location services disabled description
+  ///
+  /// In en, this message translates to:
+  /// **'Location services are disabled. Enable them in settings to see your position on the map.'**
+  String get locationDisabledDescription;
+
+  /// Location permission denied title
+  ///
+  /// In en, this message translates to:
+  /// **'Location permission denied'**
+  String get locationPermissionDenied;
+
+  /// Location permission denied description
+  ///
+  /// In en, this message translates to:
+  /// **'Location permission was denied. Enable it to see your position on the map.'**
+  String get locationPermissionDeniedDescription;
+
+  /// Location permission permanently denied title
+  ///
+  /// In en, this message translates to:
+  /// **'Location permission permanently denied'**
+  String get locationPermissionPermanentlyDenied;
+
+  /// Location permission permanently denied description
+  ///
+  /// In en, this message translates to:
+  /// **'Location permission was permanently denied. Enable it in app settings.'**
+  String get locationPermissionPermanentlyDeniedDescription;
+
+  /// Unable to get location title
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to get location'**
+  String get unableToGetLocation;
+
+  /// Unable to get location description
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred while retrieving location. Please try again later.'**
+  String get unableToGetLocationDescription;
+
+  /// Your location label
+  ///
+  /// In en, this message translates to:
+  /// **'Your location'**
+  String get yourLocation;
+
+  /// Distance from you label
+  ///
+  /// In en, this message translates to:
+  /// **'Distance from you'**
+  String get distanceFromYou;
+
+  /// Show my location button text
+  ///
+  /// In en, this message translates to:
+  /// **'Show my location'**
+  String get showMyLocation;
+
+  /// Hide my location button text
+  ///
+  /// In en, this message translates to:
+  /// **'Hide my location'**
+  String get hideMyLocation;
+
+  /// Center on my location button text
+  ///
+  /// In en, this message translates to:
+  /// **'Center on my location'**
+  String get centerOnMyLocation;
+
+  /// Location permission required title
+  ///
+  /// In en, this message translates to:
+  /// **'Location permission required'**
+  String get locationPermissionRequired;
+
+  /// Location permission required message
+  ///
+  /// In en, this message translates to:
+  /// **'To center on your location, grant permission in settings'**
+  String get locationPermissionRequiredMessage;
+
+  /// Earthquake description with magnitude and classification
+  ///
+  /// In en, this message translates to:
+  /// **'This earthquake has a magnitude of {magnitude} {magType}, which is classified as {magnitudeDescription}.'**
+  String earthquakeDescription(String magnitude, String magType, String magnitudeDescription);
+
+  /// One day ago
+  ///
+  /// In en, this message translates to:
+  /// **'day ago'**
+  String get dayAgo;
+
+  /// One minute ago
+  ///
+  /// In en, this message translates to:
+  /// **'minute ago'**
+  String get minuteAgo;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
