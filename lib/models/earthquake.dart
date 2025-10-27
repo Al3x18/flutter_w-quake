@@ -89,3 +89,71 @@ class EarthquakeProperties {
 
   Map<String, dynamic> toJson() => _$EarthquakePropertiesToJson(this);
 }
+
+// Extension to add helper methods to Earthquake class
+extension EarthquakeExtensions on Earthquake {
+  // Helper getters for easier access
+  double get longitude => geometry?.longitude ?? 0.0;
+  double get latitude => geometry?.latitude ?? 0.0;
+  double get depth => geometry?.depth ?? 0.0;
+
+  // Format methods for display
+  String get formattedMagnitude => '${mag?.toStringAsFixed(1) ?? 'N/A'} ${magType ?? ''}';
+  String get formattedDepth => '${depth.toStringAsFixed(1)} km';
+
+  // Extract location components
+  String get mainLocation {
+    if (place == null) return 'Unknown Location';
+
+    // Extract main location (before comma or parenthesis)
+    final parts = place!.split(',');
+    if (parts.isNotEmpty) {
+      return parts[0].trim();
+    }
+    return place!;
+  }
+
+  String get province {
+    if (place == null) return '';
+
+    // Look for province in parentheses like "(MC)" or "(TV)"
+    final regex = RegExp(r'\(([A-Z]{2})\)');
+    final match = regex.firstMatch(place!);
+    return match?.group(1) ?? '';
+  }
+
+  String get distance {
+    if (place == null) return '';
+
+    // Extract distance information like "3 km NE"
+    final regex = RegExp(r'(\d+\s*km\s*[NSEW]+)');
+    final match = regex.firstMatch(place!);
+    return match?.group(1) ?? '';
+  }
+
+  // Review status based on author
+  String get reviewStatus {
+    if (author == null) return 'UNKNOWN';
+
+    if (author!.contains('SURVEY')) {
+      return 'MANUAL / REVIEWED';
+    } else if (author!.contains('AUTOMATIC')) {
+      return 'AUTOMATIC';
+    } else {
+      return 'MANUAL / REVIEWED';
+    }
+  }
+
+  // Get agency name
+  String get agency {
+    if (author == null) return 'UNKNOWN';
+
+    if (author!.contains('INGV')) {
+      return 'INGV';
+    } else if (author!.contains('SURVEY')) {
+      return 'INGV';
+    } else {
+      return author!;
+    }
+  }
+}
