@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../l10n/app_localizations.dart';
-import '../../providers/language_providers.dart';
+import '../../providers/earthquake_providers.dart';
 import '../../widgets/custom_snackbar.dart';
 
 class LanguageSettingsPage extends ConsumerStatefulWidget {

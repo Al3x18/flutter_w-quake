@@ -117,6 +117,21 @@ class LocationService {
     return Geolocator.distanceBetween(lat1, lon1, lat2, lon2);
   }
 
+  /// Calculate distance between user position and earthquake
+  double calculateDistanceToEarthquake(Position? userPosition, double earthquakeLat, double earthquakeLon) {
+    if (userPosition == null) return 0.0;
+    return calculateDistance(userPosition.latitude, userPosition.longitude, earthquakeLat, earthquakeLon);
+  }
+
+  /// Format distance for display
+  String formatDistance(double distanceInMeters) {
+    if (distanceInMeters < 1000) {
+      return '${distanceInMeters.toStringAsFixed(0)} m';
+    } else {
+      return '${(distanceInMeters / 1000).toStringAsFixed(1)} km';
+    }
+  }
+
   /// Dispose resources
   void dispose() {
     stopLocationUpdates();
