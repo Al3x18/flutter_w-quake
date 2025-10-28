@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.7.0] - 2025-01-28
+
+### Architecture Improvements
+
+- **Major architecture simplification**: Reduced provider complexity 
+- **Unified provider structure**: Consolidated earthquake, language, and information providers
+- **Streamlined provider files**: 
+  - `earthquake_providers.dart`: Centralized main providers
+  - `location_providers.dart`: Essential location providers only 
+  - `language_providers.dart`: Minimal service provider
+  - `information_providers.dart`: Minimal service provider
+- **Enhanced maintainability**: Single source of truth for main application logic
+- **Improved code organization**: Clear separation of concerns between service, viewmodel, and state providers
+- **Reduced code duplication**: Eliminated redundant provider definitions
+- **Better performance**: Optimized provider structure with computed providers
+- **Enhanced LocationService**: Added distance calculation and formatting methods
+
 ## [0.6.0] - 2025-01-27
 
 ### Added
