@@ -218,16 +218,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                   : SliverList(
                       delegate: SliverChildBuilderDelegate((context, index) {
                         final earthquake = earthquakeList[index];
-                        final userPosition = ref.watch(userPositionProvider).value;
-                        final radiusAsync = ref.watch(locationRadiusKmProvider);
-                        final distanceService = ref.watch(distanceCalculatorProvider);
-                        bool withinRadius = false;
-                        radiusAsync.whenData((radiusKm) {
-                          if (userPosition != null) {
-                            final dMeters = distanceService.calculateDistanceToEarthquake(userPosition, earthquake.geometry?.coordinates?[1] ?? 0.0, earthquake.geometry?.coordinates?[0] ?? 0.0);
-                            withinRadius = dMeters <= (radiusKm * 1000);
-                          }
-                        });
+                        final withinRadius = ref.watch(earthquakeProximityProvider(earthquake));
                         final currentCategory = viewModel.getDateCategory(earthquake.properties?.time);
 
                         // Check if we need to show a separator
