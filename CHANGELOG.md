@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.0] - 2025-10-29
+
+### Added
+
+- App icon generation for Android/iOS via `flutter_launcher_icons`
+- Native splash screen for Android (incl. Android 12) e iOS via `flutter_native_splash`
+
 ## [0.8.6] - 2025-10-29
 
 ### Fixed
