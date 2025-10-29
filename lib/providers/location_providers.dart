@@ -9,6 +9,17 @@ final locationServiceProvider = Provider<LocationService>((ref) {
   return LocationService();
 });
 
+// Settings flags providers
+final locationEnabledSettingProvider = FutureProvider<bool>((ref) async {
+  final settings = SettingsStorageService();
+  return await settings.loadLocationEnabled();
+});
+
+final showUserLocationSettingProvider = FutureProvider<bool>((ref) async {
+  final settings = SettingsStorageService();
+  return await settings.loadShowUserLocation();
+});
+
 // Stream provider that ensures location updates start on first watch.
 // Why async*?
 // - We need to perform asynchronous bootstrap steps BEFORE exposing the stream
@@ -24,12 +35,22 @@ final locationServiceProvider = Provider<LocationService>((ref) {
 // - If services are disabled or permissions denied, it yields null and keeps
 //   listening for future availability without crashing the UI.
 final userPositionProvider = StreamProvider<Position?>((ref) async* {
+  // Respect user settings: if location is disabled or user location display is off,
+  // do not start (or keep) location updates and emit null.
+  final settings = SettingsStorageService();
+  final isEnabled = await settings.loadLocationEnabled();
+  final showUser = await settings.loadShowUserLocation();
+
   final locationService = ref.watch(locationServiceProvider);
-  // Kick off an immediate position fetch (emits once if permission is granted)
+
+  if (!isEnabled || !showUser) {
+    locationService.stopLocationUpdates();
+    yield null;
+    return;
+  }
+
   await locationService.getCurrentPosition();
-  // Ensure continuous updates
   await locationService.startLocationUpdates();
-  // Forward the stream
   yield* locationService.locationStream;
 });
 
@@ -60,6 +81,10 @@ final locationRadiusKmProvider = FutureProvider<int>((ref) async {
 // - locationRadiusKmProvider (when radius is loaded/changed)
 // Consumers in UI can just watch this boolean to show/hide indicators.
 final earthquakeProximityProvider = Provider.family<bool, EarthquakeFeature>((ref, earthquake) {
+  // If location is disabled in settings, proximity is always false
+  final locationEnabled = ref.watch(locationEnabledSettingProvider).maybeWhen(data: (v) => v, orElse: () => false);
+  if (!locationEnabled) return false;
+
   final userPosition = ref.watch(userPositionProvider).value;
   final radiusAsync = ref.watch(locationRadiusKmProvider);
   final distanceService = ref.watch(distanceCalculatorProvider);
@@ -76,6 +101,10 @@ final earthquakeProximityProvider = Provider.family<bool, EarthquakeFeature>((re
 
 // Same as above, but for the Earthquake model used in details views.
 final earthquakeDetailProximityProvider = Provider.family<bool, Earthquake>((ref, earthquake) {
+  // If location is disabled in settings, proximity is always false
+  final locationEnabled = ref.watch(locationEnabledSettingProvider).maybeWhen(data: (v) => v, orElse: () => false);
+  if (!locationEnabled) return false;
+
   final userPosition = ref.watch(userPositionProvider).value;
   final radiusAsync = ref.watch(locationRadiusKmProvider);
   final distanceService = ref.watch(distanceCalculatorProvider);
