@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.8.0] - 2025-01-29
+
+### Added
+
+- **Nearby earthquakes indicator**: Events within user-defined radius are marked with orange indicators
+- **Location radius settings**: Configurable search radius (20-300 km) with real-time updates
+- **Enhanced location features**: 
+  - Orange vertical bar on earthquake cards for nearby events
+  - "Near you" badge in earthquake details when within radius
+  - Real-time indicator updates when changing radius settings
+- **Improved UX**: Visual feedback for proximity-based earthquake filtering
+
 ## [0.7.0] - 2025-01-28
 
 ### Architecture Improvements
