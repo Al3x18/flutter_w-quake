@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/earthquake.dart';
 import '../viewmodels/earthquake_detail_viewmodel.dart';
+import '../viewmodels/earthquake_viewmodel.dart';
 import '../l10n/app_localizations.dart';
 import '../providers/location_providers.dart';
 
@@ -19,6 +20,7 @@ class _EarthquakeDetailExpansionWidgetState extends ConsumerState<EarthquakeDeta
   late AnimationController _animationController;
   late Animation<double> _expandAnimation;
   bool _isExpanded = false;
+  final EarthquakeViewModel _earthquakeViewModel = EarthquakeViewModel();
 
   @override
   void initState() {
@@ -111,7 +113,7 @@ class _EarthquakeDetailExpansionWidgetState extends ConsumerState<EarthquakeDeta
                                   const SizedBox(width: 8),
                                   Text(
                                     earthquake.mag?.toStringAsFixed(1) ?? 'N/A',
-                                    style: TextStyle(color: viewModel.getMagnitudeColor(earthquake.mag ?? 0.0), fontSize: 16, fontWeight: FontWeight.bold),
+                                    style: TextStyle(color: _earthquakeViewModel.getMagnitudeColor(earthquake.mag ?? 0.0), fontSize: 16, fontWeight: FontWeight.bold),
                                   ),
                                   const SizedBox(width: 2),
                                   Text('(${earthquake.magType ?? 'N/A'})', style: const TextStyle(color: Colors.grey, fontSize: 10)),
@@ -150,7 +152,7 @@ class _EarthquakeDetailExpansionWidgetState extends ConsumerState<EarthquakeDeta
                                     children: [
                                       Row(
                                         children: [
-                                          Icon(Icons.waves, color: viewModel.getMagnitudeColor(earthquake.mag ?? 0.0), size: 20),
+                                          Icon(Icons.waves, color: _earthquakeViewModel.getMagnitudeColor(earthquake.mag ?? 0.0), size: 20),
                                           const SizedBox(width: 8),
                                           Text(
                                             l10n.magnitude,
@@ -178,7 +180,7 @@ class _EarthquakeDetailExpansionWidgetState extends ConsumerState<EarthquakeDeta
                                         children: [
                                           Text(
                                             '${earthquake.mag?.toStringAsFixed(1) ?? 'N/A'} ${earthquake.magType ?? ''}',
-                                            style: TextStyle(color: viewModel.getMagnitudeColor(earthquake.mag ?? 0.0), fontSize: 24, fontWeight: FontWeight.bold),
+                                            style: TextStyle(color: _earthquakeViewModel.getMagnitudeColor(earthquake.mag ?? 0.0), fontSize: 24, fontWeight: FontWeight.bold),
                                           ),
                                           const SizedBox(width: 8),
                                           Text(viewModel.getMagnitudeUncertainty(), style: const TextStyle(color: Colors.grey, fontSize: 14)),
