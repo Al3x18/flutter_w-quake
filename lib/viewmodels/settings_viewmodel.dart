@@ -1,53 +1,27 @@
 import '../models/earthquake_filter.dart';
+import '../utils/filter_validator.dart';
 
-/// ViewModel for Settings - handles validation and business logic for filters
+/// SettingsViewModel centralizes validation rules and helpers
+/// for constructing `EarthquakeFilter` instances used by Settings.
+///
+/// It is stateless and safe to reuse across screens.
 class SettingsViewModel {
-  // Date validation constants
-  static const int _maxDateRangeDays = 3650; // 10 years
-  static const double _minMagnitude = 0.0;
-  static const double _maxMagnitude = 10.0;
+  // Validation constraints
+  // Delegated validations live in FilterValidator
 
-  /// Validate date range settings
-  /// Returns error message key if invalid, null if valid
+  /// Validate the selected custom date range.
+  /// Returns an error message (English) if invalid; returns null if valid.
   String? validateDateRange(DateTime? startDate, DateTime? endDate) {
-    if (startDate == null || endDate == null) return null;
-
-    if (startDate.isAfter(endDate)) {
-      return 'Start date must be before end date';
-    }
-
-    final now = DateTime.now();
-    if (startDate.isAfter(now)) {
-      return 'Start date cannot be in the future';
-    }
-
-    if (endDate.isAfter(now)) {
-      return 'End date cannot be in the future';
-    }
-
-    final difference = endDate.difference(startDate);
-    if (difference.inDays > _maxDateRangeDays) {
-      return 'Date range cannot exceed 10 years';
-    }
-
-    return null;
+    return FilterValidator.validateDateRange(startDate, endDate);
   }
 
-  /// Validate magnitude settings
-  /// Returns error message key if invalid, null if valid
+  /// Validate the minimum magnitude value.
+  /// Returns an error message (English) if invalid; returns null if valid.
   String? validateMagnitude(double magnitude) {
-    if (magnitude < _minMagnitude) {
-      return 'Minimum magnitude cannot be negative';
-    }
-
-    if (magnitude > _maxMagnitude) {
-      return 'Minimum magnitude cannot exceed $_maxMagnitude';
-    }
-
-    return null;
+    return FilterValidator.validateMagnitude(magnitude);
   }
 
-  /// Create a new filter from settings
+  /// Create a new `EarthquakeFilter` from Settings UI inputs.
   EarthquakeFilter createFilterFromSettings({
     required EarthquakeFilterArea area,
     required double minMagnitude,
@@ -59,22 +33,22 @@ class SettingsViewModel {
     return EarthquakeFilter(area: area, minMagnitude: minMagnitude, daysBack: daysBack, useCustomDateRange: useCustomDateRange, customStartDate: customStartDate, customEndDate: customEndDate);
   }
 
-  /// Get default filter
+  /// Return the default (empty) filter instance.
   EarthquakeFilter getDefaultFilter() {
     return const EarthquakeFilter();
   }
 
-  /// Check if custom date range is valid
+  /// Convenience helper to check custom date range validity.
   bool isCustomDateRangeValid(DateTime? startDate, DateTime? endDate) {
     return validateDateRange(startDate, endDate) == null;
   }
 
-  /// Get minimum date for date picker (API limitation: 1985-01-01)
-  DateTime getMinimumDate() => DateTime(1985, 1, 1);
+  /// Minimum date allowed by the data source (API limitation: 1985-01-01).
+  DateTime getMinimumDate() => FilterValidator.getMinimumDate();
 
-  /// Get maximum date for date picker (today)
-  DateTime getMaximumDate() => DateTime.now();
+  /// Maximum date allowed for selection (today).
+  DateTime getMaximumDate() => FilterValidator.getMaximumDate();
 
-  /// Get available filter areas
-  List<EarthquakeFilterArea> getAvailableFilterAreas() => EarthquakeFilterArea.values;
+  /// List all available filter areas.
+  List<EarthquakeFilterArea> getAvailableFilterAreas() => FilterValidator.getAvailableFilterAreas();
 }

@@ -4,7 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'l10n/app_localizations.dart';
 import 'router/app_router.dart';
-import 'providers/earthquake_providers.dart';
+import 'providers/language_providers.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

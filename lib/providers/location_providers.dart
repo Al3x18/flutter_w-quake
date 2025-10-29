@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import '../services/location_service.dart';
+import '../services/settings_storage_service.dart';
 
 // Service provider
 final locationServiceProvider = Provider<LocationService>((ref) {
@@ -26,4 +27,10 @@ final locationServiceEnabledProvider = FutureProvider<bool>((ref) async {
 // Distance calculator provider - using LocationService directly
 final distanceCalculatorProvider = Provider<LocationService>((ref) {
   return ref.watch(locationServiceProvider);
+});
+
+// Location radius (km) provider
+final locationRadiusKmProvider = FutureProvider<int>((ref) async {
+  final settings = SettingsStorageService();
+  return await settings.loadLocationRadiusKm();
 });

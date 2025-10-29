@@ -438,6 +438,12 @@ class AppLocalizationsIt extends AppLocalizations {
   String get enableLocation => 'Abilita Posizione';
 
   @override
+  String get allowLocationAccess => 'Consenti all\'app di accedere alla tua posizione';
+
+  @override
+  String get showLocationOnMap => 'Mostra la tua posizione sulla mappa dei terremoti';
+
+  @override
   String get locationDisabled => 'Servizi di posizione disabilitati';
 
   @override
@@ -477,6 +483,33 @@ class AppLocalizationsIt extends AppLocalizations {
   String get centerOnMyLocation => 'Centra sulla mia posizione';
 
   @override
+  String get locationAccessGranted => 'Accesso alla posizione consentito';
+
+  @override
+  String get requestingLocationAccess => 'Richiesta accesso alla posizione...';
+
+  @override
+  String get locationAccessDenied => 'Accesso alla posizione negato';
+
+  @override
+  String get openAppSettings => 'Apri Impostazioni App';
+
+  @override
+  String get enableLocationPermissionsManually => 'Abilita manualmente i permessi di posizione';
+
+  @override
+  String get locationEnabledSuccess => 'Posizione abilitata! La tua posizione sarà mostrata sulla mappa.';
+
+  @override
+  String get searchRadius => 'Raggio di ricerca';
+
+  @override
+  String get searchRadiusSubtitle => 'Indicami gli eventi intorno alla mia posizione';
+
+  @override
+  String get nearYou => 'Vicino a te';
+
+  @override
   String get locationPermissionRequired => 'Autorizzazione posizione richiesta';
 
   @override
@@ -492,4 +525,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get minuteAgo => 'minuto fa';
+
+  @override
+  String get nearbyIndicatorDescription => 'Gli eventi nel raggio selezionato sono segnalati con un indicatore arancione';
 }

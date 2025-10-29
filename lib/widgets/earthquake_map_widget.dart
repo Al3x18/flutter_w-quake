@@ -7,6 +7,7 @@ import '../models/earthquake.dart';
 import '../providers/location_providers.dart';
 import '../services/settings_storage_service.dart';
 import '../viewmodels/map_viewmodel.dart';
+import '../viewmodels/earthquake_detail_viewmodel.dart';
 
 class EarthquakeMapWidget extends ConsumerStatefulWidget {
   final Earthquake earthquake;
@@ -58,6 +59,7 @@ class _EarthquakeMapWidgetState extends ConsumerState<EarthquakeMapWidget> {
   Widget build(BuildContext context) {
     final mapState = ref.watch(mapViewModelProvider);
     final earthquakeCenter = LatLng(widget.earthquake.latitude, widget.earthquake.longitude);
+    final detailVm = EarthquakeDetailViewModel(earthquake: widget.earthquake);
 
     // Watch user position if enabled
     if (_showUserLocation) {
@@ -112,7 +114,7 @@ class _EarthquakeMapWidgetState extends ConsumerState<EarthquakeMapWidget> {
                   height: 45,
                   child: Container(
                     decoration: BoxDecoration(
-                      color: _getMagnitudeColor(widget.earthquake.mag ?? 0.0),
+                      color: Colors.black,
                       shape: BoxShape.circle,
                       border: Border.all(color: Colors.white, width: 3),
                       boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.3), blurRadius: 8, offset: const Offset(0, 2))],
@@ -120,10 +122,10 @@ class _EarthquakeMapWidgetState extends ConsumerState<EarthquakeMapWidget> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(Icons.waves, color: Colors.white, size: 16),
+                        Icon(Icons.waves, color: detailVm.getMagnitudeColor(widget.earthquake.mag ?? 0.0), size: 16),
                         Text(
                           widget.earthquake.mag?.toStringAsFixed(1) ?? 'N/A',
-                          style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+                          style: TextStyle(color: detailVm.getMagnitudeColor(widget.earthquake.mag ?? 0.0), fontSize: 10, fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
@@ -153,11 +155,5 @@ class _EarthquakeMapWidgetState extends ConsumerState<EarthquakeMapWidget> {
     );
   }
 
-  Color _getMagnitudeColor(double magnitude) {
-    if (magnitude >= 6.0) return Colors.red;
-    if (magnitude >= 5.0) return Colors.orange;
-    if (magnitude >= 4.0) return Colors.yellow;
-    if (magnitude >= 3.0) return Colors.lightGreen;
-    return Colors.green;
-  }
+  // Color mapping is delegated to EarthquakeDetailViewModel.getMagnitudeColor
 }

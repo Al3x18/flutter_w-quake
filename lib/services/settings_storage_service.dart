@@ -9,6 +9,7 @@ class SettingsStorageService {
   static const String _isInitializedKey = 'settings_initialized';
   static const String _locationEnabledKey = 'location_enabled';
   static const String _showUserLocationKey = 'show_user_location';
+  static const String _locationRadiusKmKey = 'location_radius_km';
 
   /// Save default filter settings to persistent storage
   Future<void> saveDefaultFilter(EarthquakeFilter filter) async {
@@ -78,6 +79,7 @@ class SettingsStorageService {
       await prefs.remove(_isInitializedKey);
       await prefs.remove(_locationEnabledKey);
       await prefs.remove(_showUserLocationKey);
+      await prefs.remove(_locationRadiusKmKey);
       debugPrint('[SettingsStorageService] Settings cleared successfully');
     } catch (e) {
       debugPrint('[SettingsStorageService ERROR] Failed to clear settings: $e');
@@ -128,6 +130,29 @@ class SettingsStorageService {
     } catch (e) {
       debugPrint('[SettingsStorageService ERROR] Failed to load show user location: $e');
       return false;
+    }
+  }
+
+  /// Save location search radius (in km)
+  Future<void> saveLocationRadiusKm(int radiusKm) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setInt(_locationRadiusKmKey, radiusKm);
+      debugPrint('[SettingsStorageService] Location radius saved: $radiusKm km');
+    } catch (e) {
+      debugPrint('[SettingsStorageService ERROR] Failed to save location radius: $e');
+      rethrow;
+    }
+  }
+
+  /// Load location search radius (in km). Default: 100 km
+  Future<int> loadLocationRadiusKm() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      return prefs.getInt(_locationRadiusKmKey) ?? 100;
+    } catch (e) {
+      debugPrint('[SettingsStorageService ERROR] Failed to load location radius: $e');
+      return 100;
     }
   }
 

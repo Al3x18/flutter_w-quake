@@ -10,6 +10,7 @@ import '../widgets/earthquake_stats_card.dart';
 import '../widgets/loading_widget.dart';
 import '../widgets/error_widget.dart' as custom;
 import '../widgets/filter_dialog.dart';
+import '../providers/location_providers.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -28,7 +29,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final earthquakeState = ref.watch(earthquakeListProvider);
+    final earthquakesAsync = ref.watch(earthquakesFutureProvider);
     final stats = ref.watch(earthquakeStatsProvider);
     final viewModel = ref.watch(earthquakeViewModelProvider);
     final filterState = ref.watch(filterProvider);
@@ -146,7 +147,8 @@ class _HomePageState extends ConsumerState<HomePage> {
       ),
       body: RefreshIndicator.adaptive(
         onRefresh: () async {
-          await ref.read(earthquakeListProvider.notifier).refreshEarthquakes();
+          ref.invalidate(earthquakesFutureProvider);
+          await Future<void>.delayed(const Duration(milliseconds: 200));
         },
         child: CustomScrollView(
           slivers: [
@@ -194,105 +196,109 @@ class _HomePageState extends ConsumerState<HomePage> {
                 ),
               ),
             ),
-            // Earthquake list
-            if (earthquakeState.isLoading)
-              SliverFillRemaining(child: LoadingWidget(message: l10n.loadingEvents))
-            else if (earthquakeState.error != null)
-              SliverFillRemaining(
-                child: custom.ErrorWidget(
-                  message: earthquakeState.error!,
-                  onRetry: () {
-                    ref.read(earthquakeListProvider.notifier).loadEarthquakes();
-                  },
-                ),
-              )
-            else if (earthquakeState.earthquakes.isEmpty)
-              SliverFillRemaining(
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.waves, size: 64, color: Colors.orange),
-                      const SizedBox(height: 16),
-                      Text(l10n.noEventsFound, style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.grey[200])),
-                    ],
-                  ),
-                ),
-              )
-            else
-              SliverList(
-                delegate: SliverChildBuilderDelegate((context, index) {
-                  final earthquake = earthquakeState.earthquakes[index];
-                  final currentCategory = viewModel.getDateCategory(earthquake.properties?.time);
-
-                  // Check if we need to show a separator
-                  bool showSeparator = false;
-                  String? separatorText;
-
-                  if (index == 0) {
-                    // Always show separator for first item
-                    showSeparator = true;
-                    if (currentCategory == 'today') {
-                      separatorText = l10n.todaysEvents;
-                    } else if (currentCategory == 'yesterday') {
-                      separatorText = l10n.yesterdaysEvents;
-                    } else {
-                      separatorText = l10n.previousDaysEvents;
-                    }
-                  } else {
-                    // Check if category changed from previous item
-                    final previousEarthquake = earthquakeState.earthquakes[index - 1];
-                    final previousCategory = viewModel.getDateCategory(previousEarthquake.properties?.time);
-
-                    if (currentCategory != previousCategory) {
-                      showSeparator = true;
-                      if (currentCategory == 'yesterday') {
-                        separatorText = l10n.yesterdaysEvents;
-                      } else if (currentCategory == 'previous') {
-                        separatorText = l10n.previousDaysEvents;
-                      }
-                    }
-                  }
-
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (showSeparator && separatorText != null)
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.symmetric(vertical: 6),
-                          decoration: const BoxDecoration(color: Colors.white),
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 16),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    currentCategory == 'today'
-                                        ? Icons.today
-                                        : currentCategory == 'yesterday'
-                                        ? Icons.calendar_today
-                                        : Icons.calendar_month,
-                                    size: 12,
-                                    color: Colors.black,
-                                  ),
-                                  const SizedBox(width: 6),
-                                  Text(
-                                    separatorText.toUpperCase(),
-                                    style: const TextStyle(color: Colors.black, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1.5),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      EarthquakeCard(earthquake: earthquake, viewModel: viewModel),
-                    ],
-                  );
-                }, childCount: earthquakeState.earthquakes.length),
+            // Earthquake list via AsyncValue
+            earthquakesAsync.when(
+              loading: () => SliverFillRemaining(child: LoadingWidget(message: l10n.loadingEvents)),
+              error: (err, st) => SliverFillRemaining(
+                child: custom.ErrorWidget(message: err.toString().replaceFirst('Exception: ', ''), onRetry: () => ref.invalidate(earthquakesFutureProvider)),
               ),
+              data: (earthquakeList) => earthquakeList.isEmpty
+                  ? SliverFillRemaining(
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.waves, size: 64, color: Colors.orange),
+                            const SizedBox(height: 16),
+                            Text(l10n.noEventsFound, style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.grey[200])),
+                          ],
+                        ),
+                      ),
+                    )
+                  : SliverList(
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                        final earthquake = earthquakeList[index];
+                        final userPosition = ref.watch(userPositionProvider).value;
+                        final radiusAsync = ref.watch(locationRadiusKmProvider);
+                        final distanceService = ref.watch(distanceCalculatorProvider);
+                        bool withinRadius = false;
+                        radiusAsync.whenData((radiusKm) {
+                          if (userPosition != null) {
+                            final dMeters = distanceService.calculateDistanceToEarthquake(userPosition, earthquake.geometry?.coordinates?[1] ?? 0.0, earthquake.geometry?.coordinates?[0] ?? 0.0);
+                            withinRadius = dMeters <= (radiusKm * 1000);
+                          }
+                        });
+                        final currentCategory = viewModel.getDateCategory(earthquake.properties?.time);
+
+                        // Check if we need to show a separator
+                        bool showSeparator = false;
+                        String? separatorText;
+
+                        if (index == 0) {
+                          // Always show separator for first item
+                          showSeparator = true;
+                          if (currentCategory == 'today') {
+                            separatorText = l10n.todaysEvents;
+                          } else if (currentCategory == 'yesterday') {
+                            separatorText = l10n.yesterdaysEvents;
+                          } else {
+                            separatorText = l10n.previousDaysEvents;
+                          }
+                        } else {
+                          // Check if category changed from previous item
+                          final previousEarthquake = earthquakeList[index - 1];
+                          final previousCategory = viewModel.getDateCategory(previousEarthquake.properties?.time);
+
+                          if (currentCategory != previousCategory) {
+                            showSeparator = true;
+                            if (currentCategory == 'yesterday') {
+                              separatorText = l10n.yesterdaysEvents;
+                            } else if (currentCategory == 'previous') {
+                              separatorText = l10n.previousDaysEvents;
+                            }
+                          }
+                        }
+
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (showSeparator && separatorText != null)
+                              Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.symmetric(vertical: 6),
+                                decoration: const BoxDecoration(color: Colors.white),
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 16),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          currentCategory == 'today'
+                                              ? Icons.today
+                                              : currentCategory == 'yesterday'
+                                              ? Icons.calendar_today
+                                              : Icons.calendar_month,
+                                          size: 12,
+                                          color: Colors.black,
+                                        ),
+                                        const SizedBox(width: 6),
+                                        Text(
+                                          separatorText.toUpperCase(),
+                                          style: const TextStyle(color: Colors.black, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1.5),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            EarthquakeCard(earthquake: earthquake, viewModel: viewModel, highlightNear: withinRadius),
+                          ],
+                        );
+                      }, childCount: earthquakeList.length),
+                    ),
+            ),
           ],
         ),
       ),

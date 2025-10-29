@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/earthquake_filter.dart';
-import '../../providers/earthquake_providers.dart';
+import '../../providers/settings_providers.dart';
 import '../../widgets/custom_snackbar.dart';
 
 class FiltersSettingsPage extends ConsumerStatefulWidget {

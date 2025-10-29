@@ -113,7 +113,7 @@ abstract class AppLocalizations {
   /// **'Filtered Events'**
   String get filteredEvents;
 
-  /// Loading message for earthquake events
+  /// Loading message for events
   ///
   /// In en, this message translates to:
   /// **'Loading events...'**
@@ -905,6 +905,18 @@ abstract class AppLocalizations {
   /// **'Enable Location'**
   String get enableLocation;
 
+  /// Subtitle to explain enabling location
+  ///
+  /// In en, this message translates to:
+  /// **'Allow app to access your location'**
+  String get allowLocationAccess;
+
+  /// Subtitle for show my location switch
+  ///
+  /// In en, this message translates to:
+  /// **'Show your location on the earthquake map'**
+  String get showLocationOnMap;
+
   /// Location services disabled title
   ///
   /// In en, this message translates to:
@@ -983,6 +995,60 @@ abstract class AppLocalizations {
   /// **'Center on my location'**
   String get centerOnMyLocation;
 
+  /// Status text when granted
+  ///
+  /// In en, this message translates to:
+  /// **'Location access granted'**
+  String get locationAccessGranted;
+
+  /// Status text when requesting
+  ///
+  /// In en, this message translates to:
+  /// **'Requesting location access...'**
+  String get requestingLocationAccess;
+
+  /// Status text when denied
+  ///
+  /// In en, this message translates to:
+  /// **'Location access denied'**
+  String get locationAccessDenied;
+
+  /// Button to open app settings
+  ///
+  /// In en, this message translates to:
+  /// **'Open App Settings'**
+  String get openAppSettings;
+
+  /// Subtitle for open settings card
+  ///
+  /// In en, this message translates to:
+  /// **'Manually enable location permissions'**
+  String get enableLocationPermissionsManually;
+
+  /// Snack success when enabling location
+  ///
+  /// In en, this message translates to:
+  /// **'Location enabled! Your position will be shown on the map.'**
+  String get locationEnabledSuccess;
+
+  /// Title for search radius control
+  ///
+  /// In en, this message translates to:
+  /// **'Search radius'**
+  String get searchRadius;
+
+  /// Subtitle for search radius control
+  ///
+  /// In en, this message translates to:
+  /// **'Indicate events around my position'**
+  String get searchRadiusSubtitle;
+
+  /// Badge text when event is within radius
+  ///
+  /// In en, this message translates to:
+  /// **'Near you'**
+  String get nearYou;
+
   /// Location permission required title
   ///
   /// In en, this message translates to:
@@ -1012,6 +1078,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'minute ago'**
   String get minuteAgo;
+
+  /// Description of the orange indicator for nearby earthquakes
+  ///
+  /// In en, this message translates to:
+  /// **'Events within your selected radius are marked with an orange indicator'**
+  String get nearbyIndicatorDescription;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

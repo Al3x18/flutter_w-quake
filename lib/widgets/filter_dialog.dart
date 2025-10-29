@@ -3,6 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../l10n/app_localizations.dart';
 import '../models/earthquake_filter.dart';
 import '../providers/earthquake_providers.dart';
+import '../providers/settings_providers.dart';
+import '../utils/filter_validator.dart';
+import 'custom_snackbar.dart';
 
 class FilterDialog extends ConsumerStatefulWidget {
   const FilterDialog({super.key});
@@ -58,7 +61,7 @@ class _FilterDialogState extends ConsumerState<FilterDialog> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final availableAreas = EarthquakeFilterArea.values;
+    final availableAreas = FilterValidator.getAvailableFilterAreas();
 
     return AlertDialog(
       backgroundColor: Colors.black,
@@ -249,8 +252,8 @@ class _FilterDialogState extends ConsumerState<FilterDialog> {
                             final date = await showDatePicker(
                               context: context,
                               initialDate: customStartDate ?? DateTime.now().subtract(const Duration(days: 30)),
-                              firstDate: DateTime(1985, 1, 1), // Minimum date with available events
-                              lastDate: DateTime.now(),
+                              firstDate: FilterValidator.getMinimumDate(),
+                              lastDate: FilterValidator.getMaximumDate(),
                               builder: (context, child) {
                                 return Theme(
                                   data: Theme.of(context).copyWith(
@@ -302,8 +305,8 @@ class _FilterDialogState extends ConsumerState<FilterDialog> {
                             final date = await showDatePicker(
                               context: context,
                               initialDate: customEndDate ?? DateTime.now(),
-                              firstDate: customStartDate ?? DateTime(1985, 1, 1), // Minimum date with available events
-                              lastDate: DateTime.now(),
+                              firstDate: customStartDate ?? FilterValidator.getMinimumDate(),
+                              lastDate: FilterValidator.getMaximumDate(),
                               builder: (context, child) {
                                 return Theme(
                                   data: Theme.of(context).copyWith(
@@ -390,6 +393,20 @@ class _FilterDialogState extends ConsumerState<FilterDialog> {
         ),
         ElevatedButton(
           onPressed: () {
+            // Validate inputs before applying
+            if (useCustomDateRange) {
+              final dateError = FilterValidator.validateDateRange(customStartDate, customEndDate);
+              if (dateError != null) {
+                AnimatedSnackBarHelper.showError(context, dateError);
+                return;
+              }
+            }
+            final magError = FilterValidator.validateMagnitude(minMagnitude);
+            if (magError != null) {
+              AnimatedSnackBarHelper.showError(context, magError);
+              return;
+            }
+
             final newFilter = EarthquakeFilter(
               area: selectedArea,
               minMagnitude: minMagnitude,
@@ -400,7 +417,7 @@ class _FilterDialogState extends ConsumerState<FilterDialog> {
             );
 
             ref.read(filterProvider.notifier).updateFilter(newFilter);
-            ref.read(earthquakeListProvider.notifier).loadEarthquakes();
+            ref.invalidate(earthquakesFutureProvider);
 
             Navigator.of(context).pop();
           },

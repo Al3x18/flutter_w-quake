@@ -4,6 +4,7 @@ import 'package:permission_handler/permission_handler.dart';
 import '../../l10n/app_localizations.dart';
 import '../../viewmodels/location_viewmodel.dart';
 import '../../services/settings_storage_service.dart';
+import '../../providers/location_providers.dart';
 
 class LocationSettingsPage extends ConsumerStatefulWidget {
   const LocationSettingsPage({super.key});
@@ -17,6 +18,7 @@ class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
   bool _isLocationEnabled = false;
   bool _showUserLocation = false;
   bool _isLoading = true;
+  int _radiusKm = 100;
 
   @override
   void initState() {
@@ -29,12 +31,17 @@ class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
     try {
       final locationEnabled = await _settingsService.loadLocationEnabled();
       final showUserLocation = await _settingsService.loadShowUserLocation();
+      final radiusKm = await _settingsService.loadLocationRadiusKm();
 
       setState(() {
         _isLocationEnabled = locationEnabled;
         _showUserLocation = showUserLocation;
         _isLoading = false;
+        _radiusKm = radiusKm;
       });
+
+      // Update the provider with the loaded radius for real-time updates
+      ref.invalidate(locationRadiusKmProvider);
     } catch (e) {
       setState(() {
         _isLoading = false;
@@ -64,9 +71,10 @@ class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
 
           // Show success message
           if (mounted) {
+            final l10n = AppLocalizations.of(context)!;
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text('Location enabled! Your position will be shown on the map.', style: TextStyle(color: Colors.black)),
+                content: Text(l10n.locationEnabledSuccess, style: TextStyle(color: Colors.black)),
                 backgroundColor: Colors.white,
                 behavior: SnackBarBehavior.floating,
                 margin: EdgeInsets.only(bottom: 20, left: 16, right: 16),
@@ -156,7 +164,7 @@ class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
             _buildSettingsCard(
               icon: Icons.location_on,
               title: l10n.enableLocation,
-              subtitle: 'Allow app to access your location',
+              subtitle: l10n.allowLocationAccess,
               trailing: Switch.adaptive(value: _isLocationEnabled, onChanged: _toggleLocationEnabled, activeThumbColor: Colors.orange),
             ),
             const SizedBox(height: 16),
@@ -166,10 +174,11 @@ class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
               _buildSettingsCard(
                 icon: Icons.my_location,
                 title: l10n.showMyLocation,
-                subtitle: 'Show your location on the earthquake map',
+                subtitle: l10n.showLocationOnMap,
                 trailing: Switch.adaptive(value: _showUserLocation, onChanged: _toggleShowUserLocation, activeThumbColor: Colors.orange),
               ),
               const SizedBox(height: 16),
+              if (ref.watch(locationViewModelProvider).hasPermission) ...[_buildRadiusCard(l10n), const SizedBox(height: 16)],
             ],
 
             // Permission Status
@@ -180,7 +189,7 @@ class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
 
             // App Settings Button
             if (locationState.hasPermission == false) ...[
-              _buildActionCard(icon: Icons.settings, title: 'Open App Settings', subtitle: 'Manually enable location permissions', onTap: _openAppSettings),
+              _buildActionCard(icon: Icons.settings, title: l10n.openAppSettings, subtitle: l10n.enableLocationPermissionsManually, onTap: _openAppSettings),
               const SizedBox(height: 16),
             ],
           ],
@@ -234,15 +243,15 @@ class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
 
     if (locationState.hasLocation) {
       statusColor = Colors.green;
-      statusText = 'Location access granted';
+      statusText = l10n.locationAccessGranted;
       statusIcon = Icons.check_circle;
     } else if (locationState.isLoading) {
       statusColor = Colors.orange;
-      statusText = 'Requesting location access...';
+      statusText = l10n.requestingLocationAccess;
       statusIcon = Icons.hourglass_empty;
     } else {
       statusColor = Colors.red;
-      statusText = 'Location access denied';
+      statusText = l10n.locationAccessDenied;
       statusIcon = Icons.error;
     }
 
@@ -331,6 +340,79 @@ class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
               Icon(Icons.arrow_forward_ios, color: Colors.grey[600], size: 16),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRadiusCard(AppLocalizations l10n) {
+    return Card(
+      color: Colors.black,
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: Colors.grey[800]!, width: 1),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(color: Colors.orange.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(8)),
+                  child: const Icon(Icons.radar, color: Colors.orange, size: 24),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10n.searchRadius,
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: Colors.white),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(l10n.searchRadiusSubtitle, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey[400])),
+                      const SizedBox(height: 4),
+                      Text(l10n.nearbyIndicatorDescription, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.orange[300], fontSize: 11)),
+                    ],
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.05),
+                    borderRadius: BorderRadius.circular(6),
+                    border: Border.all(color: Colors.white24),
+                  ),
+                  child: Text(
+                    '$_radiusKm km',
+                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Slider(
+              value: _radiusKm.toDouble(),
+              min: 20,
+              max: 300,
+              divisions: 28,
+              activeColor: Colors.orange,
+              inactiveColor: Colors.grey[700],
+              label: '$_radiusKm km',
+              onChanged: (v) async {
+                final int km = v.round();
+                setState(() => _radiusKm = km);
+                // Update the provider immediately for real-time updates
+                ref.invalidate(locationRadiusKmProvider);
+                await _settingsService.saveLocationRadiusKm(km);
+              },
+            ),
+          ],
         ),
       ),
     );

@@ -438,6 +438,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get enableLocation => 'Enable Location';
 
   @override
+  String get allowLocationAccess => 'Allow app to access your location';
+
+  @override
+  String get showLocationOnMap => 'Show your location on the earthquake map';
+
+  @override
   String get locationDisabled => 'Location services disabled';
 
   @override
@@ -477,6 +483,33 @@ class AppLocalizationsEn extends AppLocalizations {
   String get centerOnMyLocation => 'Center on my location';
 
   @override
+  String get locationAccessGranted => 'Location access granted';
+
+  @override
+  String get requestingLocationAccess => 'Requesting location access...';
+
+  @override
+  String get locationAccessDenied => 'Location access denied';
+
+  @override
+  String get openAppSettings => 'Open App Settings';
+
+  @override
+  String get enableLocationPermissionsManually => 'Manually enable location permissions';
+
+  @override
+  String get locationEnabledSuccess => 'Location enabled! Your position will be shown on the map.';
+
+  @override
+  String get searchRadius => 'Search radius';
+
+  @override
+  String get searchRadiusSubtitle => 'Indicate events around my position';
+
+  @override
+  String get nearYou => 'Near you';
+
+  @override
   String get locationPermissionRequired => 'Location permission required';
 
   @override
@@ -492,4 +525,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get minuteAgo => 'minute ago';
+
+  @override
+  String get nearbyIndicatorDescription => 'Events within your selected radius are marked with an orange indicator';
 }

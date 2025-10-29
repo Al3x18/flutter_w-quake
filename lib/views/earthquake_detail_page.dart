@@ -16,30 +16,27 @@ class EarthquakeDetailPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Try to find the earthquake from the current list, otherwise use mock data
-    final earthquakeListState = ref.watch(earthquakeListProvider);
-    Earthquake earthquake;
-
-    try {
-      final eventId = int.parse(earthquakeId);
-      final earthquakeFeature = earthquakeListState.earthquakes.firstWhere((eq) => eq.properties?.eventId == eventId);
-      earthquake = Earthquake(
-        eventId: earthquakeFeature.properties?.eventId,
-        originId: earthquakeFeature.properties?.originId,
-        time: earthquakeFeature.properties?.time,
-        author: earthquakeFeature.properties?.author,
-        magType: earthquakeFeature.properties?.magType,
-        mag: earthquakeFeature.properties?.mag,
-        magAuthor: earthquakeFeature.properties?.magAuthor,
-        type: earthquakeFeature.properties?.type,
-        place: earthquakeFeature.properties?.place,
-        version: earthquakeFeature.properties?.version,
-        geojsonCreationTime: earthquakeFeature.properties?.geojsonCreationTime,
-        geometry: earthquakeFeature.geometry,
-      );
-    } catch (e) {
-      throw Exception('Event not found');
-    }
+    // Find the earthquake in the current fetched list
+    final earthquakesAsync = ref.watch(earthquakesFutureProvider);
+    final eventId = int.parse(earthquakeId);
+    final earthquakeFeature = earthquakesAsync.maybeWhen(
+      data: (list) => list.firstWhere((eq) => eq.properties?.eventId == eventId, orElse: () => throw Exception('Event not found')),
+      orElse: () => throw Exception('Event not found'),
+    );
+    final earthquake = Earthquake(
+      eventId: earthquakeFeature.properties?.eventId,
+      originId: earthquakeFeature.properties?.originId,
+      time: earthquakeFeature.properties?.time,
+      author: earthquakeFeature.properties?.author,
+      magType: earthquakeFeature.properties?.magType,
+      mag: earthquakeFeature.properties?.mag,
+      magAuthor: earthquakeFeature.properties?.magAuthor,
+      type: earthquakeFeature.properties?.type,
+      place: earthquakeFeature.properties?.place,
+      version: earthquakeFeature.properties?.version,
+      geojsonCreationTime: earthquakeFeature.properties?.geojsonCreationTime,
+      geometry: earthquakeFeature.geometry,
+    );
 
     final viewModel = ref.watch(earthquakeDetailViewModelProvider(earthquake));
     final locationState = ref.watch(locationViewModelProvider);
