@@ -83,7 +83,6 @@ For more information, visit: [INGV Web Services Documentation](https://webservic
 ### 🚧 Planned Features
 
 - **Push notifications** maybe with Firebase integration
-- **App icon** and **splash screen** design and implementation
 - **Multiple data sources** for earthquake events (USGS, EMSC, etc.)
 
 ## Project Structure
