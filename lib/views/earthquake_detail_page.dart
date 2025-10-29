@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../models/earthquake.dart';
 import '../providers/earthquake_providers.dart';
+import '../providers/location_providers.dart';
 import '../viewmodels/location_viewmodel.dart';
 import '../viewmodels/map_viewmodel.dart';
 import '../widgets/earthquake_map_widget.dart';
@@ -40,11 +41,12 @@ class EarthquakeDetailPage extends ConsumerWidget {
 
     final viewModel = ref.watch(earthquakeDetailViewModelProvider(earthquake));
     final locationState = ref.watch(locationViewModelProvider);
+    final locationEnabled = ref.watch(locationEnabledSettingProvider).maybeWhen(data: (v) => v, orElse: () => false);
     final mapViewModel = ref.watch(mapViewModelProvider.notifier);
     final l10n = AppLocalizations.of(context)!;
 
     void centerOnUserLocation() async {
-      if (locationState.hasPermission && locationState.currentPosition != null) {
+      if (locationEnabled && locationState.hasPermission && locationState.currentPosition != null) {
         await mapViewModel.centerOnUserLocation();
       } else {
         // Show permission required message
@@ -102,7 +104,7 @@ class EarthquakeDetailPage extends ConsumerWidget {
                       ),
                       child: IconButton(
                         onPressed: centerOnUserLocation,
-                        icon: Icon(Icons.my_location, color: locationState.hasPermission ? Colors.orange : Colors.grey, size: 24),
+                        icon: Icon(Icons.my_location, color: (locationEnabled && locationState.hasPermission) ? Colors.orange : Colors.grey, size: 24),
                         padding: const EdgeInsets.all(12),
                         tooltip: l10n.centerOnMyLocation,
                       ),
