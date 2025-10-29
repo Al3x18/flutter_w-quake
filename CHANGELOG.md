@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.8.6] - 2025-10-29
+
+### Fixed
+
+- **Location settings bug**: Fixed issue where disabling location in settings didn't properly disable location features until app restart
+  - Location stream now respects `locationEnabled` and `showUserLocation` settings
+  - Proximity indicators and "near you" badges now immediately disappear when location is disabled
+  - Map center-on-user button now properly disables when location is turned off
+  - Added provider invalidation to ensure immediate UI updates when settings change
+
 ## [0.8.5] - 2025-10-29
 
 ### Fixed
