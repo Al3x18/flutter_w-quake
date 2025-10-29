@@ -110,6 +110,8 @@ class LocationService {
   void stopLocationUpdates() {
     _positionStream?.cancel();
     _positionStream = null;
+    // Emit null so listeners clear any cached last known position when stopping
+    _locationController.add(null);
   }
 
   /// Calculate distance between two points
