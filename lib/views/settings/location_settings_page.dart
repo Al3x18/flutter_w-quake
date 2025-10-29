@@ -56,6 +56,11 @@ class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
         _isLocationEnabled = enabled;
       });
 
+      // Invalidate location settings providers to update UI immediately
+      ref.invalidate(locationEnabledSettingProvider);
+      ref.invalidate(showUserLocationSettingProvider);
+      ref.invalidate(userPositionProvider);
+
       if (enabled) {
         // Request location permission when enabling
         final locationViewModel = ref.read(locationViewModelProvider.notifier);
@@ -68,6 +73,10 @@ class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
           setState(() {
             _showUserLocation = true;
           });
+
+          // Invalidate providers again after enabling show user location
+          ref.invalidate(showUserLocationSettingProvider);
+          ref.invalidate(userPositionProvider);
 
           // Show success message
           if (mounted) {
@@ -93,6 +102,10 @@ class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
         setState(() {
           _showUserLocation = false;
         });
+
+        // Invalidate providers again after disabling
+        ref.invalidate(showUserLocationSettingProvider);
+        ref.invalidate(userPositionProvider);
       }
     } catch (e) {
       if (mounted) {
@@ -107,6 +120,10 @@ class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
       setState(() {
         _showUserLocation = show;
       });
+
+      // Invalidate location settings providers to update UI immediately
+      ref.invalidate(showUserLocationSettingProvider);
+      ref.invalidate(userPositionProvider);
 
       if (show && _isLocationEnabled) {
         // Start location updates when enabling show user location
