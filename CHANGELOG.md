@@ -1,6 +1,12 @@
 # Changelog
 
-## [0.8.0] - 2025-01-29
+## [0.8.5] - 2025-10-29
+
+### Fixed
+
+- Home proximity indicator on first launch: immediate bootstrap of location stream via `async*` in `userPositionProvider` (`getCurrentPosition` + `startLocationUpdates`, then `yield*`), plus reactive proximity providers. The near-you indicator now appears on first Home load without navigation.
+
+## [0.8.0] - 2025-10-29
 
 ### Added
 
@@ -12,7 +18,7 @@
   - Real-time indicator updates when changing radius settings
 - **Improved UX**: Visual feedback for proximity-based earthquake filtering
 
-## [0.7.0] - 2025-01-28
+## [0.7.0] - 2025-10-28
 
 ### Architecture Improvements
 
@@ -29,7 +35,7 @@
 - **Better performance**: Optimized provider structure with computed providers
 - **Enhanced LocationService**: Added distance calculation and formatting methods
 
-## [0.6.0] - 2025-01-27
+## [0.6.0] - 2025-10-27
 
 ### Added
 
