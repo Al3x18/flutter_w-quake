@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../models/earthquake.dart';
 import '../l10n/app_localizations.dart';
@@ -53,15 +52,6 @@ class EarthquakeDetailViewModel {
     } catch (e) {
       return 'N/A';
     }
-  }
-
-  // Get magnitude color
-  Color getMagnitudeColor(double magnitude) {
-    if (magnitude >= 6.0) return Colors.red;
-    if (magnitude >= 5.0) return Colors.orange;
-    if (magnitude >= 4.0) return Colors.yellow;
-    if (magnitude >= 3.0) return Colors.lightGreen;
-    return Colors.green;
   }
 
   // Get magnitude description
