@@ -630,6 +630,10 @@
   "@enableLocation": {
     "description": "Enable location button text"
   },
+  "allowLocationAccess": "Allow app to access your location",
+  "@allowLocationAccess": {"description": "Subtitle to explain enabling location"},
+  "showLocationOnMap": "Show your location on the earthquake map",
+  "@showLocationOnMap": {"description": "Subtitle for show my location switch"},
   "locationDisabled": "Location services disabled",
   "@locationDisabled": {
     "description": "Location services disabled title"
@@ -679,6 +683,24 @@
     "description": "Hide my location button text"
   },
   "centerOnMyLocation": "Center on my location",
+  "locationAccessGranted": "Location access granted",
+  "@locationAccessGranted": {"description": "Status text when granted"},
+  "requestingLocationAccess": "Requesting location access...",
+  "@requestingLocationAccess": {"description": "Status text when requesting"},
+  "locationAccessDenied": "Location access denied",
+  "@locationAccessDenied": {"description": "Status text when denied"},
+  "openAppSettings": "Open App Settings",
+  "@openAppSettings": {"description": "Button to open app settings"},
+  "enableLocationPermissionsManually": "Manually enable location permissions",
+  "@enableLocationPermissionsManually": {"description": "Subtitle for open settings card"},
+  "locationEnabledSuccess": "Location enabled! Your position will be shown on the map.",
+  "@locationEnabledSuccess": {"description": "Snack success when enabling location"},
+  "searchRadius": "Search radius",
+  "@searchRadius": {"description": "Title for search radius control"},
+  "searchRadiusSubtitle": "Indicate events around my position",
+  "@searchRadiusSubtitle": {"description": "Subtitle for search radius control"},
+  "nearYou": "Near you",
+  "@nearYou": {"description": "Badge text when event is within radius"},
   "@centerOnMyLocation": {
     "description": "Center on my location button text"
   },
@@ -712,5 +734,9 @@
   "minuteAgo": "minute ago",
   "@minuteAgo": {
     "description": "One minute ago"
+  },
+  "nearbyIndicatorDescription": "Events within your selected radius are marked with an orange indicator",
+  "@nearbyIndicatorDescription": {
+    "description": "Description of the orange indicator for nearby earthquakes"
   }
 }
