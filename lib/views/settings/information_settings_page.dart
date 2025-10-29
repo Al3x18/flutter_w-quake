@@ -41,8 +41,8 @@ class _InformationSettingsPageState extends ConsumerState<InformationSettingsPag
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // App Information Section
-                  _buildSectionTitle(l10n.information),
-                  const SizedBox(height: 12),
+                  // _buildSectionTitle(l10n.information),
+                  // const SizedBox(height: 12),
                   _buildAppInfoCard(l10n, informationState, informationNotifier),
                   const SizedBox(height: 24),
 
