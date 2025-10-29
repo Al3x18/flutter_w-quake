@@ -12,7 +12,6 @@ class NotificationsSettingsPage extends ConsumerStatefulWidget {
 class _NotificationsSettingsPageState extends ConsumerState<NotificationsSettingsPage> {
   bool _notificationsEnabled = true; // Enable by default to show filters
   double _minMagnitudeForNotifications = 3.0;
-  String _selectedArea = 'World';
 
   @override
   Widget build(BuildContext context) {
@@ -159,44 +158,6 @@ class _NotificationsSettingsPageState extends ConsumerState<NotificationsSetting
                             ],
                           ),
                         ),
-
-                        const SizedBox(height: 16),
-
-                        // Notification Area Section
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: Colors.grey[900],
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: Colors.grey[800]!, width: 1),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                l10n.notificationArea,
-                                style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(l10n.selectNotificationArea, style: TextStyle(color: Colors.grey[400], fontSize: 12)),
-                              const SizedBox(height: 16),
-
-                              // Area Selection Buttons
-                              Wrap(
-                                spacing: 8,
-                                runSpacing: 8,
-                                children: [
-                                  _buildAreaChip('World', l10n.world, _selectedArea == 'World'),
-                                  _buildAreaChip('Italy', l10n.italy, _selectedArea == 'Italy'),
-                                  _buildAreaChip('Europe', l10n.europe, _selectedArea == 'Europe'),
-                                  _buildAreaChip('Asia', l10n.asia, _selectedArea == 'Asia'),
-                                  _buildAreaChip('Americas', l10n.americas, _selectedArea == 'Americas'),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
                       ],
                     )
                   : const SizedBox.shrink(key: ValueKey('empty')),
@@ -222,36 +183,6 @@ class _NotificationsSettingsPageState extends ConsumerState<NotificationsSetting
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildAreaChip(String area, String label, bool isSelected) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 200),
-      curve: Curves.easeInOut,
-      child: GestureDetector(
-        onTap: () {
-          setState(() {
-            _selectedArea = area;
-          });
-        },
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          curve: Curves.easeInOut,
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          decoration: BoxDecoration(
-            color: isSelected ? Colors.orange : Colors.grey[800],
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: isSelected ? Colors.orange : Colors.grey[600]!, width: 1),
-            boxShadow: isSelected ? [BoxShadow(color: Colors.orange.withValues(alpha: 0.3), blurRadius: 8, offset: const Offset(0, 2))] : null,
-          ),
-          child: AnimatedDefaultTextStyle(
-            duration: const Duration(milliseconds: 200),
-            style: TextStyle(color: isSelected ? Colors.white : Colors.grey[300], fontSize: 12, fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal),
-            child: Text(label),
-          ),
         ),
       ),
     );
