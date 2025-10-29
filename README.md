@@ -109,7 +109,7 @@ lib/
 ## Dependencies
 
 - `go_router: ^16.3.0` - Navigation
-- `riverpod: ^3.0.3` - State management
+- `flutter_riverpod: ^3.0.3` - State management
 - `http: ^1.2.2` - API calls
 - `shared_preferences: ^2.3.2` - Local storage
 - `package_info_plus: ^9.0.0` - App info
