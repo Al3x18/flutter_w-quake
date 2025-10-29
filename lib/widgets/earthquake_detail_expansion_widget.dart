@@ -59,17 +59,8 @@ class _EarthquakeDetailExpansionWidgetState extends ConsumerState<EarthquakeDeta
       child: AnimatedBuilder(
         animation: _expandAnimation,
         builder: (context, child) {
-          // Compute within-radius once for this build
-          final userPosition = ref.watch(userPositionProvider).value;
-          final radiusAsync = ref.watch(locationRadiusKmProvider);
-          bool withinRadius = false;
-          radiusAsync.whenData((radiusKm) {
-            if (userPosition != null) {
-              final distanceService = ref.watch(distanceCalculatorProvider);
-              final dMeters = distanceService.calculateDistanceToEarthquake(userPosition, earthquake.latitude, earthquake.longitude);
-              withinRadius = dMeters <= radiusKm * 1000;
-            }
-          });
+          // Compute within-radius using the proximity provider
+          final withinRadius = ref.watch(earthquakeDetailProximityProvider(earthquake));
 
           return GestureDetector(
             onTap: _toggleExpansion,
