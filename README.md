@@ -76,6 +76,8 @@ For more information, visit: [INGV Web Services Documentation](https://webservic
 - **Interactive map view** with earthquake locations and markers
 - **User location display** and auto-centering functionality
 - **Location permission management** with adaptive UI
+- **Nearby earthquakes indicator** with configurable radius (20-300 km)
+- **Real-time proximity filtering** with visual indicators
 - **Adaptive UI components** (RefreshIndicator, Switch) for cross-platform consistency
 
 ### 🚧 Planned Features
