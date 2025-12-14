@@ -17,15 +17,21 @@ class EarthquakeDetailPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Find the earthquake in the current fetched list
     final earthquakesAsync = ref.watch(earthquakesFutureProvider);
-    final eventId = int.parse(earthquakeId);
+
     final earthquakeFeature = earthquakesAsync.maybeWhen(
-      data: (list) => list.firstWhere((eq) => eq.properties?.eventId == eventId, orElse: () => throw Exception('Event not found')),
+      data: (list) => list.firstWhere(
+        (eq) =>
+            (eq.properties?.eventId?.toString() == earthquakeId) ||
+            (eq.id == earthquakeId),
+        orElse: () => throw Exception('Event not found'),
+      ),
       orElse: () => throw Exception('Event not found'),
     );
+
     final earthquake = Earthquake(
       eventId: earthquakeFeature.properties?.eventId,
+      eventIdString: earthquakeFeature.id,
       originId: earthquakeFeature.properties?.originId,
       time: earthquakeFeature.properties?.time,
       author: earthquakeFeature.properties?.author,
@@ -39,20 +45,49 @@ class EarthquakeDetailPage extends ConsumerWidget {
       geometry: earthquakeFeature.geometry,
     );
 
+    final allEarthquakes = earthquakesAsync.maybeWhen(
+      data: (list) => list
+          .map(
+            (f) => Earthquake(
+              eventId: f.properties?.eventId,
+              eventIdString: f.id,
+              originId: f.properties?.originId,
+              time: f.properties?.time,
+              author: f.properties?.author,
+              magType: f.properties?.magType,
+              mag: f.properties?.mag,
+              magAuthor: f.properties?.magAuthor,
+              type: f.properties?.type,
+              place: f.properties?.place,
+              version: f.properties?.version,
+              geojsonCreationTime: f.properties?.geojsonCreationTime,
+              geometry: f.geometry,
+            ),
+          )
+          .toList(),
+      orElse: () => <Earthquake>[],
+    );
+
     final viewModel = ref.watch(earthquakeDetailViewModelProvider(earthquake));
     final locationState = ref.watch(locationViewModelProvider);
-    final locationEnabled = ref.watch(locationEnabledSettingProvider).maybeWhen(data: (v) => v, orElse: () => false);
+    final locationEnabled = ref
+        .watch(locationEnabledSettingProvider)
+        .maybeWhen(data: (v) => v, orElse: () => false);
     final mapViewModel = ref.watch(mapViewModelProvider.notifier);
     final l10n = AppLocalizations.of(context)!;
 
     void centerOnUserLocation() async {
-      if (locationEnabled && locationState.hasPermission && locationState.currentPosition != null) {
+      if (locationEnabled &&
+          locationState.hasPermission &&
+          locationState.currentPosition != null) {
         await mapViewModel.centerOnUserLocation();
       } else {
-        // Show permission required message
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(l10n.locationPermissionRequiredMessage, style: TextStyle(color: Colors.black)),
+            content: Text(
+              l10n.locationPermissionRequiredMessage,
+              style: TextStyle(color: Colors.black),
+            ),
             backgroundColor: Colors.white,
             behavior: SnackBarBehavior.floating,
             margin: EdgeInsets.only(top: 50, left: 16, right: 16),
@@ -66,12 +101,14 @@ class EarthquakeDetailPage extends ConsumerWidget {
       backgroundColor: Colors.black,
       body: Stack(
         children: [
-          // Full screen map
           Positioned.fill(
-            child: EarthquakeMapWidget(earthquake: earthquake, height: MediaQuery.of(context).size.height),
+            child: EarthquakeMapWidget(
+              earthquake: earthquake,
+              otherEarthquakes: allEarthquakes,
+              height: MediaQuery.of(context).size.height,
+            ),
           ),
 
-          // Top buttons (back and center location)
           Positioned(
             top: 0,
             left: 0,
@@ -82,29 +119,51 @@ class EarthquakeDetailPage extends ConsumerWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // Back button
                     Container(
                       decoration: BoxDecoration(
                         color: Colors.black,
                         shape: BoxShape.circle,
-                        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.3), blurRadius: 8, offset: const Offset(0, 2))],
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.3),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
                       ),
                       child: IconButton(
                         onPressed: () => context.pop(),
-                        icon: const Icon(Icons.arrow_back, color: Colors.orange, size: 24),
+                        icon: const Icon(
+                          Icons.arrow_back,
+                          color: Colors.orange,
+                          size: 24,
+                        ),
                         padding: const EdgeInsets.all(12),
                       ),
                     ),
-                    // Center location button
+
                     Container(
                       decoration: BoxDecoration(
                         color: Colors.black,
                         shape: BoxShape.circle,
-                        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.3), blurRadius: 8, offset: const Offset(0, 2))],
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.3),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
                       ),
                       child: IconButton(
                         onPressed: centerOnUserLocation,
-                        icon: Icon(Icons.my_location, color: (locationEnabled && locationState.hasPermission) ? Colors.orange : Colors.grey, size: 24),
+                        icon: Icon(
+                          Icons.my_location,
+                          color:
+                              (locationEnabled && locationState.hasPermission)
+                              ? Colors.orange
+                              : Colors.grey,
+                          size: 24,
+                        ),
                         padding: const EdgeInsets.all(12),
                         tooltip: l10n.centerOnMyLocation,
                       ),
@@ -115,12 +174,14 @@ class EarthquakeDetailPage extends ConsumerWidget {
             ),
           ),
 
-          // Bottom detail panel with floating effect
           Positioned(
             bottom: 20,
             left: 16,
             right: 16,
-            child: EarthquakeDetailExpansionWidget(earthquake: earthquake, viewModel: viewModel),
+            child: EarthquakeDetailExpansionWidget(
+              earthquake: earthquake,
+              viewModel: viewModel,
+            ),
           ),
         ],
       ),

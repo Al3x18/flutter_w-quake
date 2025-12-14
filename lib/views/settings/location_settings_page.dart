@@ -10,7 +10,8 @@ class LocationSettingsPage extends ConsumerStatefulWidget {
   const LocationSettingsPage({super.key});
 
   @override
-  ConsumerState<LocationSettingsPage> createState() => _LocationSettingsPageState();
+  ConsumerState<LocationSettingsPage> createState() =>
+      _LocationSettingsPageState();
 }
 
 class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
@@ -40,7 +41,6 @@ class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
         _radiusKm = radiusKm;
       });
 
-      // Update the provider with the loaded radius for real-time updates
       ref.invalidate(locationRadiusKmProvider);
     } catch (e) {
       setState(() {
@@ -56,34 +56,33 @@ class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
         _isLocationEnabled = enabled;
       });
 
-      // Invalidate location settings providers to update UI immediately
       ref.invalidate(locationEnabledSettingProvider);
       ref.invalidate(showUserLocationSettingProvider);
       ref.invalidate(userPositionProvider);
 
       if (enabled) {
-        // Request location permission when enabling
         final locationViewModel = ref.read(locationViewModelProvider.notifier);
         await locationViewModel.requestLocationPermission();
 
-        // Check if permission was granted and enable show user location automatically
         final locationState = ref.read(locationViewModelProvider);
-        if (locationState.hasPermission && locationState.currentPosition != null) {
+        if (locationState.hasPermission &&
+            locationState.currentPosition != null) {
           await _settingsService.saveShowUserLocation(true);
           setState(() {
             _showUserLocation = true;
           });
 
-          // Invalidate providers again after enabling show user location
           ref.invalidate(showUserLocationSettingProvider);
           ref.invalidate(userPositionProvider);
 
-          // Show success message
           if (mounted) {
             final l10n = AppLocalizations.of(context)!;
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(l10n.locationEnabledSuccess, style: TextStyle(color: Colors.black)),
+                content: Text(
+                  l10n.locationEnabledSuccess,
+                  style: TextStyle(color: Colors.black),
+                ),
                 backgroundColor: Colors.white,
                 behavior: SnackBarBehavior.floating,
                 margin: EdgeInsets.only(bottom: 20, left: 16, right: 16),
@@ -93,23 +92,25 @@ class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
           }
         }
       } else {
-        // Stop location updates when disabling
         final locationViewModel = ref.read(locationViewModelProvider.notifier);
         locationViewModel.stopLocationUpdates();
 
-        // Also disable show user location
         await _settingsService.saveShowUserLocation(false);
         setState(() {
           _showUserLocation = false;
         });
 
-        // Invalidate providers again after disabling
         ref.invalidate(showUserLocationSettingProvider);
         ref.invalidate(userPositionProvider);
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: ${e.toString()}'), backgroundColor: Colors.red));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
+        );
       }
     }
   }
@@ -121,18 +122,21 @@ class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
         _showUserLocation = show;
       });
 
-      // Invalidate location settings providers to update UI immediately
       ref.invalidate(showUserLocationSettingProvider);
       ref.invalidate(userPositionProvider);
 
       if (show && _isLocationEnabled) {
-        // Start location updates when enabling show user location
         final locationViewModel = ref.read(locationViewModelProvider.notifier);
         await locationViewModel.startLocationUpdates();
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: ${e.toString()}'), backgroundColor: Colors.red));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
+        );
       }
     }
   }
@@ -146,10 +150,11 @@ class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
     final l10n = AppLocalizations.of(context)!;
     final locationState = ref.watch(locationViewModelProvider);
 
-    // Listen to location state changes and auto-enable show user location
     ref.listen<LocationState>(locationViewModelProvider, (previous, next) {
-      if (_isLocationEnabled && next.hasPermission && next.currentPosition != null && !_showUserLocation) {
-        // Auto-enable show user location when permission is granted and position is available
+      if (_isLocationEnabled &&
+          next.hasPermission &&
+          next.currentPosition != null &&
+          !_showUserLocation) {
         _settingsService.saveShowUserLocation(true);
         setState(() {
           _showUserLocation = true;
@@ -160,53 +165,86 @@ class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
     if (_isLoading) {
       return Scaffold(
         backgroundColor: Colors.black,
-        appBar: AppBar(title: Text(l10n.locationPermission), backgroundColor: Colors.black, foregroundColor: Colors.white, elevation: 0),
-        body: const Center(child: CircularProgressIndicator(color: Colors.orange)),
+        appBar: AppBar(
+          title: Text(l10n.locationPermission),
+          backgroundColor: Colors.black,
+          foregroundColor: Colors.white,
+          elevation: 0,
+        ),
+        body: const Center(
+          child: CircularProgressIndicator(color: Colors.orange),
+        ),
       );
     }
 
     return Scaffold(
       backgroundColor: Colors.black,
-      appBar: AppBar(title: Text(l10n.locationPermission), backgroundColor: Colors.black, foregroundColor: Colors.white, elevation: 0),
+      appBar: AppBar(
+        title: Text(l10n.locationPermission),
+        backgroundColor: Colors.black,
+        foregroundColor: Colors.white,
+        elevation: 0,
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Description
-            Text(l10n.locationPermissionDescription, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey[300])),
+            Text(
+              l10n.locationPermissionDescription,
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(color: Colors.grey[300]),
+            ),
             const SizedBox(height: 24),
 
-            // Enable Location Switch
             _buildSettingsCard(
               icon: Icons.location_on,
               title: l10n.enableLocation,
               subtitle: l10n.allowLocationAccess,
-              trailing: Switch.adaptive(value: _isLocationEnabled, onChanged: _toggleLocationEnabled, activeThumbColor: Colors.orange),
+              trailing: Switch.adaptive(
+                value: _isLocationEnabled,
+                onChanged: _toggleLocationEnabled,
+                activeThumbColor: Colors.orange,
+              ),
             ),
             const SizedBox(height: 16),
 
-            // Show User Location Switch (only if location is enabled)
             if (_isLocationEnabled) ...[
               _buildSettingsCard(
                 icon: Icons.my_location,
                 title: l10n.showMyLocation,
                 subtitle: l10n.showLocationOnMap,
-                trailing: Switch.adaptive(value: _showUserLocation, onChanged: _toggleShowUserLocation, activeThumbColor: Colors.orange),
+                trailing: Switch.adaptive(
+                  value: _showUserLocation,
+                  onChanged: _toggleShowUserLocation,
+                  activeThumbColor: Colors.orange,
+                ),
               ),
               const SizedBox(height: 16),
-              if (ref.watch(locationViewModelProvider).hasPermission) ...[_buildRadiusCard(l10n), const SizedBox(height: 16)],
+              if (ref.watch(locationViewModelProvider).hasPermission) ...[
+                _buildRadiusCard(l10n),
+                const SizedBox(height: 16),
+              ],
             ],
 
-            // Permission Status
-            if (_isLocationEnabled) ...[_buildStatusCard(locationState, l10n), const SizedBox(height: 16)],
+            if (_isLocationEnabled) ...[
+              _buildStatusCard(locationState, l10n),
+              const SizedBox(height: 16),
+            ],
 
-            // Error Messages
-            if (locationState.hasError) ...[_buildErrorCard(locationState.error!, l10n), const SizedBox(height: 16)],
+            if (locationState.hasError) ...[
+              _buildErrorCard(locationState.error!, l10n),
+              const SizedBox(height: 16),
+            ],
 
-            // App Settings Button
             if (locationState.hasPermission == false) ...[
-              _buildActionCard(icon: Icons.settings, title: l10n.openAppSettings, subtitle: l10n.enableLocationPermissionsManually, onTap: _openAppSettings),
+              _buildActionCard(
+                icon: Icons.settings,
+                title: l10n.openAppSettings,
+                subtitle: l10n.enableLocationPermissionsManually,
+                onTap: _openAppSettings,
+              ),
               const SizedBox(height: 16),
             ],
           ],
@@ -215,7 +253,12 @@ class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
     );
   }
 
-  Widget _buildSettingsCard({required IconData icon, required String title, required String subtitle, required Widget trailing}) {
+  Widget _buildSettingsCard({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required Widget trailing,
+  }) {
     return Card(
       color: Colors.black,
       elevation: 0,
@@ -229,7 +272,10 @@ class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
           children: [
             Container(
               padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(color: Colors.orange.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(8)),
+              decoration: BoxDecoration(
+                color: Colors.orange.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
               child: Icon(icon, color: Colors.orange, size: 24),
             ),
             const SizedBox(width: 16),
@@ -239,10 +285,18 @@ class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
                 children: [
                   Text(
                     title,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: Colors.white),
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
                   const SizedBox(height: 4),
-                  Text(subtitle, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey[400])),
+                  Text(
+                    subtitle,
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodySmall?.copyWith(color: Colors.grey[400]),
+                  ),
                 ],
               ),
             ),
@@ -288,7 +342,10 @@ class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
             Expanded(
               child: Text(
                 statusText,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: statusColor, fontWeight: FontWeight.w500),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: statusColor,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
           ],
@@ -312,7 +369,12 @@ class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
             Icon(Icons.error, color: Colors.red, size: 24),
             const SizedBox(width: 16),
             Expanded(
-              child: Text(error, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.red)),
+              child: Text(
+                error,
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyMedium?.copyWith(color: Colors.red),
+              ),
             ),
           ],
         ),
@@ -320,7 +382,12 @@ class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
     );
   }
 
-  Widget _buildActionCard({required IconData icon, required String title, required String subtitle, required VoidCallback onTap}) {
+  Widget _buildActionCard({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required VoidCallback onTap,
+  }) {
     return Card(
       color: Colors.black,
       elevation: 0,
@@ -337,7 +404,10 @@ class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
             children: [
               Container(
                 padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(color: Colors.orange.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(8)),
+                decoration: BoxDecoration(
+                  color: Colors.orange.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
                 child: Icon(icon, color: Colors.orange, size: 24),
               ),
               const SizedBox(width: 16),
@@ -347,10 +417,18 @@ class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
                   children: [
                     Text(
                       title,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: Colors.white),
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
                     const SizedBox(height: 4),
-                    Text(subtitle, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey[400])),
+                    Text(
+                      subtitle,
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodySmall?.copyWith(color: Colors.grey[400]),
+                    ),
                   ],
                 ),
               ),
@@ -379,8 +457,15 @@ class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
               children: [
                 Container(
                   padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(color: Colors.orange.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(8)),
-                  child: const Icon(Icons.radar, color: Colors.orange, size: 24),
+                  decoration: BoxDecoration(
+                    color: Colors.orange.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Icon(
+                    Icons.radar,
+                    color: Colors.orange,
+                    size: 24,
+                  ),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
@@ -389,17 +474,35 @@ class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
                     children: [
                       Text(
                         l10n.searchRadius,
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: Colors.white),
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
                       ),
                       const SizedBox(height: 4),
-                      Text(l10n.searchRadiusSubtitle, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey[400])),
+                      Text(
+                        l10n.searchRadiusSubtitle,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Colors.grey[400],
+                        ),
+                      ),
                       const SizedBox(height: 4),
-                      Text(l10n.nearbyIndicatorDescription, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.orange[300], fontSize: 11)),
+                      Text(
+                        l10n.nearbyIndicatorDescription,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Colors.orange[300],
+                          fontSize: 11,
+                        ),
+                      ),
                     ],
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.white.withValues(alpha: 0.05),
                     borderRadius: BorderRadius.circular(6),
@@ -407,7 +510,11 @@ class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
                   ),
                   child: Text(
                     '$_radiusKm km',
-                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
                   ),
                 ),
               ],
@@ -424,7 +531,7 @@ class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
               onChanged: (v) async {
                 final int km = v.round();
                 setState(() => _radiusKm = km);
-                // Update the provider immediately for real-time updates
+
                 ref.invalidate(locationRadiusKmProvider);
                 await _settingsService.saveLocationRadiusKm(km);
               },

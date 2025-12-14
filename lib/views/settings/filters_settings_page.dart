@@ -10,7 +10,8 @@ class FiltersSettingsPage extends ConsumerStatefulWidget {
   const FiltersSettingsPage({super.key});
 
   @override
-  ConsumerState<FiltersSettingsPage> createState() => _FiltersSettingsPageState();
+  ConsumerState<FiltersSettingsPage> createState() =>
+      _FiltersSettingsPageState();
 }
 
 class _FiltersSettingsPageState extends ConsumerState<FiltersSettingsPage> {
@@ -24,7 +25,7 @@ class _FiltersSettingsPageState extends ConsumerState<FiltersSettingsPage> {
   @override
   void initState() {
     super.initState();
-    // Initialize with saved default filter values
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadSavedDefaultFilter();
     });
@@ -36,7 +37,8 @@ class _FiltersSettingsPageState extends ConsumerState<FiltersSettingsPage> {
       selectedDefaultArea = defaultSettings.defaultFilter.area;
       defaultMinMagnitude = defaultSettings.defaultFilter.minMagnitude;
       defaultDaysBack = defaultSettings.defaultFilter.daysBack;
-      defaultUseCustomDateRange = defaultSettings.defaultFilter.useCustomDateRange;
+      defaultUseCustomDateRange =
+          defaultSettings.defaultFilter.useCustomDateRange;
       defaultCustomStartDate = defaultSettings.defaultFilter.customStartDate;
       defaultCustomEndDate = defaultSettings.defaultFilter.customEndDate;
     });
@@ -64,36 +66,45 @@ class _FiltersSettingsPageState extends ConsumerState<FiltersSettingsPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(l10n.setDefaultFilters, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey[300])),
+            Text(
+              l10n.setDefaultFilters,
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall?.copyWith(color: Colors.grey[300]),
+            ),
             const SizedBox(height: 18),
 
-            // Area selection
             _buildSectionTitle(l10n.geographicArea),
             const SizedBox(height: 8),
             _buildAreaSelector(l10n),
             const SizedBox(height: 24),
 
-            // Magnitude slider
             _buildSectionTitle(l10n.minimumMagnitude),
             const SizedBox(height: 8),
             _buildMagnitudeSlider(),
             const SizedBox(height: 24),
 
-            // Date range selection
             _buildSectionTitle(l10n.timePeriod),
             const SizedBox(height: 8),
             _buildDateRangeSelector(l10n),
             const SizedBox(height: 12),
 
-            // Days selection (only if "Last days" is selected)
-            if (!defaultUseCustomDateRange) ...[_buildSectionTitle(l10n.defaultDays), const SizedBox(height: 8), _buildDaysSelector(l10n), const SizedBox(height: 12)],
+            if (!defaultUseCustomDateRange) ...[
+              _buildSectionTitle(l10n.defaultDays),
+              const SizedBox(height: 8),
+              _buildDaysSelector(l10n),
+              const SizedBox(height: 12),
+            ],
 
             const SizedBox(height: 12),
 
-            // Custom Date Range (if enabled)
-            if (defaultUseCustomDateRange) ...[_buildSectionTitle(l10n.customDateRange), const SizedBox(height: 8), _buildCustomDateRange(l10n), const SizedBox(height: 24)],
+            if (defaultUseCustomDateRange) ...[
+              _buildSectionTitle(l10n.customDateRange),
+              const SizedBox(height: 8),
+              _buildCustomDateRange(l10n),
+              const SizedBox(height: 24),
+            ],
 
-            // Save Button
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -102,20 +113,33 @@ class _FiltersSettingsPageState extends ConsumerState<FiltersSettingsPage> {
                   backgroundColor: Colors.white,
                   foregroundColor: Colors.black,
                   padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
-                child: Text(l10n.saveSettings, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                child: Text(
+                  l10n.saveSettings,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                ),
               ),
             ),
             const SizedBox(height: 16),
 
-            // Reset Button
             SizedBox(
               width: double.infinity,
               child: TextButton(
                 onPressed: _resetToDefaults,
-                style: TextButton.styleFrom(foregroundColor: Colors.grey[400], padding: const EdgeInsets.symmetric(vertical: 16)),
-                child: Text(l10n.resetToDefaults, style: const TextStyle(fontSize: 14)),
+                style: TextButton.styleFrom(
+                  foregroundColor: Colors.grey[400],
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
+                child: Text(
+                  l10n.resetToDefaults,
+                  style: const TextStyle(fontSize: 14),
+                ),
               ),
             ),
           ],
@@ -127,7 +151,10 @@ class _FiltersSettingsPageState extends ConsumerState<FiltersSettingsPage> {
   Widget _buildSectionTitle(String title) {
     return Text(
       title,
-      style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold, color: Colors.white),
+      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+        fontWeight: FontWeight.bold,
+        color: Colors.white,
+      ),
     );
   }
 
@@ -148,7 +175,10 @@ class _FiltersSettingsPageState extends ConsumerState<FiltersSettingsPage> {
           dropdownColor: Colors.black,
           style: const TextStyle(color: Colors.white),
           items: availableAreas.map((area) {
-            return DropdownMenuItem(value: area, child: Text(area.getTranslatedName(l10n)));
+            return DropdownMenuItem(
+              value: area,
+              child: Text(area.getTranslatedName(l10n)),
+            );
           }).toList(),
           onChanged: (value) {
             if (value != null) {
@@ -191,7 +221,10 @@ class _FiltersSettingsPageState extends ConsumerState<FiltersSettingsPage> {
               ),
               child: Text(
                 defaultMinMagnitude.toStringAsFixed(1),
-                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ],
@@ -217,11 +250,22 @@ class _FiltersSettingsPageState extends ConsumerState<FiltersSettingsPage> {
               },
               child: Container(
                 padding: const EdgeInsets.symmetric(vertical: 12),
-                decoration: BoxDecoration(color: !defaultUseCustomDateRange ? Colors.orange : Colors.transparent, borderRadius: BorderRadius.circular(6)),
+                decoration: BoxDecoration(
+                  color: !defaultUseCustomDateRange
+                      ? Colors.orange
+                      : Colors.transparent,
+                  borderRadius: BorderRadius.circular(6),
+                ),
                 child: Text(
                   l10n.lastDays,
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: !defaultUseCustomDateRange ? Colors.black : Colors.white, fontWeight: FontWeight.bold, fontSize: 12),
+                  style: TextStyle(
+                    color: !defaultUseCustomDateRange
+                        ? Colors.black
+                        : Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                  ),
                 ),
               ),
             ),
@@ -235,11 +279,22 @@ class _FiltersSettingsPageState extends ConsumerState<FiltersSettingsPage> {
               },
               child: Container(
                 padding: const EdgeInsets.symmetric(vertical: 12),
-                decoration: BoxDecoration(color: defaultUseCustomDateRange ? Colors.orange : Colors.transparent, borderRadius: BorderRadius.circular(6)),
+                decoration: BoxDecoration(
+                  color: defaultUseCustomDateRange
+                      ? Colors.orange
+                      : Colors.transparent,
+                  borderRadius: BorderRadius.circular(6),
+                ),
                 child: Text(
                   l10n.customRange,
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: defaultUseCustomDateRange ? Colors.black : Colors.white, fontWeight: FontWeight.bold, fontSize: 12),
+                  style: TextStyle(
+                    color: defaultUseCustomDateRange
+                        ? Colors.black
+                        : Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                  ),
                 ),
               ),
             ),
@@ -280,11 +335,18 @@ class _FiltersSettingsPageState extends ConsumerState<FiltersSettingsPage> {
             decoration: BoxDecoration(
               color: isSelected ? Colors.orange : Colors.black,
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: isSelected ? Colors.orange : Colors.white, width: 1),
+              border: Border.all(
+                color: isSelected ? Colors.orange : Colors.white,
+                width: 1,
+              ),
             ),
             child: Text(
               label,
-              style: TextStyle(color: isSelected ? Colors.black : Colors.white, fontSize: 12, fontWeight: isSelected ? FontWeight.bold : FontWeight.normal),
+              style: TextStyle(
+                color: isSelected ? Colors.black : Colors.white,
+                fontSize: 12,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+              ),
             ),
           ),
         );
@@ -295,24 +357,33 @@ class _FiltersSettingsPageState extends ConsumerState<FiltersSettingsPage> {
   Widget _buildCustomDateRange(AppLocalizations l10n) {
     return Column(
       children: [
-        // Start Date
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(l10n.startDate, style: const TextStyle(color: Colors.white, fontSize: 12)),
+            Text(
+              l10n.startDate,
+              style: const TextStyle(color: Colors.white, fontSize: 12),
+            ),
             const SizedBox(height: 4),
             InkWell(
               onTap: () async {
                 final viewModel = ref.read(settingsViewModelProvider);
                 final date = await showDatePicker(
                   context: context,
-                  initialDate: defaultCustomStartDate ?? DateTime.now().subtract(const Duration(days: 30)),
+                  initialDate:
+                      defaultCustomStartDate ??
+                      DateTime.now().subtract(const Duration(days: 30)),
                   firstDate: viewModel.getMinimumDate(),
                   lastDate: viewModel.getMaximumDate(),
                   builder: (context, child) {
                     return Theme(
                       data: Theme.of(context).copyWith(
-                        colorScheme: const ColorScheme.dark(primary: Colors.orange, onPrimary: Colors.black, surface: Colors.black, onSurface: Colors.white),
+                        colorScheme: const ColorScheme.dark(
+                          primary: Colors.orange,
+                          onPrimary: Colors.black,
+                          surface: Colors.black,
+                          onSurface: Colors.white,
+                        ),
                       ),
                       child: child!,
                     );
@@ -326,18 +397,27 @@ class _FiltersSettingsPageState extends ConsumerState<FiltersSettingsPage> {
               },
               child: Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey[600]!),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Row(
                   children: [
-                    Icon(Icons.calendar_today, color: Colors.grey[400], size: 16),
+                    Icon(
+                      Icons.calendar_today,
+                      color: Colors.grey[400],
+                      size: 16,
+                    ),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        defaultCustomStartDate != null ? '${defaultCustomStartDate!.day}/${defaultCustomStartDate!.month}/${defaultCustomStartDate!.year}' : l10n.selectDate,
+                        defaultCustomStartDate != null
+                            ? '${defaultCustomStartDate!.day}/${defaultCustomStartDate!.month}/${defaultCustomStartDate!.year}'
+                            : l10n.selectDate,
                         style: TextStyle(color: Colors.grey[300], fontSize: 12),
                       ),
                     ),
@@ -348,11 +428,14 @@ class _FiltersSettingsPageState extends ConsumerState<FiltersSettingsPage> {
           ],
         ),
         const SizedBox(height: 12),
-        // End Date
+
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(l10n.endDate, style: const TextStyle(color: Colors.white, fontSize: 12)),
+            Text(
+              l10n.endDate,
+              style: const TextStyle(color: Colors.white, fontSize: 12),
+            ),
             const SizedBox(height: 4),
             InkWell(
               onTap: () async {
@@ -360,12 +443,18 @@ class _FiltersSettingsPageState extends ConsumerState<FiltersSettingsPage> {
                 final date = await showDatePicker(
                   context: context,
                   initialDate: defaultCustomEndDate ?? DateTime.now(),
-                  firstDate: defaultCustomStartDate ?? viewModel.getMinimumDate(),
+                  firstDate:
+                      defaultCustomStartDate ?? viewModel.getMinimumDate(),
                   lastDate: viewModel.getMaximumDate(),
                   builder: (context, child) {
                     return Theme(
                       data: Theme.of(context).copyWith(
-                        colorScheme: const ColorScheme.dark(primary: Colors.orange, onPrimary: Colors.black, surface: Colors.black, onSurface: Colors.white),
+                        colorScheme: const ColorScheme.dark(
+                          primary: Colors.orange,
+                          onPrimary: Colors.black,
+                          surface: Colors.black,
+                          onSurface: Colors.white,
+                        ),
                       ),
                       child: child!,
                     );
@@ -379,18 +468,27 @@ class _FiltersSettingsPageState extends ConsumerState<FiltersSettingsPage> {
               },
               child: Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey[600]!),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Row(
                   children: [
-                    Icon(Icons.calendar_today, color: Colors.grey[400], size: 16),
+                    Icon(
+                      Icons.calendar_today,
+                      color: Colors.grey[400],
+                      size: 16,
+                    ),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        defaultCustomEndDate != null ? '${defaultCustomEndDate!.day}/${defaultCustomEndDate!.month}/${defaultCustomEndDate!.year}' : l10n.selectDate,
+                        defaultCustomEndDate != null
+                            ? '${defaultCustomEndDate!.day}/${defaultCustomEndDate!.month}/${defaultCustomEndDate!.year}'
+                            : l10n.selectDate,
                         style: TextStyle(color: Colors.grey[300], fontSize: 12),
                       ),
                     ),
@@ -401,7 +499,7 @@ class _FiltersSettingsPageState extends ConsumerState<FiltersSettingsPage> {
           ],
         ),
         const SizedBox(height: 12),
-        // Reset Date Button
+
         TextButton.icon(
           onPressed: () {
             setState(() {
@@ -411,7 +509,10 @@ class _FiltersSettingsPageState extends ConsumerState<FiltersSettingsPage> {
           },
           icon: const Icon(Icons.refresh, size: 16),
           label: Text(l10n.resetDates, style: const TextStyle(fontSize: 14)),
-          style: TextButton.styleFrom(foregroundColor: Colors.grey[400], padding: const EdgeInsets.symmetric(vertical: 8)),
+          style: TextButton.styleFrom(
+            foregroundColor: Colors.grey[400],
+            padding: const EdgeInsets.symmetric(vertical: 8),
+          ),
         ),
       ],
     );
@@ -421,20 +522,23 @@ class _FiltersSettingsPageState extends ConsumerState<FiltersSettingsPage> {
     final l10n = AppLocalizations.of(context)!;
     final viewModel = ref.read(settingsViewModelProvider);
 
-    // Validate settings using ViewModel
-    final dateValidation = viewModel.validateDateRange(defaultCustomStartDate, defaultCustomEndDate);
+    final dateValidation = viewModel.validateDateRange(
+      defaultCustomStartDate,
+      defaultCustomEndDate,
+    );
     if (dateValidation != null) {
       AnimatedSnackBarHelper.showError(context, dateValidation);
       return;
     }
 
-    final magnitudeValidation = viewModel.validateMagnitude(defaultMinMagnitude);
+    final magnitudeValidation = viewModel.validateMagnitude(
+      defaultMinMagnitude,
+    );
     if (magnitudeValidation != null) {
       AnimatedSnackBarHelper.showError(context, magnitudeValidation);
       return;
     }
 
-    // Create filter using ViewModel
     final newDefaultFilter = viewModel.createFilterFromSettings(
       area: selectedDefaultArea,
       minMagnitude: defaultMinMagnitude,
@@ -444,12 +548,15 @@ class _FiltersSettingsPageState extends ConsumerState<FiltersSettingsPage> {
       useCustomDateRange: defaultUseCustomDateRange,
     );
 
-    // Save to default settings provider (async)
-    await ref.read(defaultSettingsProvider.notifier).setDefaultFilter(newDefaultFilter);
+    await ref
+        .read(defaultSettingsProvider.notifier)
+        .setDefaultFilter(newDefaultFilter);
 
-    // Show success message
     if (mounted) {
-      AnimatedSnackBarHelper.showSuccess(context, l10n.settingsSavedSuccessfully);
+      AnimatedSnackBarHelper.showSuccess(
+        context,
+        l10n.settingsSavedSuccessfully,
+      );
     }
   }
 

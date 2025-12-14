@@ -2,24 +2,21 @@ import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
 import '../models/earthquake.dart';
 import '../models/earthquake_filter.dart';
+import '../models/earthquake_source.dart';
 import '../services/earthquake_api_service.dart';
 
 class EarthquakeViewModel {
   final EarthquakeApiService _apiService;
 
-  EarthquakeViewModel({EarthquakeApiService? apiService}) : _apiService = apiService ?? EarthquakeApiService();
+  EarthquakeViewModel({EarthquakeApiService? apiService})
+    : _apiService = apiService ?? EarthquakeApiService();
 
-  /// Helper method to parse UTC timestamp and convert to local timezone
-  /// INGV API returns timestamps in UTC format (ISO 8601)
   DateTime _parseUtcToLocal(String timeString) {
-    // Ensure the string is treated as UTC
-    // If it doesn't end with 'Z', add it to force UTC interpretation
     String utcString = timeString.endsWith('Z') ? timeString : '${timeString}Z';
     final utcDateTime = DateTime.parse(utcString);
     return utcDateTime.toLocal();
   }
 
-  /// Determine if the earthquake occurred today, yesterday, or on previous days
   String getDateCategory(String? timeString) {
     if (timeString == null) return 'previous';
 
@@ -28,7 +25,11 @@ class EarthquakeViewModel {
       final now = DateTime.now();
       final today = DateTime(now.year, now.month, now.day);
       final yesterday = today.subtract(const Duration(days: 1));
-      final eventDate = DateTime(localDateTime.year, localDateTime.month, localDateTime.day);
+      final eventDate = DateTime(
+        localDateTime.year,
+        localDateTime.month,
+        localDateTime.day,
+      );
 
       if (eventDate == today) {
         return 'today';
@@ -42,42 +43,66 @@ class EarthquakeViewModel {
     }
   }
 
-  // Business logic for filtering earthquakes by magnitude
-  List<EarthquakeFeature> filterEarthquakesByMagnitude(List<EarthquakeFeature> earthquakes, double minMagnitude) {
-    return earthquakes.where((earthquake) => (earthquake.properties?.mag ?? 0.0) >= minMagnitude).toList();
+  List<EarthquakeFeature> filterEarthquakesByMagnitude(
+    List<EarthquakeFeature> earthquakes,
+    double minMagnitude,
+  ) {
+    return earthquakes
+        .where(
+          (earthquake) => (earthquake.properties?.mag ?? 0.0) >= minMagnitude,
+        )
+        .toList();
   }
 
-  // Business logic for sorting earthquakes by time (most recent first)
-  List<EarthquakeFeature> sortEarthquakesByTime(List<EarthquakeFeature> earthquakes) {
+  List<EarthquakeFeature> sortEarthquakesByTime(
+    List<EarthquakeFeature> earthquakes,
+  ) {
     final sortedList = List<EarthquakeFeature>.from(earthquakes);
     sortedList.sort((a, b) {
-      // Parse UTC times for comparison (no need to convert to local for sorting)
-      final timeA = a.properties?.time != null ? DateTime.parse(a.properties!.time!) : DateTime(1970);
-      final timeB = b.properties?.time != null ? DateTime.parse(b.properties!.time!) : DateTime(1970);
-      return timeB.compareTo(timeA); // Most recent first
+      final timeA = a.properties?.time != null
+          ? DateTime.parse(a.properties!.time!)
+          : DateTime(1970);
+      final timeB = b.properties?.time != null
+          ? DateTime.parse(b.properties!.time!)
+          : DateTime(1970);
+      return timeB.compareTo(timeA);
     });
     return sortedList;
   }
 
-  // Business logic for calculating earthquake statistics
-  Map<String, dynamic> calculateEarthquakeStats(List<EarthquakeFeature> earthquakes) {
+  Map<String, dynamic> calculateEarthquakeStats(
+    List<EarthquakeFeature> earthquakes,
+  ) {
     if (earthquakes.isEmpty) {
-      return {'total': 0, 'maxMagnitude': 0.0, 'minMagnitude': 0.0, 'averageMagnitude': 0.0, 'strongestEarthquake': null, 'mostRecentEarthquake': null};
+      return {
+        'total': 0,
+        'maxMagnitude': 0.0,
+        'minMagnitude': 0.0,
+        'averageMagnitude': 0.0,
+        'strongestEarthquake': null,
+        'mostRecentEarthquake': null,
+      };
     }
 
-    final magnitudes = earthquakes.map((e) => e.properties?.mag ?? 0.0).toList();
+    final magnitudes = earthquakes
+        .map((e) => e.properties?.mag ?? 0.0)
+        .toList();
     final maxMagnitude = magnitudes.reduce((a, b) => a > b ? a : b);
     final minMagnitude = magnitudes.reduce((a, b) => a < b ? a : b);
-    final averageMagnitude = magnitudes.reduce((a, b) => a + b) / magnitudes.length;
+    final averageMagnitude =
+        magnitudes.reduce((a, b) => a + b) / magnitudes.length;
 
-    // Find strongest earthquake
-    final strongestEarthquake = earthquakes.reduce((a, b) => (a.properties?.mag ?? 0.0) > (b.properties?.mag ?? 0.0) ? a : b);
+    final strongestEarthquake = earthquakes.reduce(
+      (a, b) => (a.properties?.mag ?? 0.0) > (b.properties?.mag ?? 0.0) ? a : b,
+    );
 
-    // Find most recent earthquake
     final mostRecentEarthquake = earthquakes.reduce((a, b) {
-      // Parse UTC times for comparison (no need to convert to local for comparison)
-      final timeA = a.properties?.time != null ? DateTime.parse(a.properties!.time!) : DateTime(1970);
-      final timeB = b.properties?.time != null ? DateTime.parse(b.properties!.time!) : DateTime(1970);
+      final timeA = a.properties?.time != null
+          ? DateTime.parse(a.properties!.time!)
+          : DateTime(1970);
+      final timeB = b.properties?.time != null
+          ? DateTime.parse(b.properties!.time!)
+          : DateTime(1970);
       return timeB.isAfter(timeA) ? b : a;
     });
 
@@ -91,7 +116,6 @@ class EarthquakeViewModel {
     };
   }
 
-  // Business logic for categorizing earthquake intensity
   String getEarthquakeIntensityCategory(double magnitude) {
     if (magnitude >= 7.0) return 'Major';
     if (magnitude >= 6.0) return 'Strong';
@@ -101,17 +125,15 @@ class EarthquakeViewModel {
     return 'Micro';
   }
 
-  // Business logic for determining earthquake color based on magnitude
   Color getMagnitudeColor(double magnitude) {
-    if (magnitude >= 6.0) return const Color(0xFFD32F2F); // Red 600
-    if (magnitude >= 5.0) return const Color(0xFFEF5350); // Red 400
-    if (magnitude >= 4.0) return const Color(0xFFFB8C00); // Orange 600
-    if (magnitude >= 3.0) return const Color(0xFFFDD835); // Yellow 600
-    if (magnitude >= 2.0) return const Color(0xFF4CAF50); // Green 500
-    return Colors.white; // White for low magnitude
+    if (magnitude >= 6.0) return const Color(0xFFD32F2F);
+    if (magnitude >= 5.0) return const Color(0xFFEF5350);
+    if (magnitude >= 4.0) return const Color(0xFFFB8C00);
+    if (magnitude >= 3.0) return const Color(0xFFFDD835);
+    if (magnitude >= 2.0) return const Color(0xFF4CAF50);
+    return Colors.white;
   }
 
-  // Business logic for formatting earthquake time
   String formatEarthquakeTime(String? timeString, AppLocalizations l10n) {
     if (timeString == null) return l10n.unknownDate;
 
@@ -127,23 +149,19 @@ class EarthquakeViewModel {
         final hours = totalMinutes ~/ 60;
         final remainingMinutes = totalMinutes % 60;
 
-        // Round to half hours: 0-22min = no half, 23-52min = half, 53+ = next hour
         if (remainingMinutes >= 23 && remainingMinutes <= 52) {
-          // Show with half hour (½)
           if (hours == 1) {
-            return l10n.oneAndHalfHoursAgo; // "1½ hours ago"
+            return l10n.oneAndHalfHoursAgo;
           } else {
-            return l10n.hoursAndHalfAgo(hours); // "2½ hours ago"
+            return l10n.hoursAndHalfAgo(hours);
           }
         } else if (remainingMinutes > 52) {
-          // Round up to next hour
           return l10n.hoursAgo(hours + 1);
         } else {
-          // Show just the hours
           if (hours == 1) {
-            return l10n.oneHourAgo; // "1 hour ago"
+            return l10n.oneHourAgo;
           } else {
-            return l10n.hoursAgo(hours); // "2 hours ago"
+            return l10n.hoursAgo(hours);
           }
         }
       } else if (difference.inMinutes > 0) {
@@ -156,7 +174,6 @@ class EarthquakeViewModel {
     }
   }
 
-  // Business logic for formatting time as "HH:MM" (local timezone)
   String formatTime(String? timeString) {
     if (timeString == null) return '--:--';
 
@@ -168,7 +185,6 @@ class EarthquakeViewModel {
     }
   }
 
-  // Business logic for formatting time ago (local timezone)
   String getTimeAgo(String? timeString, AppLocalizations l10n) {
     if (timeString == null) return l10n.unknown;
 
@@ -184,19 +200,15 @@ class EarthquakeViewModel {
         final hours = totalMinutes ~/ 60;
         final remainingMinutes = totalMinutes % 60;
 
-        // Round to half hours: 0-22min = no half, 23-52min = half, 53+ = next hour
         if (remainingMinutes >= 23 && remainingMinutes <= 52) {
-          // Show with half hour (½)
           if (hours == 1) {
-            return l10n.oneAndHalfHoursAgo; // "1½ ore fa"
+            return l10n.oneAndHalfHoursAgo;
           } else {
-            return l10n.hoursAndHalfAgo(hours); // "2½ ore fa"
+            return l10n.hoursAndHalfAgo(hours);
           }
         } else if (remainingMinutes > 52) {
-          // Round up to next hour
           return l10n.hrsAgo(hours + 1);
         } else {
-          // Show just the hours
           return l10n.hrsAgo(hours);
         }
       } else if (difference.inMinutes > 0) {
@@ -209,7 +221,6 @@ class EarthquakeViewModel {
     }
   }
 
-  // Business logic for formatting date as DD/MM/YYYY (local timezone)
   String formatDate(String? timeString) {
     if (timeString == null) return '--/--/----';
 
@@ -221,13 +232,12 @@ class EarthquakeViewModel {
     }
   }
 
-  // Business logic for extracting main location from place string
   String extractMainLocation(String place) {
     if (place.contains('(')) {
       final parts = place.split('(');
       if (parts.length > 1) {
         final mainPart = parts[0].trim();
-        // If it contains distance info like "3 km SW", extract the city name
+
         if (mainPart.contains('km')) {
           final cityMatch = RegExp(r'(\w+)\s*$').firstMatch(mainPart);
           if (cityMatch != null) {
@@ -245,15 +255,12 @@ class EarthquakeViewModel {
     return place;
   }
 
-  // Business logic for extracting sub-location from place string
   String extractSubLocation(String place) {
-    // First look for round brackets (province/municipality)
     if (place.contains('(') && place.contains(')')) {
       final match = RegExp(r'\(([^)]+)\)').firstMatch(place);
       if (match != null) {
         final subLocation = match.group(1) ?? '';
 
-        // If it contains distance info, combine everything
         if (place.contains('km')) {
           final distanceMatch = RegExp(r'(\d+\s*km\s*\w+)').firstMatch(place);
           if (distanceMatch != null) {
@@ -261,12 +268,10 @@ class EarthquakeViewModel {
           }
         }
 
-        // Return only the province/municipality in brackets
         return subLocation;
       }
     }
 
-    // Fallback for square brackets
     if (place.contains('[') && place.contains(']')) {
       final match = RegExp(r'\[([^\]]+)\]').firstMatch(place);
       if (match != null) {
@@ -277,23 +282,19 @@ class EarthquakeViewModel {
     return '';
   }
 
-  // Business logic for extracting only province from place string
   String extractProvince(String place) {
-    // Look for round brackets (province/municipality)
     if (place.contains('(') && place.contains(')')) {
       final match = RegExp(r'\(([^)]+)\)').firstMatch(place);
       if (match != null) {
         final content = match.group(1) ?? '';
 
-        // If content contains distance (e.g. "3 km E, PR"), extract only the province
         if (content.contains(',')) {
           final parts = content.split(',');
           if (parts.length > 1) {
-            return parts.last.trim(); // Take the last part (the province)
+            return parts.last.trim();
           }
         }
 
-        // If it doesn't contain commas, it might be just the province
         return content;
       }
     }
@@ -301,9 +302,7 @@ class EarthquakeViewModel {
     return '';
   }
 
-  // Business logic for extracting distance info from place string
   String extractDistance(String place) {
-    // Look for distance patterns like "3 km SW", "5 km E", etc.
     final distanceMatch = RegExp(r'(\d+\s*km\s*[A-Z]+)').firstMatch(place);
     if (distanceMatch != null) {
       return distanceMatch.group(1) ?? '';
@@ -312,13 +311,13 @@ class EarthquakeViewModel {
     return '';
   }
 
-  // Business logic for determining if earthquake is significant
   bool isSignificantEarthquake(EarthquakeFeature earthquake) {
     return (earthquake.properties?.mag ?? 0.0) >= 4.0;
   }
 
-  // Business logic for grouping earthquakes by region
-  Map<String, List<EarthquakeFeature>> groupEarthquakesByRegion(List<EarthquakeFeature> earthquakes) {
+  Map<String, List<EarthquakeFeature>> groupEarthquakesByRegion(
+    List<EarthquakeFeature> earthquakes,
+  ) {
     final Map<String, List<EarthquakeFeature>> grouped = {};
 
     for (final earthquake in earthquakes) {
@@ -334,24 +333,85 @@ class EarthquakeViewModel {
     return grouped;
   }
 
-  // Helper method to extract region from place string
+  /// This function is weird i know and probably not complete, should be refactored, but it works for now i think :)
   String _extractRegionFromPlace(String place) {
-    // Simple region extraction logic
-    if (place.contains('Sicilia') || place.contains('Siciliana')) return 'Sicily';
+    if (place.contains('Sicilia') || place.contains('Siciliana')) {
+      return 'Sicily';
+    }
     if (place.contains('Calabria')) return 'Calabria';
     if (place.contains('Campania')) return 'Campania';
     if (place.contains('Lazio')) return 'Lazio';
     if (place.contains('Toscana')) return 'Tuscany';
-    if (place.contains('Emilia') || place.contains('Romagna')) return 'Emilia-Romagna';
+    if (place.contains('Emilia') || place.contains('Romagna')) {
+      return 'Emilia-Romagna';
+    }
     if (place.contains('Lombardia')) return 'Lombardy';
     if (place.contains('Veneto')) return 'Veneto';
     if (place.contains('Piemonte')) return 'Piedmont';
     if (place.contains('Greece')) return 'Greece';
     if (place.contains('Albania')) return 'Albania';
+    if (place.contains('Turkey')) return 'Turkey';
+    if (place.contains('Iran')) return 'Iran';
+    if (place.contains('Iraq')) return 'Iraq';
+    if (place.contains('Israel')) return 'Israel';
+    if (place.contains('Jordan')) return 'Jordan';
+    if (place.contains('Lebanon')) return 'Lebanon';
+    if (place.contains('Palestine')) return 'Palestine';
+    if (place.contains('Syria')) return 'Syria';
+    if (place.contains('Tunisia')) return 'Tunisia';
+    if (place.contains('Algeria')) return 'Algeria';
+    if (place.contains('Morocco')) return 'Morocco';
+    if (place.contains('Libya')) return 'Libya';
+    if (place.contains('Egypt')) return 'Egypt';
+    if (place.contains('Sudan')) return 'Sudan';
+    if (place.contains('Eritrea')) return 'Eritrea';
+    if (place.contains('Somalia')) return 'Somalia';
+    if (place.contains('Ethiopia')) return 'Ethiopia';
+    if (place.contains('Kenya')) return 'Kenya';
+    if (place.contains('Uganda')) return 'Uganda';
+    if (place.contains('Rwanda')) return 'Rwanda';
+    if (place.contains('Burundi')) return 'Burundi';
+    if (place.contains('Tanzania')) return 'Tanzania';
+    if (place.contains('Mozambique')) return 'Mozambique';
+    if (place.contains('Zambia')) return 'Zambia';
+    if (place.contains('Zimbabwe')) return 'Zimbabwe';
+    if (place.contains('Namibia')) return 'Namibia';
+    if (place.contains('Botswana')) return 'Botswana';
+    if (place.contains('South Africa')) return 'South Africa';
+    if (place.contains('Lesotho')) return 'Lesotho';
+    if (place.contains('Swaziland')) return 'Swaziland';
+    if (place.contains('Madagascar')) return 'Madagascar';
+    if (place.contains('Mauritius')) return 'Mauritius';
+    if (place.contains('Reunion')) return 'Reunion';
+    if (place.contains('Mauritania')) return 'Mauritania';
+    if (place.contains('Niger')) return 'Niger';
+    if (place.contains('Chad')) return 'Chad';
+    if (place.contains('Nigeria')) return 'Nigeria';
+    if (place.contains('Cameroon')) return 'Cameroon';
+    if (place.contains('Central African Republic')) return 'Central African Republic';
+    if (place.contains('Chad')) return 'Chad';
+    if (place.contains('Congo')) return 'Congo';
+    if (place.contains('Congo Democratic Republic')) return 'Congo Democratic Republic';
+    if (place.contains('Gabon')) return 'Gabon';
+    if (place.contains('Equatorial Guinea')) return 'Equatorial Guinea';
+    if (place.contains('Sao Tome and Principe')) return 'Sao Tome and Principe';
+    if (place.contains('Benin')) return 'Benin';
+    if (place.contains('Togo')) return 'Togo';
+    if (place.contains('Burkina Faso')) return 'Burkina Faso';
+    if (place.contains('Mali')) return 'Mali';
+    if (place.contains('Senegal')) return 'Senegal';
+    if (place.contains('Gambia')) return 'Gambia';
+    if (place.contains('Guinea')) return 'Guinea';
+    if (place.contains('Guinea-Bissau')) return 'Guinea-Bissau';
+    if (place.contains('Liberia')) return 'Liberia';
+    if (place.contains('Sierra Leone')) return 'Sierra Leone';
+    if (place.contains('Ivory Coast')) return 'Ivory Coast';
+    if (place.contains('Ghana')) return 'Ghana';
+    if (place.contains('Togo')) return 'Togo';
+    debugPrint('[EarthquakeViewModel] Unknown region: $place');
     return 'Other regions';
   }
 
-  // Business logic for generating filter description with translations
   String getFilterDescription(EarthquakeFilter filter, AppLocalizations l10n) {
     final area = filter.area.getTranslatedName(l10n).toLowerCase();
     final magnitude = filter.minMagnitude;
@@ -359,14 +419,18 @@ class EarthquakeViewModel {
 
     if (filter.useCustomDateRange) {
       if (filter.customStartDate != null && filter.customEndDate != null) {
-        final startDate = '${filter.customStartDate!.day}/${filter.customStartDate!.month}/${filter.customStartDate!.year}';
-        final endDate = '${filter.customEndDate!.day}/${filter.customEndDate!.month}/${filter.customEndDate!.year}';
+        final startDate =
+            '${filter.customStartDate!.day}/${filter.customStartDate!.month}/${filter.customStartDate!.year}';
+        final endDate =
+            '${filter.customEndDate!.day}/${filter.customEndDate!.month}/${filter.customEndDate!.year}';
         return l10n.eventsInAreaDateRange(area, startDate, endDate, magnitude);
       } else if (filter.customStartDate != null) {
-        final startDate = '${filter.customStartDate!.day}/${filter.customStartDate!.month}/${filter.customStartDate!.year}';
+        final startDate =
+            '${filter.customStartDate!.day}/${filter.customStartDate!.month}/${filter.customStartDate!.year}';
         return l10n.eventsInAreaFromDate(area, startDate, magnitude);
       } else if (filter.customEndDate != null) {
-        final endDate = '${filter.customEndDate!.day}/${filter.customEndDate!.month}/${filter.customEndDate!.year}';
+        final endDate =
+            '${filter.customEndDate!.day}/${filter.customEndDate!.month}/${filter.customEndDate!.year}';
         return l10n.eventsInAreaUntilDate(area, endDate, magnitude);
       }
     }
@@ -378,9 +442,6 @@ class EarthquakeViewModel {
     }
   }
 
-  // Business logic for fetching earthquakes with error handling
-
-  // Business logic for fetching earthquakes with custom parameters
   Future<List<EarthquakeFeature>> fetchEarthquakesWithFilters({
     String? startTime,
     String? endTime,
@@ -402,45 +463,59 @@ class EarthquakeViewModel {
       );
       return response.features ?? [];
     } catch (e) {
-      // Re-throw the exception as-is since it already contains user-friendly messages
       rethrow;
     }
   }
 
-  // Business logic for fetching earthquakes with filter object
-  Future<List<EarthquakeFeature>> fetchEarthquakesWithFilter(EarthquakeFilter filter) async {
+  Future<List<EarthquakeFeature>> fetchEarthquakesWithFilter(
+    EarthquakeFilter filter, {
+    EarthquakeSource source = EarthquakeSource.ingv,
+  }) async {
     try {
       final params = filter.toApiParams();
-      debugPrint('[EarthquakeViewModel] Filter params: $params'); // Debug logging
+      debugPrint('[EarthquakeViewModel] Filter params: $params');
 
       final response = await _apiService.getEarthquakes(
         startTime: params['starttime'],
         endTime: params['endtime'],
         minMagnitude: double.tryParse(params['minmagnitude'] ?? '2.0'),
-        minLatitude: params['minlatitude'] != null ? double.tryParse(params['minlatitude']!) : null,
-        maxLatitude: params['maxlatitude'] != null ? double.tryParse(params['maxlatitude']!) : null,
-        minLongitude: params['minlongitude'] != null ? double.tryParse(params['minlongitude']!) : null,
-        maxLongitude: params['maxlongitude'] != null ? double.tryParse(params['maxlongitude']!) : null,
+        minLatitude: params['minlatitude'] != null
+            ? double.tryParse(params['minlatitude']!)
+            : null,
+        maxLatitude: params['maxlatitude'] != null
+            ? double.tryParse(params['maxlatitude']!)
+            : null,
+        minLongitude: params['minlongitude'] != null
+            ? double.tryParse(params['minlongitude']!)
+            : null,
+        maxLongitude: params['maxlongitude'] != null
+            ? double.tryParse(params['maxlongitude']!)
+            : null,
+        source: source,
       );
 
-      debugPrint('[EarthquakeViewModel] Fetched ${response.features?.length ?? 0} earthquakes'); // Debug logging
+      debugPrint(
+        '[EarthquakeViewModel] Fetched ${response.features?.length ?? 0} earthquakes',
+      );
       return response.features ?? [];
     } catch (e) {
-      debugPrint('[EarthquakeViewModel ERROR] Error in fetchEarthquakesWithFilter: $e'); // Debug logging
-      // Re-throw the exception as-is since it already contains user-friendly messages
+      debugPrint(
+        '[EarthquakeViewModel ERROR] Error in fetchEarthquakesWithFilter: $e',
+      );
+
       rethrow;
     }
   }
 
-  // Business logic for getting available filter areas
   List<EarthquakeFilterArea> getAvailableFilterAreas() {
     return EarthquakeFilterArea.values;
   }
 
-  // Business logic for getting filter area by name
   EarthquakeFilterArea? getFilterAreaByName(String name) {
     try {
-      return EarthquakeFilterArea.values.firstWhere((area) => area.name == name);
+      return EarthquakeFilterArea.values.firstWhere(
+        (area) => area.name == name,
+      );
     } catch (e) {
       return null;
     }

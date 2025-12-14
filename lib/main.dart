@@ -23,18 +23,28 @@ class MainApp extends ConsumerWidget {
       debugShowCheckedModeBanner: false,
       routerConfig: AppRouter.router,
       locale: Locale(languageState.currentLanguage),
-      localizationsDelegates: const [AppLocalizations.delegate, GlobalMaterialLocalizations.delegate, GlobalWidgetsLocalizations.delegate, GlobalCupertinoLocalizations.delegate],
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
       supportedLocales: const [Locale('en'), Locale('it')],
       theme: ThemeData.dark().copyWith(
-        // Completely black theme
         scaffoldBackgroundColor: Colors.black,
-        // General font for the entire app
-        textTheme: GoogleFonts.titilliumWebTextTheme(ThemeData.dark().textTheme),
+
+        textTheme: GoogleFonts.titilliumWebTextTheme(
+          ThemeData.dark().textTheme,
+        ),
         appBarTheme: AppBarTheme(
           backgroundColor: Colors.black,
           foregroundColor: Colors.white,
           elevation: 0,
-          titleTextStyle: GoogleFonts.titilliumWeb(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+          titleTextStyle: GoogleFonts.titilliumWeb(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
         ),
         cardTheme: CardThemeData(
           color: Colors.black,
@@ -44,7 +54,14 @@ class MainApp extends ConsumerWidget {
             side: BorderSide(color: Colors.grey[800]!, width: 1),
           ),
         ),
-        colorScheme: ColorScheme.dark(primary: Colors.white, secondary: Colors.grey[200]!, surface: Colors.black, onPrimary: Colors.black, onSecondary: Colors.black, onSurface: Colors.white),
+        colorScheme: ColorScheme.dark(
+          primary: Colors.white,
+          secondary: Colors.grey[200]!,
+          surface: Colors.black,
+          onPrimary: Colors.black,
+          onSecondary: Colors.black,
+          onSurface: Colors.white,
+        ),
       ),
     );
   }

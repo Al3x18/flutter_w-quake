@@ -1,16 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/information_service.dart';
 
-// =============================================================================
-// INFORMATION FEATURE - SERVICE, STATE, NOTIFIER
-// Provides app/package information, links, and legal/credits data.
-// =============================================================================
-// Service provider
 final informationServiceProvider = Provider<InformationService>((ref) {
   return InformationService();
 });
 
-// Information state
 class InformationState {
   final String appVersion;
   final String versionOnly;
@@ -59,7 +53,6 @@ class InformationState {
   }
 }
 
-// Notifier + provider
 class InformationNotifier extends Notifier<InformationState> {
   InformationService get _service => ref.read(informationServiceProvider);
 
@@ -130,6 +123,14 @@ class InformationNotifier extends Notifier<InformationState> {
     return await _service.launchIngvApiDocumentation();
   }
 
+  Future<bool> launchUsgsWebsite() async {
+    return await _service.launchUsgsWebsite();
+  }
+
+  Future<bool> launchUsgsApiDocumentation() async {
+    return await _service.launchUsgsApiDocumentation();
+  }
+
   Map<String, String> getCredits() {
     return _service.getCredits();
   }
@@ -159,6 +160,7 @@ class InformationNotifier extends Notifier<InformationState> {
   }
 }
 
-final informationProvider = NotifierProvider<InformationNotifier, InformationState>(() {
-  return InformationNotifier();
-});
+final informationProvider =
+    NotifierProvider<InformationNotifier, InformationState>(() {
+      return InformationNotifier();
+    });

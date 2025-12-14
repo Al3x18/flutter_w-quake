@@ -164,5 +164,11 @@
   "searchRadius": "Raggio di ricerca",
   "searchRadiusSubtitle": "Indicami gli eventi intorno alla mia posizione",
   "nearYou": "Vicino a te",
-  "nearbyIndicatorDescription": "Gli eventi nel raggio selezionato sono segnalati con un indicatore arancione"
+  "nearbyIndicatorDescription": "Gli eventi nel raggio selezionato sono segnalati con un indicatore arancione",
+  "selectDataSourceDescription": "Seleziona il fornitore dei dati sismici",
+  "sourceIngv": "INGV (Italia)",
+  "sourceUsgs": "USGS (Mondo)",
+  "errorSavingSettings": "Errore nel salvataggio delle impostazioni: {error}",
+  "openSourceCode": "Questa applicazione è Open Source.",
+  "viewSourceCode": "Visualizza Codice Sorgente"
 }

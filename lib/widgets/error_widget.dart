@@ -17,13 +17,18 @@ class ErrorWidget extends StatelessWidget {
             Icon(Icons.error_outline, size: 64, color: Colors.red[300]),
             const SizedBox(height: 16),
             Text(
-              'Error', // This could be added to translations if needed
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: Colors.red[700], fontWeight: FontWeight.bold),
+              'Error',
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                color: Colors.red[700],
+                fontWeight: FontWeight.bold,
+              ),
             ),
             const SizedBox(height: 8),
             Text(
               message,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey[200]),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(color: Colors.grey[200]),
               textAlign: TextAlign.center,
             ),
             if (onRetry != null) ...[
@@ -32,7 +37,10 @@ class ErrorWidget extends StatelessWidget {
                 onPressed: onRetry,
                 icon: const Icon(Icons.refresh),
                 label: const Text('Riprova'),
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.grey[800], foregroundColor: Colors.white),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.grey[800],
+                  foregroundColor: Colors.white,
+                ),
               ),
             ],
           ],

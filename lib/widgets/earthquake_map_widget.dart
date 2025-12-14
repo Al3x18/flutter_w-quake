@@ -3,6 +3,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:go_router/go_router.dart';
 import '../models/earthquake.dart';
 import '../providers/location_providers.dart';
 import '../services/settings_storage_service.dart';
@@ -11,12 +12,19 @@ import '../viewmodels/earthquake_viewmodel.dart';
 
 class EarthquakeMapWidget extends ConsumerStatefulWidget {
   final Earthquake earthquake;
+  final List<Earthquake>? otherEarthquakes;
   final double height;
 
-  const EarthquakeMapWidget({super.key, required this.earthquake, this.height = 300});
+  const EarthquakeMapWidget({
+    super.key,
+    required this.earthquake,
+    this.otherEarthquakes,
+    this.height = 300,
+  });
 
   @override
-  ConsumerState<EarthquakeMapWidget> createState() => _EarthquakeMapWidgetState();
+  ConsumerState<EarthquakeMapWidget> createState() =>
+      _EarthquakeMapWidgetState();
 }
 
 class _EarthquakeMapWidgetState extends ConsumerState<EarthquakeMapWidget> {
@@ -30,7 +38,6 @@ class _EarthquakeMapWidgetState extends ConsumerState<EarthquakeMapWidget> {
     _mapController = MapController();
     _loadSettings();
 
-    // Initialize map with earthquake data after widget is built
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final mapViewModel = ref.read(mapViewModelProvider.notifier);
       mapViewModel.initializeWithEarthquake(widget.earthquake);
@@ -51,17 +58,19 @@ class _EarthquakeMapWidgetState extends ConsumerState<EarthquakeMapWidget> {
         _showUserLocation = showUserLocation;
       });
     } catch (e) {
-      // Handle error silently
+      debugPrint('[EarthquakeMapWidget] Error loading settings: $e');
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final mapState = ref.watch(mapViewModelProvider);
-    final earthquakeCenter = LatLng(widget.earthquake.latitude, widget.earthquake.longitude);
+    final earthquakeCenter = LatLng(
+      widget.earthquake.latitude,
+      widget.earthquake.longitude,
+    );
     final earthquakeVm = EarthquakeViewModel();
 
-    // Watch user position if enabled
     if (_showUserLocation) {
       final userPosition = ref.watch(userPositionProvider).value;
       if (userPosition != null && _userPosition != userPosition) {
@@ -73,10 +82,8 @@ class _EarthquakeMapWidgetState extends ConsumerState<EarthquakeMapWidget> {
       }
     }
 
-    // Listen to map state changes and update map controller
     ref.listen<MapState>(mapViewModelProvider, (previous, next) {
       if (previous?.center != next.center || previous?.zoom != next.zoom) {
-        // Add a small delay to ensure map is ready
         Future.delayed(const Duration(milliseconds: 100), () {
           if (mounted) {
             _mapController.move(next.center, next.zoom);
@@ -89,7 +96,13 @@ class _EarthquakeMapWidgetState extends ConsumerState<EarthquakeMapWidget> {
       height: widget.height,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.3), blurRadius: 8, offset: const Offset(0, 4))],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.3),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(12),
@@ -100,14 +113,63 @@ class _EarthquakeMapWidgetState extends ConsumerState<EarthquakeMapWidget> {
             initialZoom: mapState.zoom,
             minZoom: 5.0,
             maxZoom: 15.0,
-            interactionOptions: const InteractionOptions(flags: InteractiveFlag.all),
+            interactionOptions: const InteractionOptions(
+              flags: InteractiveFlag.all,
+            ),
           ),
           children: [
-            // OpenStreetMap tiles
-            TileLayer(urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', userAgentPackageName: 'dev.alexdp.w_quake', maxZoom: 18),
-            // Earthquake marker
+            TileLayer(
+              urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+              userAgentPackageName: 'dev.alexdp.w_quake',
+              maxZoom: 18,
+            ),
+
             MarkerLayer(
               markers: [
+                if (widget.otherEarthquakes != null)
+                  ...widget.otherEarthquakes!
+                      .where((e) => e.eventId != widget.earthquake.eventId)
+                      .map((e) {
+                        return Marker(
+                          point: LatLng(e.latitude, e.longitude),
+                          width: 40,
+                          height: 40,
+                          child: GestureDetector(
+                            onTap: () {
+                              context.pushReplacement(
+                                '/earthquake/${e.uniqueId}',
+                              );
+                            },
+                            child: Center(
+                              child: Container(
+                                width: 30,
+                                height: 30,
+                                decoration: BoxDecoration(
+                                  color: earthquakeVm
+                                      .getMagnitudeColor(e.mag ?? 0.0)
+                                      .withValues(alpha: 0.8),
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: Colors.white.withValues(alpha: 0.8),
+                                    width: 1.5,
+                                  ),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    e.mag?.toStringAsFixed(1) ?? '',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 8,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      }),
+
                 Marker(
                   point: earthquakeCenter,
                   width: 45,
@@ -117,24 +179,45 @@ class _EarthquakeMapWidgetState extends ConsumerState<EarthquakeMapWidget> {
                       color: Colors.black,
                       shape: BoxShape.circle,
                       border: Border.all(color: Colors.white, width: 3),
-                      boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.3), blurRadius: 8, offset: const Offset(0, 2))],
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.3),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
                     ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.waves, color: earthquakeVm.getMagnitudeColor(widget.earthquake.mag ?? 0.0), size: 16),
+                        Icon(
+                          Icons.waves,
+                          color: earthquakeVm.getMagnitudeColor(
+                            widget.earthquake.mag ?? 0.0,
+                          ),
+                          size: 16,
+                        ),
                         Text(
                           widget.earthquake.mag?.toStringAsFixed(1) ?? 'N/A',
-                          style: TextStyle(color: earthquakeVm.getMagnitudeColor(widget.earthquake.mag ?? 0.0), fontSize: 10, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            color: earthquakeVm.getMagnitudeColor(
+                              widget.earthquake.mag ?? 0.0,
+                            ),
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ],
                     ),
                   ),
                 ),
-                // User location marker (if enabled and position available)
+
                 if (_showUserLocation && _userPosition != null)
                   Marker(
-                    point: LatLng(_userPosition!.latitude, _userPosition!.longitude),
+                    point: LatLng(
+                      _userPosition!.latitude,
+                      _userPosition!.longitude,
+                    ),
                     width: 30,
                     height: 30,
                     child: Container(
@@ -142,9 +225,19 @@ class _EarthquakeMapWidgetState extends ConsumerState<EarthquakeMapWidget> {
                         color: Colors.blue,
                         shape: BoxShape.circle,
                         border: Border.all(color: Colors.white, width: 2),
-                        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.3), blurRadius: 6, offset: const Offset(0, 2))],
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.3),
+                            blurRadius: 6,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
                       ),
-                      child: const Icon(Icons.my_location, color: Colors.white, size: 16),
+                      child: const Icon(
+                        Icons.my_location,
+                        color: Colors.white,
+                        size: 16,
+                      ),
                     ),
                   ),
               ],
@@ -154,6 +247,4 @@ class _EarthquakeMapWidgetState extends ConsumerState<EarthquakeMapWidget> {
       ),
     );
   }
-
-  // Color mapping is delegated to EarthquakeViewModel.getMagnitudeColor
 }

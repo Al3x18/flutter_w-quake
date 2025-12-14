@@ -1,30 +1,33 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/language_service.dart';
 
-// =============================================================================
-// LANGUAGE FEATURE - SERVICE, STATE, NOTIFIER
-// Encapsulates app language persistence and exposes state + actions for UI.
-// =============================================================================
-// Service provider
 final languageServiceProvider = Provider<LanguageService>((ref) {
   return LanguageService();
 });
 
-// Language state
 class LanguageState {
   final String currentLanguage;
   final bool isInitialized;
 
-  const LanguageState({this.currentLanguage = 'en', this.isInitialized = false});
+  const LanguageState({
+    this.currentLanguage = 'en',
+    this.isInitialized = false,
+  });
 
   LanguageState copyWith({String? currentLanguage, bool? isInitialized}) {
-    return LanguageState(currentLanguage: currentLanguage ?? this.currentLanguage, isInitialized: isInitialized ?? this.isInitialized);
+    return LanguageState(
+      currentLanguage: currentLanguage ?? this.currentLanguage,
+      isInitialized: isInitialized ?? this.isInitialized,
+    );
   }
 }
 
-// Notifier + provider
 class LanguageNotifier extends Notifier<LanguageState> {
-  static const Map<String, String> _languageNames = {'en': 'English', 'it': 'Italiano'};
+  static const Map<String, String> _languageNames = {
+    'en': 'English',
+    'it': 'Italiano',
+  };
 
   LanguageService get _service => ref.read(languageServiceProvider);
 
@@ -37,9 +40,15 @@ class LanguageNotifier extends Notifier<LanguageState> {
   Future<void> _loadSavedLanguage() async {
     try {
       final currentLanguage = await _service.loadLanguage();
-      state = state.copyWith(currentLanguage: currentLanguage, isInitialized: true);
+      state = state.copyWith(
+        currentLanguage: currentLanguage,
+        isInitialized: true,
+      );
     } catch (e) {
-      state = state.copyWith(currentLanguage: _service.getDefaultLanguage(), isInitialized: true);
+      state = state.copyWith(
+        currentLanguage: _service.getDefaultLanguage(),
+        isInitialized: true,
+      );
     }
   }
 
@@ -52,7 +61,7 @@ class LanguageNotifier extends Notifier<LanguageState> {
       await _service.saveLanguage(languageCode);
       state = state.copyWith(currentLanguage: languageCode);
     } catch (e) {
-      // Handle error silently
+      debugPrint('[LanguageNotifier] Error changing language: $e');
     }
   }
 
@@ -62,12 +71,14 @@ class LanguageNotifier extends Notifier<LanguageState> {
       final defaultLanguage = _service.getDefaultLanguage();
       state = state.copyWith(currentLanguage: defaultLanguage);
     } catch (e) {
-      // Handle error silently
+      debugPrint('[LanguageNotifier] Error resetting language: $e');
     }
   }
 
   List<Map<String, String>> getAvailableLanguages() {
-    return _languageNames.entries.map((e) => {'code': e.key, 'name': e.value}).toList();
+    return _languageNames.entries
+        .map((e) => {'code': e.key, 'name': e.value})
+        .toList();
   }
 
   String getLanguageName(String code) {

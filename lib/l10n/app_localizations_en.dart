@@ -528,4 +528,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get nearbyIndicatorDescription => 'Events within your selected radius are marked with an orange indicator';
+
+  @override
+  String get selectDataSourceDescription => 'Select the provider for earthquake data';
+
+  @override
+  String get sourceIngv => 'INGV (Italy)';
+
+  @override
+  String get sourceUsgs => 'USGS (World)';
+
+  @override
+  String errorSavingSettings(String error) {
+    return 'Failed to save settings: $error';
+  }
+
+  @override
+  String get openSourceCode => 'This application is Open Source.';
+
+  @override
+  String get viewSourceCode => 'View Source Code';
 }

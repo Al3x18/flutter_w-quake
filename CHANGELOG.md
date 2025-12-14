@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.0.0] - 2025-12-14
+
+### Added
+- **Multi-Source Support**: Added USGS (World) as a selectable data source alongside INGV (Italy).
+- **Data Source Settings**: New dedicated settings page for selecting earthquake data provider.
+- **Interactive Map**: Map markers are now clickable and navigate to the respective earthquake detail page.
+- **Global Event Visibility**: Detail map now displays all filtered events as smaller markers for better context.
+
+### Changed
+- **Navigation**: Improved back navigation from map interactions to always return to the event list.
+- **UI/UX**: Refined earthquake detail view to dynamically hide missing data fields (e.g., when viewing USGS events).
+- **Settings**: Modernized settings UI, replacing dialogs with dedicated pages for a consistent experience.
+- **Localization**: Added full Italian/English support for new features.
+
+### Fixed
+- **Notifications**: Disabled notification UI temporarily pending Firebase integration.
+
 ## [0.9.0] - 2025-10-29
 
 ### Added

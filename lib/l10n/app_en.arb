@@ -738,5 +738,34 @@
   "nearbyIndicatorDescription": "Events within your selected radius are marked with an orange indicator",
   "@nearbyIndicatorDescription": {
     "description": "Description of the orange indicator for nearby earthquakes"
+  },
+  "selectDataSourceDescription": "Select the provider for earthquake data",
+  "@selectDataSourceDescription": {
+    "description": "Description for data source selection"
+  },
+  "sourceIngv": "INGV (Italy)",
+  "@sourceIngv": {
+    "description": "INGV data source name"
+  },
+  "sourceUsgs": "USGS (World)",
+  "@sourceUsgs": {
+    "description": "USGS data source name"
+  },
+  "errorSavingSettings": "Failed to save settings: {error}",
+  "@errorSavingSettings": {
+    "description": "Generic error saving settings",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "openSourceCode": "This application is Open Source.",
+  "@openSourceCode": {
+    "description": "Text indicating the app is open source"
+  },
+  "viewSourceCode": "View Source Code",
+  "@viewSourceCode": {
+    "description": "Button text to view source code on GitHub"
   }
 }

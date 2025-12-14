@@ -1084,6 +1084,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Events within your selected radius are marked with an orange indicator'**
   String get nearbyIndicatorDescription;
+
+  /// Description for data source selection
+  ///
+  /// In en, this message translates to:
+  /// **'Select the provider for earthquake data'**
+  String get selectDataSourceDescription;
+
+  /// INGV data source name
+  ///
+  /// In en, this message translates to:
+  /// **'INGV (Italy)'**
+  String get sourceIngv;
+
+  /// USGS data source name
+  ///
+  /// In en, this message translates to:
+  /// **'USGS (World)'**
+  String get sourceUsgs;
+
+  /// Generic error saving settings
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save settings: {error}'**
+  String errorSavingSettings(String error);
+
+  /// Text indicating the app is open source
+  ///
+  /// In en, this message translates to:
+  /// **'This application is Open Source.'**
+  String get openSourceCode;
+
+  /// Button text to view source code on GitHub
+  ///
+  /// In en, this message translates to:
+  /// **'View Source Code'**
+  String get viewSourceCode;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

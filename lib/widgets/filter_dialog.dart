@@ -34,7 +34,6 @@ class _FilterDialogState extends ConsumerState<FilterDialog> {
     useCustomDateRange = currentFilter.useCustomDateRange;
   }
 
-  // Build day selection button
   Widget _buildDayButton(int days, String label, AppLocalizations l10n) {
     final isSelected = daysBack == days;
     return GestureDetector(
@@ -48,11 +47,18 @@ class _FilterDialogState extends ConsumerState<FilterDialog> {
         decoration: BoxDecoration(
           color: isSelected ? Colors.orange : Colors.black,
           borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: isSelected ? Colors.orange : Colors.white, width: 1),
+          border: Border.all(
+            color: isSelected ? Colors.orange : Colors.white,
+            width: 1,
+          ),
         ),
         child: Text(
           label,
-          style: TextStyle(color: isSelected ? Colors.black : Colors.white, fontSize: 12, fontWeight: isSelected ? FontWeight.bold : FontWeight.normal),
+          style: TextStyle(
+            color: isSelected ? Colors.black : Colors.white,
+            fontSize: 12,
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+          ),
         ),
       ),
     );
@@ -69,19 +75,24 @@ class _FilterDialogState extends ConsumerState<FilterDialog> {
         borderRadius: BorderRadius.circular(12),
         side: BorderSide(color: Colors.grey[800]!, width: 1),
       ),
-      title: Text(l10n.filterEvents, style: const TextStyle(color: Colors.white)),
+      title: Text(
+        l10n.filterEvents,
+        style: const TextStyle(color: Colors.white),
+      ),
       content: SizedBox(
         width: double.maxFinite,
         child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Area selection
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   l10n.geographicArea,
-                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
               const SizedBox(height: 8),
@@ -104,7 +115,10 @@ class _FilterDialogState extends ConsumerState<FilterDialog> {
                   ),
                 ),
                 items: availableAreas.map((area) {
-                  return DropdownMenuItem(value: area, child: Text(area.getTranslatedName(l10n)));
+                  return DropdownMenuItem(
+                    value: area,
+                    child: Text(area.getTranslatedName(l10n)),
+                  );
                 }).toList(),
                 onChanged: (value) {
                   if (value != null) {
@@ -116,12 +130,14 @@ class _FilterDialogState extends ConsumerState<FilterDialog> {
               ),
               const SizedBox(height: 16),
 
-              // Magnitude slider
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   l10n.minimumMagnitude,
-                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
               const SizedBox(height: 8),
@@ -143,7 +159,10 @@ class _FilterDialogState extends ConsumerState<FilterDialog> {
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.black,
                       borderRadius: BorderRadius.circular(8),
@@ -151,24 +170,28 @@ class _FilterDialogState extends ConsumerState<FilterDialog> {
                     ),
                     child: Text(
                       minMagnitude.toStringAsFixed(1),
-                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ],
               ),
               const SizedBox(height: 16),
 
-              // Date range selection
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   l10n.timePeriod,
-                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
               const SizedBox(height: 8),
 
-              // Toggle buttons for date range mode
               Container(
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey[600]!),
@@ -184,12 +207,23 @@ class _FilterDialogState extends ConsumerState<FilterDialog> {
                           });
                         },
                         child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 8), // Reduced from 12 to 8
-                          decoration: BoxDecoration(color: !useCustomDateRange ? Colors.orange : Colors.transparent, borderRadius: BorderRadius.circular(6)),
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          decoration: BoxDecoration(
+                            color: !useCustomDateRange
+                                ? Colors.orange
+                                : Colors.transparent,
+                            borderRadius: BorderRadius.circular(6),
+                          ),
                           child: Text(
                             l10n.lastDays,
                             textAlign: TextAlign.center,
-                            style: TextStyle(color: !useCustomDateRange ? Colors.black : Colors.white, fontWeight: FontWeight.bold, fontSize: 11), // Reduced from 12 to 11
+                            style: TextStyle(
+                              color: !useCustomDateRange
+                                  ? Colors.black
+                                  : Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 11,
+                            ),
                           ),
                         ),
                       ),
@@ -202,12 +236,23 @@ class _FilterDialogState extends ConsumerState<FilterDialog> {
                           });
                         },
                         child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 8), // Reduced from 12 to 8
-                          decoration: BoxDecoration(color: useCustomDateRange ? Colors.orange : Colors.transparent, borderRadius: BorderRadius.circular(6)),
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          decoration: BoxDecoration(
+                            color: useCustomDateRange
+                                ? Colors.orange
+                                : Colors.transparent,
+                            borderRadius: BorderRadius.circular(6),
+                          ),
                           child: Text(
                             l10n.customRange,
                             textAlign: TextAlign.center,
-                            style: TextStyle(color: useCustomDateRange ? Colors.black : Colors.white, fontWeight: FontWeight.bold, fontSize: 11), // Reduced from 12 to 11
+                            style: TextStyle(
+                              color: useCustomDateRange
+                                  ? Colors.black
+                                  : Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 11,
+                            ),
                           ),
                         ),
                       ),
@@ -218,9 +263,7 @@ class _FilterDialogState extends ConsumerState<FilterDialog> {
 
               const SizedBox(height: 12),
 
-              // Days back slider (only if not using custom date range)
               if (!useCustomDateRange) ...[
-                // Predefined day options instead of slider
                 Wrap(
                   spacing: 8,
                   runSpacing: 8,
@@ -237,27 +280,40 @@ class _FilterDialogState extends ConsumerState<FilterDialog> {
                 ),
               ],
 
-              // Custom date range pickers (only if using custom date range)
               if (useCustomDateRange) ...[
                 Column(
                   children: [
-                    // Start Date
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(l10n.startDate, style: const TextStyle(color: Colors.white, fontSize: 12)),
+                        Text(
+                          l10n.startDate,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                          ),
+                        ),
                         const SizedBox(height: 4),
                         InkWell(
                           onTap: () async {
                             final date = await showDatePicker(
                               context: context,
-                              initialDate: customStartDate ?? DateTime.now().subtract(const Duration(days: 30)),
+                              initialDate:
+                                  customStartDate ??
+                                  DateTime.now().subtract(
+                                    const Duration(days: 30),
+                                  ),
                               firstDate: FilterValidator.getMinimumDate(),
                               lastDate: FilterValidator.getMaximumDate(),
                               builder: (context, child) {
                                 return Theme(
                                   data: Theme.of(context).copyWith(
-                                    colorScheme: const ColorScheme.dark(primary: Colors.orange, onPrimary: Colors.black, surface: Colors.black, onSurface: Colors.white),
+                                    colorScheme: const ColorScheme.dark(
+                                      primary: Colors.orange,
+                                      onPrimary: Colors.black,
+                                      surface: Colors.black,
+                                      onSurface: Colors.white,
+                                    ),
                                   ),
                                   child: child!,
                                 );
@@ -271,19 +327,31 @@ class _FilterDialogState extends ConsumerState<FilterDialog> {
                           },
                           child: Container(
                             width: double.infinity,
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 8,
+                            ),
                             decoration: BoxDecoration(
                               border: Border.all(color: Colors.grey[600]!),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Row(
                               children: [
-                                Icon(Icons.calendar_today, color: Colors.grey[400], size: 16),
+                                Icon(
+                                  Icons.calendar_today,
+                                  color: Colors.grey[400],
+                                  size: 16,
+                                ),
                                 const SizedBox(width: 8),
                                 Expanded(
                                   child: Text(
-                                    customStartDate != null ? '${customStartDate!.day}/${customStartDate!.month}/${customStartDate!.year}' : l10n.selectDate,
-                                    style: TextStyle(color: Colors.grey[300], fontSize: 12),
+                                    customStartDate != null
+                                        ? '${customStartDate!.day}/${customStartDate!.month}/${customStartDate!.year}'
+                                        : l10n.selectDate,
+                                    style: TextStyle(
+                                      color: Colors.grey[300],
+                                      fontSize: 12,
+                                    ),
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
@@ -294,23 +362,36 @@ class _FilterDialogState extends ConsumerState<FilterDialog> {
                       ],
                     ),
                     const SizedBox(height: 12),
-                    // End Date
+
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(l10n.endDate, style: const TextStyle(color: Colors.white, fontSize: 12)),
+                        Text(
+                          l10n.endDate,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                          ),
+                        ),
                         const SizedBox(height: 4),
                         InkWell(
                           onTap: () async {
                             final date = await showDatePicker(
                               context: context,
                               initialDate: customEndDate ?? DateTime.now(),
-                              firstDate: customStartDate ?? FilterValidator.getMinimumDate(),
+                              firstDate:
+                                  customStartDate ??
+                                  FilterValidator.getMinimumDate(),
                               lastDate: FilterValidator.getMaximumDate(),
                               builder: (context, child) {
                                 return Theme(
                                   data: Theme.of(context).copyWith(
-                                    colorScheme: const ColorScheme.dark(primary: Colors.orange, onPrimary: Colors.black, surface: Colors.black, onSurface: Colors.white),
+                                    colorScheme: const ColorScheme.dark(
+                                      primary: Colors.orange,
+                                      onPrimary: Colors.black,
+                                      surface: Colors.black,
+                                      onSurface: Colors.white,
+                                    ),
                                   ),
                                   child: child!,
                                 );
@@ -324,19 +405,31 @@ class _FilterDialogState extends ConsumerState<FilterDialog> {
                           },
                           child: Container(
                             width: double.infinity,
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 8,
+                            ),
                             decoration: BoxDecoration(
                               border: Border.all(color: Colors.grey[600]!),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Row(
                               children: [
-                                Icon(Icons.calendar_today, color: Colors.grey[400], size: 16),
+                                Icon(
+                                  Icons.calendar_today,
+                                  color: Colors.grey[400],
+                                  size: 16,
+                                ),
                                 const SizedBox(width: 8),
                                 Expanded(
                                   child: Text(
-                                    customEndDate != null ? '${customEndDate!.day}/${customEndDate!.month}/${customEndDate!.year}' : l10n.selectDate,
-                                    style: TextStyle(color: Colors.grey[300], fontSize: 12),
+                                    customEndDate != null
+                                        ? '${customEndDate!.day}/${customEndDate!.month}/${customEndDate!.year}'
+                                        : l10n.selectDate,
+                                    style: TextStyle(
+                                      color: Colors.grey[300],
+                                      fontSize: 12,
+                                    ),
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
@@ -349,7 +442,7 @@ class _FilterDialogState extends ConsumerState<FilterDialog> {
                   ],
                 ),
                 const SizedBox(height: 12),
-                // Reset Date Button
+
                 TextButton.icon(
                   onPressed: () {
                     setState(() {
@@ -359,7 +452,10 @@ class _FilterDialogState extends ConsumerState<FilterDialog> {
                   },
                   icon: const Icon(Icons.refresh, size: 16),
                   label: Text(l10n.resetDates),
-                  style: TextButton.styleFrom(foregroundColor: Colors.grey[400], padding: const EdgeInsets.symmetric(vertical: 8)),
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.grey[400],
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                  ),
                 ),
               ],
             ],
@@ -369,11 +465,9 @@ class _FilterDialogState extends ConsumerState<FilterDialog> {
       actions: [
         TextButton(
           onPressed: () {
-            // Load default settings and restore form fields
             final defaultSettings = ref.read(defaultSettingsProvider);
             final defaultFilter = defaultSettings.defaultFilter;
 
-            // Restore form fields to default values
             setState(() {
               selectedArea = defaultFilter.area;
               minMagnitude = defaultFilter.minMagnitude;
@@ -383,7 +477,10 @@ class _FilterDialogState extends ConsumerState<FilterDialog> {
               customEndDate = defaultFilter.customEndDate;
             });
           },
-          child: Text(l10n.defaultButton, style: const TextStyle(color: Colors.grey)),
+          child: Text(
+            l10n.defaultButton,
+            style: const TextStyle(color: Colors.grey),
+          ),
         ),
         TextButton(
           onPressed: () {
@@ -393,9 +490,11 @@ class _FilterDialogState extends ConsumerState<FilterDialog> {
         ),
         ElevatedButton(
           onPressed: () {
-            // Validate inputs before applying
             if (useCustomDateRange) {
-              final dateError = FilterValidator.validateDateRange(customStartDate, customEndDate);
+              final dateError = FilterValidator.validateDateRange(
+                customStartDate,
+                customEndDate,
+              );
               if (dateError != null) {
                 AnimatedSnackBarHelper.showError(context, dateError);
                 return;
@@ -421,7 +520,10 @@ class _FilterDialogState extends ConsumerState<FilterDialog> {
 
             Navigator.of(context).pop();
           },
-          style: ElevatedButton.styleFrom(backgroundColor: Colors.white, foregroundColor: Colors.black),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.white,
+            foregroundColor: Colors.black,
+          ),
           child: Text(l10n.apply),
         ),
       ],

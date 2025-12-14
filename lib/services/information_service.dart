@@ -2,8 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-/// Service for handling app information and external links
-/// This is the Model layer in MVVM pattern
 class InformationService {
   static const String _appName = 'W-Quake';
   static const String _appDescription = 'Real-time earthquake monitoring app';
@@ -13,8 +11,10 @@ class InformationService {
   static const String _termsOfServiceUrl = '';
   static const String _ingvApiUrl = 'https://webservices.ingv.it/';
   static const String _ingvWebsite = 'https://www.ingv.it/';
+  static const String _usgsApiUrl =
+      'https://earthquake.usgs.gov/fdsnws/event/1/';
+  static const String _usgsWebsite = 'https://www.usgs.gov/';
 
-  /// Get app package information
   Future<PackageInfo> getPackageInfo() async {
     try {
       return await PackageInfo.fromPlatform();
@@ -24,7 +24,6 @@ class InformationService {
     }
   }
 
-  /// Get app version string
   Future<String> getAppVersion() async {
     try {
       final packageInfo = await getPackageInfo();
@@ -35,7 +34,6 @@ class InformationService {
     }
   }
 
-  /// Get app version only (without build number)
   Future<String> getVersionOnly() async {
     try {
       final packageInfo = await getPackageInfo();
@@ -46,7 +44,6 @@ class InformationService {
     }
   }
 
-  /// Get build number only
   Future<String> getBuildNumber() async {
     try {
       final packageInfo = await getPackageInfo();
@@ -57,7 +54,6 @@ class InformationService {
     }
   }
 
-  /// Get package name
   Future<String> getPackageName() async {
     try {
       final packageInfo = await getPackageInfo();
@@ -68,42 +64,38 @@ class InformationService {
     }
   }
 
-  /// Get app name from package info
   Future<String> getAppNameFromPackage() async {
     try {
       final packageInfo = await getPackageInfo();
       return packageInfo.appName;
     } catch (e) {
-      debugPrint('[InformationService] Error getting app name from package: $e');
-      return _appName; // Fallback to static name
+      debugPrint(
+        '[InformationService] Error getting app name from package: $e',
+      );
+      return _appName;
     }
   }
 
-  /// Get app name
   String getAppName() => _appName;
 
-  /// Get app description
   String getAppDescription() => _appDescription;
 
-  /// Get developer name
   String getDeveloperName() => _developerName;
 
-  /// Get app website URL
   String getAppWebsite() => _appWebsite;
 
-  /// Get privacy policy URL
   String getPrivacyPolicyUrl() => _privacyPolicyUrl;
 
-  /// Get terms of service URL
   String getTermsOfServiceUrl() => _termsOfServiceUrl;
 
-  /// Get INGV API URL
   String getIngvApiUrl() => _ingvApiUrl;
 
-  /// Get INGV website URL
   String getIngvWebsite() => _ingvWebsite;
 
-  /// Launch external URL
+  String getUsgsApiUrl() => _usgsApiUrl;
+
+  String getUsgsWebsite() => _usgsWebsite;
+
   Future<bool> launchExternalUrl(String url) async {
     try {
       final uri = Uri.parse(url);
@@ -121,38 +113,50 @@ class InformationService {
     }
   }
 
-  /// Launch app website
   Future<bool> launchAppWebsite() async {
     return await launchExternalUrl(_appWebsite);
   }
 
-  /// Launch privacy policy
   Future<bool> launchPrivacyPolicy() async {
     return await launchExternalUrl(_privacyPolicyUrl);
   }
 
-  /// Launch terms of service
   Future<bool> launchTermsOfService() async {
     return await launchExternalUrl(_termsOfServiceUrl);
   }
 
-  /// Launch INGV website
   Future<bool> launchIngvWebsite() async {
     return await launchExternalUrl(_ingvWebsite);
   }
 
-  /// Launch INGV API documentation
   Future<bool> launchIngvApiDocumentation() async {
     return await launchExternalUrl(_ingvApiUrl);
   }
 
-  /// Get credits information
-  Map<String, String> getCredits() {
-    return {'data_source': 'INGV (Istituto Nazionale di Geofisica e Vulcanologia)', 'api_url': _ingvApiUrl, 'ingv_website': _ingvWebsite, 'developer': _developerName, 'app_website': _appWebsite};
+  Future<bool> launchUsgsWebsite() async {
+    return await launchExternalUrl(_usgsWebsite);
   }
 
-  /// Get legal information
+  Future<bool> launchUsgsApiDocumentation() async {
+    return await launchExternalUrl(_usgsApiUrl);
+  }
+
+  Map<String, String> getCredits() {
+    return {
+      'data_source': 'INGV (Istituto Nazionale di Geofisica e Vulcanologia)',
+      'api_url': _ingvApiUrl,
+      'ingv_website': _ingvWebsite,
+      'developer': _developerName,
+      'app_website': _appWebsite,
+    };
+  }
+
   Map<String, String> getLegalInfo() {
-    return {'privacy_policy': _privacyPolicyUrl, 'terms_of_service': _termsOfServiceUrl, 'data_source': 'INGV Web Services API', 'data_license': 'Open Data License'};
+    return {
+      'privacy_policy': _privacyPolicyUrl,
+      'terms_of_service': _termsOfServiceUrl,
+      'data_source': 'INGV Web Services API',
+      'data_license': 'Open Data License',
+    };
   }
 }

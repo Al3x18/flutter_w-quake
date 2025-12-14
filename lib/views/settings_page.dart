@@ -1,30 +1,56 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../l10n/app_localizations.dart';
+import '../models/earthquake_source.dart';
+import '../providers/settings_providers.dart';
 
-class SettingsPage extends StatefulWidget {
+class SettingsPage extends ConsumerStatefulWidget {
   const SettingsPage({super.key});
 
   @override
-  State<SettingsPage> createState() => _SettingsPageState();
+  ConsumerState<SettingsPage> createState() => _SettingsPageState();
 }
 
-class _SettingsPageState extends State<SettingsPage> {
+class _SettingsPageState extends ConsumerState<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final settingsState = ref.watch(defaultSettingsProvider);
+
     return Scaffold(
       backgroundColor: Colors.black,
-      appBar: AppBar(title: Text(l10n.settings), backgroundColor: Colors.black, foregroundColor: Colors.white, elevation: 0),
+      appBar: AppBar(
+        title: Text(l10n.settings),
+        backgroundColor: Colors.black,
+        foregroundColor: Colors.white,
+        elevation: 0,
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(l10n.manageAppSettings, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey[300])),
+            Text(
+              l10n.manageAppSettings,
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(color: Colors.grey[300]),
+            ),
             const SizedBox(height: 18),
 
-            // Filters Card
+            _buildSettingsCard(
+              icon: Icons.storage,
+              title: l10n.dataSource,
+              subtitle: settingsState.source == EarthquakeSource.ingv
+                  ? l10n.sourceIngv
+                  : l10n.sourceUsgs,
+              onTap: () {
+                context.push('/settings/data-source');
+              },
+            ),
+            const SizedBox(height: 16),
+
             _buildSettingsCard(
               icon: Icons.filter_list,
               title: l10n.defaultFilters,
@@ -35,18 +61,6 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             const SizedBox(height: 16),
 
-            // Notifications Card (unified)
-            _buildSettingsCard(
-              icon: Icons.notifications,
-              title: l10n.notifications,
-              subtitle: l10n.enableNotifications,
-              onTap: () {
-                context.push('/settings/notifications');
-              },
-            ),
-            const SizedBox(height: 16),
-
-            // Language Card
             _buildSettingsCard(
               icon: Icons.language,
               title: l10n.appLanguage,
@@ -57,7 +71,6 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             const SizedBox(height: 16),
 
-            // Location Card
             _buildSettingsCard(
               icon: Icons.location_on,
               title: l10n.locationPermission,
@@ -68,7 +81,6 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             const SizedBox(height: 16),
 
-            // Information Card
             _buildSettingsCard(
               icon: Icons.info,
               title: l10n.information,
@@ -83,7 +95,12 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  Widget _buildSettingsCard({required IconData icon, required String title, required String subtitle, required VoidCallback onTap}) {
+  Widget _buildSettingsCard({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required VoidCallback onTap,
+  }) {
     return Card(
       color: Colors.black,
       elevation: 0,
@@ -98,28 +115,38 @@ class _SettingsPageState extends State<SettingsPage> {
           padding: const EdgeInsets.all(16.0),
           child: Row(
             children: [
-              // Icon
               Container(
                 padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(color: Colors.orange.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(8)),
+                decoration: BoxDecoration(
+                  color: Colors.orange.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
                 child: Icon(icon, color: Colors.orange, size: 24),
               ),
               const SizedBox(width: 16),
-              // Content
+
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       title,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: Colors.white),
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
                     const SizedBox(height: 4),
-                    Text(subtitle, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey[400])),
+                    Text(
+                      subtitle,
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodySmall?.copyWith(color: Colors.grey[400]),
+                    ),
                   ],
                 ),
               ),
-              // Arrow
+
               Icon(Icons.arrow_forward_ios, color: Colors.grey[600], size: 16),
             ],
           ),

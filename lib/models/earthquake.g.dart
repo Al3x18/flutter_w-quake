@@ -1,15 +1,10 @@
-// GENERATED CODE - DO NOT MODIFY BY HAND
-
 part of 'earthquake.dart';
-
-// **************************************************************************
-// JsonSerializableGenerator
-// **************************************************************************
 
 Earthquake _$EarthquakeFromJson(Map<String, dynamic> json) => Earthquake(
   eventId: (json['eventId'] as num?)?.toInt(),
+  eventIdString: json['eventIdString'] as String?,
   originId: (json['originId'] as num?)?.toInt(),
-  time: json['time'] as String?,
+  time: const TimeConverter().fromJson(json['time']),
   author: json['author'] as String?,
   magType: json['magType'] as String?,
   mag: (json['mag'] as num?)?.toDouble(),
@@ -26,8 +21,9 @@ Earthquake _$EarthquakeFromJson(Map<String, dynamic> json) => Earthquake(
 Map<String, dynamic> _$EarthquakeToJson(Earthquake instance) =>
     <String, dynamic>{
       'eventId': instance.eventId,
+      'eventIdString': instance.eventIdString,
       'originId': instance.originId,
-      'time': instance.time,
+      'time': const TimeConverter().toJson(instance.time),
       'author': instance.author,
       'magType': instance.magType,
       'mag': instance.mag,
@@ -67,6 +63,7 @@ Map<String, dynamic> _$EarthquakeResponseToJson(EarthquakeResponse instance) =>
 EarthquakeFeature _$EarthquakeFeatureFromJson(Map<String, dynamic> json) =>
     EarthquakeFeature(
       type: json['type'] as String?,
+      id: json['id'] as String?,
       properties: json['properties'] == null
           ? null
           : EarthquakeProperties.fromJson(
@@ -82,6 +79,7 @@ EarthquakeFeature _$EarthquakeFeatureFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$EarthquakeFeatureToJson(EarthquakeFeature instance) =>
     <String, dynamic>{
       'type': instance.type,
+      'id': instance.id,
       'properties': instance.properties,
       'geometry': instance.geometry,
     };
@@ -91,7 +89,7 @@ EarthquakeProperties _$EarthquakePropertiesFromJson(
 ) => EarthquakeProperties(
   eventId: (json['eventId'] as num?)?.toInt(),
   originId: (json['originId'] as num?)?.toInt(),
-  time: json['time'] as String?,
+  time: const TimeConverter().fromJson(json['time']),
   author: json['author'] as String?,
   magType: json['magType'] as String?,
   mag: (json['mag'] as num?)?.toDouble(),
@@ -107,7 +105,7 @@ Map<String, dynamic> _$EarthquakePropertiesToJson(
 ) => <String, dynamic>{
   'eventId': instance.eventId,
   'originId': instance.originId,
-  'time': instance.time,
+  'time': const TimeConverter().toJson(instance.time),
   'author': instance.author,
   'magType': instance.magType,
   'mag': instance.mag,

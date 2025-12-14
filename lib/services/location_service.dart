@@ -7,21 +7,19 @@ class LocationService {
   LocationService._internal();
 
   StreamSubscription<Position>? _positionStream;
-  final StreamController<Position?> _locationController = StreamController<Position?>.broadcast();
+  final StreamController<Position?> _locationController =
+      StreamController<Position?>.broadcast();
 
   Stream<Position?> get locationStream => _locationController.stream;
 
-  /// Check if location services are enabled
   Future<bool> isLocationServiceEnabled() async {
     return await Geolocator.isLocationServiceEnabled();
   }
 
-  /// Check location permission status
   Future<LocationPermission> checkPermission() async {
     return await Geolocator.checkPermission();
   }
 
-  /// Request location permission
   Future<LocationPermission> requestPermission() async {
     LocationPermission permission = await Geolocator.checkPermission();
 
@@ -39,26 +37,26 @@ class LocationService {
     return permission;
   }
 
-  /// Get current position once
   Future<Position?> getCurrentPosition() async {
     try {
-      // Check if location services are enabled
       bool serviceEnabled = await isLocationServiceEnabled();
       if (!serviceEnabled) {
         _locationController.add(null);
         return null;
       }
 
-      // Check and request permission
       LocationPermission permission = await requestPermission();
-      if (permission != LocationPermission.whileInUse && permission != LocationPermission.always) {
+      if (permission != LocationPermission.whileInUse &&
+          permission != LocationPermission.always) {
         _locationController.add(null);
         return null;
       }
 
-      // Get current position
       Position position = await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(accuracy: LocationAccuracy.high, timeLimit: Duration(seconds: 10)),
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+          timeLimit: Duration(seconds: 10),
+        ),
       );
 
       _locationController.add(position);
@@ -69,29 +67,26 @@ class LocationService {
     }
   }
 
-  /// Start listening to position changes
   Future<void> startLocationUpdates() async {
     try {
-      // Check if location services are enabled
       bool serviceEnabled = await isLocationServiceEnabled();
       if (!serviceEnabled) {
         _locationController.add(null);
         return;
       }
 
-      // Check and request permission
       LocationPermission permission = await requestPermission();
-      if (permission != LocationPermission.whileInUse && permission != LocationPermission.always) {
+      if (permission != LocationPermission.whileInUse &&
+          permission != LocationPermission.always) {
         _locationController.add(null);
         return;
       }
 
-      // Start listening to position changes
       _positionStream =
           Geolocator.getPositionStream(
             locationSettings: const LocationSettings(
               accuracy: LocationAccuracy.high,
-              distanceFilter: 10, // Update every 10 meters
+              distanceFilter: 10,
             ),
           ).listen(
             (Position position) {
@@ -106,26 +101,31 @@ class LocationService {
     }
   }
 
-  /// Stop listening to position changes
   void stopLocationUpdates() {
     _positionStream?.cancel();
     _positionStream = null;
-    // Emit null so listeners clear any cached last known position when stopping
+
     _locationController.add(null);
   }
 
-  /// Calculate distance between two points
   double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
     return Geolocator.distanceBetween(lat1, lon1, lat2, lon2);
   }
 
-  /// Calculate distance between user position and earthquake
-  double calculateDistanceToEarthquake(Position? userPosition, double earthquakeLat, double earthquakeLon) {
+  double calculateDistanceToEarthquake(
+    Position? userPosition,
+    double earthquakeLat,
+    double earthquakeLon,
+  ) {
     if (userPosition == null) return 0.0;
-    return calculateDistance(userPosition.latitude, userPosition.longitude, earthquakeLat, earthquakeLon);
+    return calculateDistance(
+      userPosition.latitude,
+      userPosition.longitude,
+      earthquakeLat,
+      earthquakeLon,
+    );
   }
 
-  /// Format distance for display
   String formatDistance(double distanceInMeters) {
     if (distanceInMeters < 1000) {
       return '${distanceInMeters.toStringAsFixed(0)} m';
@@ -134,7 +134,6 @@ class LocationService {
     }
   }
 
-  /// Dispose resources
   void dispose() {
     stopLocationUpdates();
     _locationController.close();

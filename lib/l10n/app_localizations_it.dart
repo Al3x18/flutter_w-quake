@@ -528,4 +528,24 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get nearbyIndicatorDescription => 'Gli eventi nel raggio selezionato sono segnalati con un indicatore arancione';
+
+  @override
+  String get selectDataSourceDescription => 'Seleziona il fornitore dei dati sismici';
+
+  @override
+  String get sourceIngv => 'INGV (Italia)';
+
+  @override
+  String get sourceUsgs => 'USGS (Mondo)';
+
+  @override
+  String errorSavingSettings(String error) {
+    return 'Errore nel salvataggio delle impostazioni: $error';
+  }
+
+  @override
+  String get openSourceCode => 'Questa applicazione è Open Source.';
+
+  @override
+  String get viewSourceCode => 'Visualizza Codice Sorgente';
 }
