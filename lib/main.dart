@@ -17,35 +17,24 @@ class MainApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final languageAsync = ref.watch(languageProvider);
-    final locale = languageAsync.valueOrNull?.currentLocale ?? const Locale('en');
+    final locale = languageAsync.value?.currentLocale ?? const Locale('en');
 
     return MaterialApp.router(
       title: 'W-Quake',
       debugShowCheckedModeBanner: false,
       routerConfig: AppRouter.router,
       locale: locale,
-      localizationsDelegates: const [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
+      localizationsDelegates: const [AppLocalizations.delegate, GlobalMaterialLocalizations.delegate, GlobalWidgetsLocalizations.delegate, GlobalCupertinoLocalizations.delegate],
       supportedLocales: const [Locale('en'), Locale('it')],
       theme: ThemeData.dark().copyWith(
         scaffoldBackgroundColor: Colors.black,
 
-        textTheme: GoogleFonts.titilliumWebTextTheme(
-          ThemeData.dark().textTheme,
-        ),
+        textTheme: GoogleFonts.titilliumWebTextTheme(ThemeData.dark().textTheme),
         appBarTheme: AppBarTheme(
           backgroundColor: Colors.black,
           foregroundColor: Colors.white,
           elevation: 0,
-          titleTextStyle: GoogleFonts.titilliumWeb(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
+          titleTextStyle: GoogleFonts.titilliumWeb(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
         ),
         cardTheme: CardThemeData(
           color: Colors.black,
@@ -55,14 +44,7 @@ class MainApp extends ConsumerWidget {
             side: BorderSide(color: Colors.grey[800]!, width: 1),
           ),
         ),
-        colorScheme: ColorScheme.dark(
-          primary: Colors.white,
-          secondary: Colors.grey[200]!,
-          surface: Colors.black,
-          onPrimary: Colors.black,
-          onSecondary: Colors.black,
-          onSurface: Colors.white,
-        ),
+        colorScheme: ColorScheme.dark(primary: Colors.white, secondary: Colors.grey[200]!, surface: Colors.black, onPrimary: Colors.black, onSecondary: Colors.black, onSurface: Colors.white),
       ),
     );
   }

@@ -1,98 +1,80 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../models/earthquake.dart';
 import '../providers/earthquake_providers.dart';
 import '../providers/location_providers.dart';
-import '../viewmodels/location_viewmodel.dart';
 import '../viewmodels/map_viewmodel.dart';
 import '../widgets/earthquake_map_widget.dart';
 import '../widgets/earthquake_detail_expansion_widget.dart';
 import '../l10n/app_localizations.dart';
 
-class EarthquakeDetailPage extends ConsumerWidget {
+class EarthquakeDetailPage extends ConsumerStatefulWidget {
   final String earthquakeId;
 
   const EarthquakeDetailPage({super.key, required this.earthquakeId});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final earthquakesAsync = ref.watch(earthquakesFutureProvider);
+  ConsumerState<EarthquakeDetailPage> createState() =>
+      _EarthquakeDetailPageState();
+}
 
-    final earthquakeFeature = earthquakesAsync.maybeWhen(
-      data: (list) => list.firstWhere(
-        (eq) =>
-            (eq.properties?.eventId?.toString() == earthquakeId) ||
-            (eq.id == earthquakeId),
-        orElse: () => throw Exception('Event not found'),
-      ),
-      orElse: () => throw Exception('Event not found'),
-    );
+class _EarthquakeDetailPageState extends ConsumerState<EarthquakeDetailPage> {
+  late final SelectedEarthquakeNotifier _selectedNotifier;
 
-    final earthquake = Earthquake(
-      eventId: earthquakeFeature.properties?.eventId,
-      eventIdString: earthquakeFeature.id,
-      originId: earthquakeFeature.properties?.originId,
-      time: earthquakeFeature.properties?.time,
-      author: earthquakeFeature.properties?.author,
-      magType: earthquakeFeature.properties?.magType,
-      mag: earthquakeFeature.properties?.mag,
-      magAuthor: earthquakeFeature.properties?.magAuthor,
-      type: earthquakeFeature.properties?.type,
-      place: earthquakeFeature.properties?.place,
-      version: earthquakeFeature.properties?.version,
-      geojsonCreationTime: earthquakeFeature.properties?.geojsonCreationTime,
-      geometry: earthquakeFeature.geometry,
-    );
+  @override
+  void initState() {
+    super.initState();
+    _selectedNotifier = ref.read(selectedEarthquakeIdProvider.notifier);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _selectedNotifier.selectEarthquake(widget.earthquakeId);
+    });
+  }
 
-    final allEarthquakes = earthquakesAsync.maybeWhen(
-      data: (list) => list
-          .map(
-            (f) => Earthquake(
-              eventId: f.properties?.eventId,
-              eventIdString: f.id,
-              originId: f.properties?.originId,
-              time: f.properties?.time,
-              author: f.properties?.author,
-              magType: f.properties?.magType,
-              mag: f.properties?.mag,
-              magAuthor: f.properties?.magAuthor,
-              type: f.properties?.type,
-              place: f.properties?.place,
-              version: f.properties?.version,
-              geojsonCreationTime: f.properties?.geojsonCreationTime,
-              geometry: f.geometry,
-            ),
-          )
-          .toList(),
-      orElse: () => <Earthquake>[],
-    );
+  @override
+  void dispose() {
+    Future.microtask(() => _selectedNotifier.clear());
+    super.dispose();
+  }
 
-    final viewModel = ref.watch(earthquakeDetailViewModelProvider(earthquake));
-    final userPositionAsync = ref.watch(userPositionProvider);
-    final locationEnabled = ref.watch(locationEnabledSettingProvider);
-    final mapViewModel = ref.watch(mapViewModelProvider.notifier);
+  void _centerOnUserLocation() async {
+    final locationEnabled = ref.read(locationEnabledSettingProvider);
+    final hasLocation = ref.read(userPositionProvider).value != null;
+    final mapViewModel = ref.read(mapViewModelProvider.notifier);
     final l10n = AppLocalizations.of(context)!;
 
-    void centerOnUserLocation() async {
-      final hasLocation = ref.read(userPositionProvider).value != null;
-      
-      if (locationEnabled && hasLocation) {
-        await mapViewModel.centerOnUserLocation();
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              l10n.locationPermissionRequiredMessage,
-              style: TextStyle(color: Colors.black),
-            ),
-            backgroundColor: Colors.white,
-            behavior: SnackBarBehavior.floating,
-            margin: EdgeInsets.only(top: 50, left: 16, right: 16),
-            duration: Duration(seconds: 3),
+    if (locationEnabled && hasLocation) {
+      await mapViewModel.centerOnUserLocation();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            l10n.locationPermissionRequiredMessage,
+            style: const TextStyle(color: Colors.black),
           ),
-        );
-      }
+          backgroundColor: Colors.white,
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.only(top: 50, left: 16, right: 16),
+          duration: const Duration(seconds: 3),
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final earthquake = ref.watch(selectedEarthquakeProvider);
+    final allEarthquakes = ref.watch(allEarthquakesProvider);
+    final userPositionAsync = ref.watch(userPositionProvider);
+    final locationEnabled = ref.watch(locationEnabledSettingProvider);
+    final l10n = AppLocalizations.of(context)!;
+
+    if (earthquake == null) {
+      return Scaffold(
+        backgroundColor: Colors.black,
+        body: const Center(
+          child: CircularProgressIndicator(color: Colors.orange),
+        ),
+      );
     }
 
     return Scaffold(
@@ -153,11 +135,11 @@ class EarthquakeDetailPage extends ConsumerWidget {
                         ],
                       ),
                       child: IconButton(
-                        onPressed: centerOnUserLocation,
+                        onPressed: _centerOnUserLocation,
                         icon: Icon(
                           Icons.my_location,
-                          color:
-                              (locationEnabled && userPositionAsync.value != null)
+                          color: (locationEnabled &&
+                                  userPositionAsync.value != null)
                               ? Colors.orange
                               : Colors.grey,
                           size: 24,
@@ -178,7 +160,6 @@ class EarthquakeDetailPage extends ConsumerWidget {
             right: 16,
             child: EarthquakeDetailExpansionWidget(
               earthquake: earthquake,
-              viewModel: viewModel,
             ),
           ),
         ],

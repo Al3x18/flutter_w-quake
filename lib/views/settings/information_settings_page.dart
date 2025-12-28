@@ -36,46 +36,39 @@ class _InformationSettingsPageState
         ),
       ),
       body: informationAsync.when(
-        loading:
-            () => const Center(
-              child: CircularProgressIndicator(color: Colors.orange),
-            ),
-        error:
-            (error, stack) => Center(
-              child: Text(
-                'Error loading info: $error',
-                style: const TextStyle(color: Colors.white),
-              ),
-            ),
-        data:
-            (informationState) => SingleChildScrollView(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildAppInfoCard(
-                    l10n,
-                    informationState,
-                    informationNotifier,
-                  ),
-                  const SizedBox(height: 24),
+        loading: () => const Center(
+          child: CircularProgressIndicator(color: Colors.orange),
+        ),
+        error: (error, stack) => Center(
+          child: Text(
+            'Error loading info: $error',
+            style: const TextStyle(color: Colors.white),
+          ),
+        ),
+        data: (informationState) => SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildAppInfoCard(l10n, informationState, informationNotifier),
+              const SizedBox(height: 24),
 
-                  _buildSectionTitle(l10n.credits),
-                  const SizedBox(height: 12),
-                  _buildCreditsCard(l10n, informationNotifier),
-                  const SizedBox(height: 24),
+              _buildSectionTitle(l10n.credits),
+              const SizedBox(height: 12),
+              _buildCreditsCard(l10n, informationNotifier),
+              const SizedBox(height: 24),
 
-                  _buildSectionTitle(l10n.legalInformation),
-                  const SizedBox(height: 12),
-                  _buildLegalInfoCard(l10n, informationNotifier),
-                  const SizedBox(height: 24),
+              _buildSectionTitle(l10n.legalInformation),
+              const SizedBox(height: 12),
+              _buildLegalInfoCard(l10n, informationNotifier),
+              const SizedBox(height: 24),
 
-                  _buildSectionTitle(l10n.dataSource),
-                  const SizedBox(height: 12),
-                  _buildDataSourceCard(l10n, informationNotifier),
-                ],
-              ),
-            ),
+              _buildSectionTitle(l10n.dataSource),
+              const SizedBox(height: 12),
+              _buildDataSourceCard(l10n, informationNotifier),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -159,18 +152,18 @@ class _InformationSettingsPageState
                   if (success) {
                     AnimatedSnackBarHelper.showSuccess(
                       context,
-                      'GitHub opened successfully', // Specific message
+                      'GitHub opened successfully',
                     );
                   } else {
                     AnimatedSnackBarHelper.showError(
                       context,
-                      'Failed to open GitHub', // Specific message
+                      'Failed to open GitHub',
                     );
                   }
                 }
               },
-              icon: const Icon(Icons.code, size: 16), // Changed icon
-              label: Text(l10n.viewSourceCode), // Changed label
+              icon: const Icon(Icons.code, size: 16),
+              label: Text(l10n.viewSourceCode),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.orange,
                 foregroundColor: Colors.white,

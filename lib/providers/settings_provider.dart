@@ -5,8 +5,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/earthquake_filter.dart';
 import '../models/earthquake_source.dart';
 
-// --- State Class ---
-
 class SettingsState {
   final EarthquakeFilter defaultFilter;
   final EarthquakeSource source;
@@ -48,8 +46,6 @@ class SettingsState {
   }
 }
 
-// --- Notifier ---
-
 class SettingsNotifier extends AsyncNotifier<SettingsState> {
   static const String _defaultFilterKey = 'default_filter_settings';
   static const String _isInitializedKey = 'settings_initialized';
@@ -66,10 +62,10 @@ class SettingsNotifier extends AsyncNotifier<SettingsState> {
   Future<SettingsState> _loadSettings() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      
+
       final isInitialized = prefs.getBool(_isInitializedKey) ?? false;
       final sourceName = prefs.getString(_earthquakeSourceKey);
-      final EarthquakeSource source = sourceName != null 
+      final EarthquakeSource source = sourceName != null
           ? EarthquakeSource.values.firstWhere(
               (e) => e.name == sourceName,
               orElse: () => EarthquakeSource.ingv,
@@ -81,10 +77,10 @@ class SettingsNotifier extends AsyncNotifier<SettingsState> {
       final locationRadiusKm = prefs.getInt(_locationRadiusKmKey) ?? 100;
 
       EarthquakeFilter filter = const EarthquakeFilter(
-         area: EarthquakeFilterArea.italy,
-         minMagnitude: 2.0,
-         daysBack: 1,
-         useCustomDateRange: false,
+        area: EarthquakeFilterArea.italy,
+        minMagnitude: 2.0,
+        daysBack: 1,
+        useCustomDateRange: false,
       );
 
       if (isInitialized) {
@@ -104,18 +100,15 @@ class SettingsNotifier extends AsyncNotifier<SettingsState> {
       );
     } catch (e) {
       debugPrint('[SettingsNotifier] Error loading settings: $e');
-      return const SettingsState(isInitialized: true); // Fallback to defaults
+      return const SettingsState(isInitialized: true);
     }
   }
-
-  // --- Actions ---
 
   Future<void> setDefaultFilter(EarthquakeFilter filter) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_defaultFilterKey, _filterToJson(filter));
     await prefs.setBool(_isInitializedKey, true);
-    
-    // Update state optimistically or reload
+
     state = AsyncData(state.value!.copyWith(defaultFilter: filter));
   }
 
@@ -145,23 +138,18 @@ class SettingsNotifier extends AsyncNotifier<SettingsState> {
 
   Future<void> resetToDefaults() async {
     final prefs = await SharedPreferences.getInstance();
-    // Keep location settings or reset? Usually reset applies to everything or just filters. 
-    // Based on previous code, it only reset filter in one method, but let's be safe.
-    // The previous `resetToDefaults` only reset the filter.
-    
+
     const defaultFilter = EarthquakeFilter();
     await prefs.setString(_defaultFilterKey, _filterToJson(defaultFilter));
-    
+
     state = AsyncData(state.value!.copyWith(defaultFilter: defaultFilter));
   }
 
   Future<void> clearAllSettings() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.clear(); // Or specific keys
+    await prefs.clear();
     state = const AsyncData(SettingsState(isInitialized: true));
   }
-
-  // --- Helpers (Private) ---
 
   String _filterToJson(EarthquakeFilter filter) {
     final Map<String, dynamic> json = {
@@ -178,7 +166,7 @@ class SettingsNotifier extends AsyncNotifier<SettingsState> {
   EarthquakeFilter _jsonToFilter(String jsonString) {
     try {
       final Map<String, dynamic> json = jsonDecode(jsonString);
-      
+
       final areaName = json['area'] as String;
       final area = EarthquakeFilterArea.values.firstWhere(
         (a) => a.name == areaName,

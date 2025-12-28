@@ -1,20 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geolocator/geolocator.dart';
 import '../models/earthquake.dart';
-import '../viewmodels/earthquake_detail_viewmodel.dart';
-import '../viewmodels/earthquake_viewmodel.dart';
+import '../models/earthquake_extensions.dart';
 import '../l10n/app_localizations.dart';
 import '../providers/location_providers.dart';
 
 class EarthquakeDetailExpansionWidget extends ConsumerStatefulWidget {
   final Earthquake earthquake;
-  final EarthquakeDetailViewModel viewModel;
 
-  const EarthquakeDetailExpansionWidget({
-    super.key,
-    required this.earthquake,
-    required this.viewModel,
-  });
+  const EarthquakeDetailExpansionWidget({super.key, required this.earthquake});
 
   @override
   ConsumerState<EarthquakeDetailExpansionWidget> createState() =>
@@ -27,7 +22,6 @@ class _EarthquakeDetailExpansionWidgetState
   late AnimationController _animationController;
   late Animation<double> _expandAnimation;
   bool _isExpanded = false;
-  final EarthquakeViewModel _earthquakeViewModel = EarthquakeViewModel();
 
   @override
   void initState() {
@@ -63,7 +57,6 @@ class _EarthquakeDetailExpansionWidgetState
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final earthquake = widget.earthquake;
-    final viewModel = widget.viewModel;
 
     return Container(
       decoration: BoxDecoration(
@@ -103,9 +96,9 @@ class _EarthquakeDetailExpansionWidgetState
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  viewModel.extractMainLocation(
-                                    earthquake.place ?? l10n.unknownLocation,
-                                  ),
+                                  earthquake.mainLocation.isNotEmpty
+                                      ? earthquake.mainLocation
+                                      : l10n.unknownLocation,
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 16,
@@ -142,7 +135,7 @@ class _EarthquakeDetailExpansionWidgetState
                                 textBaseline: TextBaseline.alphabetic,
                                 children: [
                                   Text(
-                                    viewModel.formatTime(earthquake.time),
+                                    earthquake.formattedTime,
                                     style: const TextStyle(
                                       color: Colors.grey,
                                       fontSize: 12,
@@ -153,10 +146,7 @@ class _EarthquakeDetailExpansionWidgetState
                                   Text(
                                     earthquake.mag?.toStringAsFixed(1) ?? 'N/A',
                                     style: TextStyle(
-                                      color: _earthquakeViewModel
-                                          .getMagnitudeColor(
-                                            earthquake.mag ?? 0.0,
-                                          ),
+                                      color: earthquake.magnitudeColor,
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -214,10 +204,7 @@ class _EarthquakeDetailExpansionWidgetState
                                         children: [
                                           Icon(
                                             Icons.waves,
-                                            color: _earthquakeViewModel
-                                                .getMagnitudeColor(
-                                                  earthquake.mag ?? 0.0,
-                                                ),
+                                            color: earthquake.magnitudeColor,
                                             size: 20,
                                           ),
                                           const SizedBox(width: 8),
@@ -267,17 +254,14 @@ class _EarthquakeDetailExpansionWidgetState
                                           Text(
                                             '${earthquake.mag?.toStringAsFixed(1) ?? 'N/A'} ${earthquake.magType ?? ''}',
                                             style: TextStyle(
-                                              color: _earthquakeViewModel
-                                                  .getMagnitudeColor(
-                                                    earthquake.mag ?? 0.0,
-                                                  ),
+                                              color: earthquake.magnitudeColor,
                                               fontSize: 24,
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
                                           const SizedBox(width: 8),
                                           Text(
-                                            viewModel.getMagnitudeUncertainty(),
+                                            earthquake.magnitudeUncertainty,
                                             style: const TextStyle(
                                               color: Colors.grey,
                                               fontSize: 14,
@@ -317,7 +301,7 @@ class _EarthquakeDetailExpansionWidgetState
                                           ),
                                           const SizedBox(width: 8),
                                           Text(
-                                            '${l10n.depth}: ${viewModel.earthquake.formattedDepth} ${viewModel.getDepthUncertainty()}',
+                                            '${l10n.depth}: ${earthquake.formattedDepth} ${earthquake.depthUncertainty}',
                                             style: const TextStyle(
                                               color: Colors.white,
                                               fontSize: 14,
@@ -325,8 +309,7 @@ class _EarthquakeDetailExpansionWidgetState
                                           ),
                                           const Spacer(),
                                           Text(
-                                            viewModel.getDepthDescription(
-                                              earthquake.depth,
+                                            earthquake.getDepthDescription(
                                               l10n,
                                             ),
                                             style: const TextStyle(
@@ -404,11 +387,11 @@ class _EarthquakeDetailExpansionWidgetState
                                       ),
                                       _buildScalableDetailRow(
                                         l10n.stations,
-                                        viewModel.getStationCount(),
+                                        earthquake.stationCount,
                                       ),
                                       _buildScalableDetailRow(
                                         l10n.phases,
-                                        viewModel.getPhaseCount(),
+                                        earthquake.phaseCount,
                                       ),
 
                                       Consumer(
@@ -417,21 +400,19 @@ class _EarthquakeDetailExpansionWidgetState
                                               .watch(userPositionProvider)
                                               .value;
                                           if (userPosition != null) {
-                                            final distanceCalculator = ref
-                                                .watch(
-                                                  distanceCalculatorProvider,
-                                                );
-                                            final distance = distanceCalculator
-                                                .calculateDistanceToEarthquake(
-                                                  userPosition,
-                                                  earthquake.latitude,
-                                                  earthquake.longitude,
-                                                );
+                                            final distance = Geolocator.distanceBetween(
+                                              userPosition.latitude,
+                                              userPosition.longitude,
+                                              earthquake.geometry?.latitude ?? 0.0,
+                                              earthquake.geometry?.longitude ?? 0.0,
+                                            );
+                                            final distanceKm = distance / 1000;
+                                            final formattedDistance = distanceKm < 1
+                                                ? '${distance.toStringAsFixed(0)} m'
+                                                : '${distanceKm.toStringAsFixed(1)} km';
                                             return _buildScalableDetailRow(
                                               l10n.distanceFromYou,
-                                              distanceCalculator.formatDistance(
-                                                distance,
-                                              ),
+                                              formattedDistance,
                                             );
                                           }
                                           return const SizedBox.shrink();
@@ -479,15 +460,15 @@ class _EarthquakeDetailExpansionWidgetState
                                       const SizedBox(height: 12),
                                       _buildScalableDetailRow(
                                         l10n.decimalDegrees,
-                                        viewModel.formatCoordinates(),
+                                        earthquake.formattedCoordinates,
                                       ),
                                       _buildScalableDetailRow(
                                         l10n.dmsFormat,
-                                        viewModel.formatCoordinatesDMS(),
+                                        earthquake.formattedCoordinatesDMS,
                                       ),
                                       _buildScalableDetailRow(
                                         l10n.preciseDecimal,
-                                        viewModel.formatCoordinatesDecimal(),
+                                        earthquake.formattedCoordinatesDecimal,
                                       ),
                                     ],
                                   ),
@@ -534,8 +515,7 @@ class _EarthquakeDetailExpansionWidgetState
                                           earthquake.mag?.toStringAsFixed(1) ??
                                               'N/A',
                                           earthquake.magType ?? '',
-                                          viewModel.getMagnitudeDescription(
-                                            earthquake.mag ?? 0.0,
+                                          earthquake.getMagnitudeDescription(
                                             l10n,
                                           ),
                                         ),
@@ -546,7 +526,7 @@ class _EarthquakeDetailExpansionWidgetState
                                       ),
                                       const SizedBox(height: 4),
                                       Text(
-                                        '${l10n.depth}: ${viewModel.getDepthDescription(earthquake.depth, l10n)} (${earthquake.depth.toStringAsFixed(1)} km)',
+                                        '${l10n.depth}: ${earthquake.getDepthDescription(l10n)} (${earthquake.depth.toStringAsFixed(1)} km)',
                                         style: const TextStyle(
                                           color: Colors.white70,
                                           fontSize: 14,
@@ -554,7 +534,7 @@ class _EarthquakeDetailExpansionWidgetState
                                       ),
                                       const SizedBox(height: 4),
                                       Text(
-                                        '${l10n.intensityLevel}: ${viewModel.getIntensityLevel(l10n)}',
+                                        '${l10n.intensityLevel}: ${earthquake.getIntensityLevel(l10n)}',
                                         style: const TextStyle(
                                           color: Colors.white70,
                                           fontSize: 14,

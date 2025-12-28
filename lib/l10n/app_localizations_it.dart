@@ -96,13 +96,16 @@ class AppLocalizationsIt extends AppLocalizations {
   String get manageAppSettings => 'Gestisci le impostazioni dell\'applicazione';
 
   @override
-  String get setDefaultFilters => 'Imposta i filtri predefiniti per il caricamento dei terremoti';
+  String get setDefaultFilters =>
+      'Imposta i filtri predefiniti per il caricamento dei terremoti';
 
   @override
-  String get enableNotifications => 'Abilita e gestisci le notifiche per gli eventi';
+  String get enableNotifications =>
+      'Abilita e gestisci le notifiche per gli eventi';
 
   @override
-  String get customizeNotificationFilters => 'Personalizza i filtri per le notifiche degli eventi';
+  String get customizeNotificationFilters =>
+      'Personalizza i filtri per le notifiche degli eventi';
 
   @override
   String get selectAppLanguage => 'Seleziona la lingua dell\'applicazione';
@@ -114,7 +117,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get settingsSavedSuccessfully => 'Impostazioni salvate con successo';
 
   @override
-  String get settingsResetToDefaults => 'Impostazioni ripristinate ai valori di default';
+  String get settingsResetToDefaults =>
+      'Impostazioni ripristinate ai valori di default';
 
   @override
   String eventsInArea(String area) {
@@ -142,7 +146,12 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String eventsInAreaDateRange(String area, String startDate, String endDate, double magnitude) {
+  String eventsInAreaDateRange(
+    String area,
+    String startDate,
+    String endDate,
+    double magnitude,
+  ) {
     return 'Eventi in $area dal $startDate al $endDate (mag ≥ $magnitude)';
   }
 
@@ -258,10 +267,12 @@ class AppLocalizationsIt extends AppLocalizations {
   String get previousDaysEvents => 'Eventi dei giorni precedenti';
 
   @override
-  String get enablePushNotifications => 'Abilita notifiche push per eventi sismici';
+  String get enablePushNotifications =>
+      'Abilita notifiche push per eventi sismici';
 
   @override
-  String get setMinimumMagnitudeForNotifications => 'Imposta magnitudo minima per le notifiche';
+  String get setMinimumMagnitudeForNotifications =>
+      'Imposta magnitudo minima per le notifiche';
 
   @override
   String get minMagnitude => 'Magnitudo Min';
@@ -273,7 +284,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get notificationArea => 'Area Notifiche';
 
   @override
-  String get selectNotificationArea => 'Seleziona area geografica per le notifiche';
+  String get selectNotificationArea =>
+      'Seleziona area geografica per le notifiche';
 
   @override
   String get appVersion => 'Versione App';
@@ -303,7 +315,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get viewDocumentation => 'Visualizza Documentazione';
 
   @override
-  String get ingvInstitute => 'INGV (Istituto Nazionale di Geofisica e Vulcanologia)';
+  String get ingvInstitute =>
+      'INGV (Istituto Nazionale di Geofisica e Vulcanologia)';
 
   @override
   String get earthquakeDataProvider => 'Fornitore Dati Sismici';
@@ -432,40 +445,48 @@ class AppLocalizationsIt extends AppLocalizations {
   String get locationPermission => 'Permessi di Posizione';
 
   @override
-  String get locationPermissionDescription => 'Questa app ha bisogno dell\'accesso alla posizione per mostrare la tua posizione sulla mappa dei terremoti.';
+  String get locationPermissionDescription =>
+      'Questa app ha bisogno dell\'accesso alla posizione per mostrare la tua posizione sulla mappa dei terremoti.';
 
   @override
   String get enableLocation => 'Abilita Posizione';
 
   @override
-  String get allowLocationAccess => 'Consenti all\'app di accedere alla tua posizione';
+  String get allowLocationAccess =>
+      'Consenti all\'app di accedere alla tua posizione';
 
   @override
-  String get showLocationOnMap => 'Mostra la tua posizione sulla mappa dei terremoti';
+  String get showLocationOnMap =>
+      'Mostra la tua posizione sulla mappa dei terremoti';
 
   @override
   String get locationDisabled => 'Servizi di posizione disabilitati';
 
   @override
-  String get locationDisabledDescription => 'I servizi di posizione sono disabilitati. Abilitali nelle impostazioni per vedere la tua posizione sulla mappa.';
+  String get locationDisabledDescription =>
+      'I servizi di posizione sono disabilitati. Abilitali nelle impostazioni per vedere la tua posizione sulla mappa.';
 
   @override
   String get locationPermissionDenied => 'Permesso di posizione negato';
 
   @override
-  String get locationPermissionDeniedDescription => 'Il permesso di posizione è stato negato. Abilitalo per vedere la tua posizione sulla mappa.';
+  String get locationPermissionDeniedDescription =>
+      'Il permesso di posizione è stato negato. Abilitalo per vedere la tua posizione sulla mappa.';
 
   @override
-  String get locationPermissionPermanentlyDenied => 'Permesso di posizione negato permanentemente';
+  String get locationPermissionPermanentlyDenied =>
+      'Permesso di posizione negato permanentemente';
 
   @override
-  String get locationPermissionPermanentlyDeniedDescription => 'Il permesso di posizione è stato negato permanentemente. Abilitalo nelle impostazioni dell\'app.';
+  String get locationPermissionPermanentlyDeniedDescription =>
+      'Il permesso di posizione è stato negato permanentemente. Abilitalo nelle impostazioni dell\'app.';
 
   @override
   String get unableToGetLocation => 'Impossibile ottenere la posizione';
 
   @override
-  String get unableToGetLocationDescription => 'Si è verificato un errore nel recupero della posizione. Riprova più tardi.';
+  String get unableToGetLocationDescription =>
+      'Si è verificato un errore nel recupero della posizione. Riprova più tardi.';
 
   @override
   String get yourLocation => 'La tua posizione';
@@ -495,16 +516,19 @@ class AppLocalizationsIt extends AppLocalizations {
   String get openAppSettings => 'Apri Impostazioni App';
 
   @override
-  String get enableLocationPermissionsManually => 'Abilita manualmente i permessi di posizione';
+  String get enableLocationPermissionsManually =>
+      'Abilita manualmente i permessi di posizione';
 
   @override
-  String get locationEnabledSuccess => 'Posizione abilitata! La tua posizione sarà mostrata sulla mappa.';
+  String get locationEnabledSuccess =>
+      'Posizione abilitata! La tua posizione sarà mostrata sulla mappa.';
 
   @override
   String get searchRadius => 'Raggio di ricerca';
 
   @override
-  String get searchRadiusSubtitle => 'Indicami gli eventi intorno alla mia posizione';
+  String get searchRadiusSubtitle =>
+      'Indicami gli eventi intorno alla mia posizione';
 
   @override
   String get nearYou => 'Vicino a te';
@@ -513,10 +537,15 @@ class AppLocalizationsIt extends AppLocalizations {
   String get locationPermissionRequired => 'Autorizzazione posizione richiesta';
 
   @override
-  String get locationPermissionRequiredMessage => 'Per centrare sulla tua posizione, concedi l\'autorizzazione nelle impostazioni';
+  String get locationPermissionRequiredMessage =>
+      'Per centrare sulla tua posizione, concedi l\'autorizzazione nelle impostazioni';
 
   @override
-  String earthquakeDescription(String magnitude, String magType, String magnitudeDescription) {
+  String earthquakeDescription(
+    String magnitude,
+    String magType,
+    String magnitudeDescription,
+  ) {
     return 'Questo terremoto ha una magnitudo di $magnitude $magType, che è classificata come $magnitudeDescription.';
   }
 
@@ -527,10 +556,12 @@ class AppLocalizationsIt extends AppLocalizations {
   String get minuteAgo => 'minuto fa';
 
   @override
-  String get nearbyIndicatorDescription => 'Gli eventi nel raggio selezionato sono segnalati con un indicatore arancione';
+  String get nearbyIndicatorDescription =>
+      'Gli eventi nel raggio selezionato sono segnalati con un indicatore arancione';
 
   @override
-  String get selectDataSourceDescription => 'Seleziona il fornitore dei dati sismici';
+  String get selectDataSourceDescription =>
+      'Seleziona il fornitore dei dati sismici';
 
   @override
   String get sourceIngv => 'INGV (Italia)';

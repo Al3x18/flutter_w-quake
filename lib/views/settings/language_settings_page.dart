@@ -21,7 +21,7 @@ class _LanguageSettingsPageState extends ConsumerState<LanguageSettingsPage> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final languageState = ref.read(languageProvider).valueOrNull;
+      final languageState = ref.read(languageProvider).value;
       if (languageState != null) {
         setState(() {
           selectedLanguage = languageState.currentLocale.languageCode;
@@ -34,7 +34,8 @@ class _LanguageSettingsPageState extends ConsumerState<LanguageSettingsPage> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final languageAsync = ref.watch(languageProvider);
-    final currentLanguageCode = languageAsync.valueOrNull?.currentLocale.languageCode ?? 'en';
+    final currentLanguageCode =
+        languageAsync.value?.currentLocale.languageCode ?? 'en';
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -63,82 +64,84 @@ class _LanguageSettingsPageState extends ConsumerState<LanguageSettingsPage> {
             ),
             const SizedBox(height: 18),
 
-            ...ref.read(languageProvider.notifier).getAvailableLanguages().entries.map((
-              entry,
-            ) {
-              final code = entry.key;
-              final name = entry.value;
-              final isSelected = selectedLanguage == code;
+            ...ref
+                .read(languageProvider.notifier)
+                .getAvailableLanguages()
+                .entries
+                .map((entry) {
+                  final code = entry.key;
+                  final name = entry.value;
+                  final isSelected = selectedLanguage == code;
 
-              return Card(
-                color: Colors.black,
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  side: BorderSide(
-                    color: isSelected ? Colors.orange : Colors.grey[800]!,
-                    width: isSelected ? 2 : 1,
-                  ),
-                ),
-                child: InkWell(
-                  onTap: () {
-                    setState(() {
-                      selectedLanguage = code;
-                    });
-                  },
-                  borderRadius: BorderRadius.circular(12),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: isSelected
-                                ? Colors.orange.withValues(alpha: 0.1)
-                                : Colors.grey[800]!.withValues(alpha: 0.3),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Icon(
-                            Icons.language,
-                            color: isSelected
-                                ? Colors.orange
-                                : Colors.grey[400],
-                            size: 24,
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-
-                        Expanded(
-                          child: Text(
-                            name,
-                            style: Theme.of(context).textTheme.titleSmall
-                                ?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                          ),
-                        ),
-
-                        if (isSelected)
-                          Container(
-                            padding: const EdgeInsets.all(4),
-                            decoration: BoxDecoration(
-                              color: Colors.orange,
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: const Icon(
-                              Icons.check,
-                              color: Colors.white,
-                              size: 16,
-                            ),
-                          ),
-                      ],
+                  return Card(
+                    color: Colors.black,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      side: BorderSide(
+                        color: isSelected ? Colors.orange : Colors.grey[800]!,
+                        width: isSelected ? 2 : 1,
+                      ),
                     ),
-                  ),
-                ),
-              );
-            }),
+                    child: InkWell(
+                      onTap: () {
+                        setState(() {
+                          selectedLanguage = code;
+                        });
+                      },
+                      borderRadius: BorderRadius.circular(12),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: isSelected
+                                    ? Colors.orange.withValues(alpha: 0.1)
+                                    : Colors.grey[800]!.withValues(alpha: 0.3),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Icon(
+                                Icons.language,
+                                color: isSelected
+                                    ? Colors.orange
+                                    : Colors.grey[400],
+                                size: 24,
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+
+                            Expanded(
+                              child: Text(
+                                name,
+                                style: Theme.of(context).textTheme.titleSmall
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                              ),
+                            ),
+
+                            if (isSelected)
+                              Container(
+                                padding: const EdgeInsets.all(4),
+                                decoration: BoxDecoration(
+                                  color: Colors.orange,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: const Icon(
+                                  Icons.check,
+                                  color: Colors.white,
+                                  size: 16,
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                }),
 
             const SizedBox(height: 32),
 

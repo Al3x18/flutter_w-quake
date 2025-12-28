@@ -23,7 +23,7 @@ class _DataSourceSettingsPageState
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final settings = ref.read(settingsProvider).valueOrNull;
+      final settings = ref.read(settingsProvider).value;
       if (settings != null) {
         setState(() {
           selectedSource = settings.source;
@@ -36,7 +36,8 @@ class _DataSourceSettingsPageState
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final settingsAsync = ref.watch(settingsProvider);
-    final currentSource = settingsAsync.valueOrNull?.source ?? EarthquakeSource.ingv;
+    final currentSource =
+        settingsAsync.value?.source ?? EarthquakeSource.ingv;
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -162,8 +163,7 @@ class _DataSourceSettingsPageState
               width: double.infinity,
               child: ElevatedButton(
                 onPressed:
-                    selectedSource != null &&
-                        selectedSource != currentSource
+                    selectedSource != null && selectedSource != currentSource
                     ? () => _saveSource(selectedSource!)
                     : null,
                 style: ElevatedButton.styleFrom(
@@ -191,9 +191,7 @@ class _DataSourceSettingsPageState
 
   Future<void> _saveSource(EarthquakeSource source) async {
     try {
-      await ref
-          .read(settingsProvider.notifier)
-          .setEarthquakeSource(source);
+      await ref.read(settingsProvider.notifier).setEarthquakeSource(source);
 
       if (mounted) {
         AnimatedSnackBarHelper.showSuccess(

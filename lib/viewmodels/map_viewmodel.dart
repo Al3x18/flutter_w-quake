@@ -16,8 +16,11 @@ class MapViewModel extends Notifier<MapState> {
 
   void centerOnEarthquake(Earthquake earthquake) {
     state = state.copyWith(
-      center: LatLng(earthquake.latitude, earthquake.longitude),
-      zoom: 8.0,
+      center: LatLng(
+        earthquake.geometry?.latitude ?? 0.0,
+        earthquake.geometry?.longitude ?? 0.0,
+      ),
+      zoom: 12.0,
     );
   }
 
@@ -27,7 +30,7 @@ class MapViewModel extends Notifier<MapState> {
     if (userPosition != null) {
       state = state.copyWith(
         center: LatLng(userPosition.latitude, userPosition.longitude),
-        zoom: 12.0,
+        zoom: 14.0,
       );
     }
   }
@@ -36,10 +39,9 @@ class MapViewModel extends Notifier<MapState> {
     final userPosition = ref.read(userPositionProvider).value;
 
     if (userPosition != null) {
-      final earthquakeLatLng = LatLng(
-        earthquake.latitude,
-        earthquake.longitude,
-      );
+      final eqLat = earthquake.geometry?.latitude ?? 0.0;
+      final eqLon = earthquake.geometry?.longitude ?? 0.0;
+      final earthquakeLatLng = LatLng(eqLat, eqLon);
       final userLatLng = LatLng(userPosition.latitude, userPosition.longitude);
 
       final minLat = earthquakeLatLng.latitude < userLatLng.latitude
@@ -58,8 +60,8 @@ class MapViewModel extends Notifier<MapState> {
       final center = LatLng((minLat + maxLat) / 2, (minLng + maxLng) / 2);
 
       final distance = Geolocator.distanceBetween(
-        earthquake.latitude,
-        earthquake.longitude,
+        eqLat,
+        eqLon,
         userPosition.latitude,
         userPosition.longitude,
       );

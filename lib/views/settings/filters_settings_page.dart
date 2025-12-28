@@ -33,16 +33,14 @@ class _FiltersSettingsPageState extends ConsumerState<FiltersSettingsPage> {
   }
 
   Future<void> _loadSavedDefaultFilter() async {
-    // Wait for settings to be loaded
     final settings = await ref.read(settingsProvider.future);
-    
+
     if (mounted) {
       setState(() {
         selectedDefaultArea = settings.defaultFilter.area;
         defaultMinMagnitude = settings.defaultFilter.minMagnitude;
         defaultDaysBack = settings.defaultFilter.daysBack;
-        defaultUseCustomDateRange =
-            settings.defaultFilter.useCustomDateRange;
+        defaultUseCustomDateRange = settings.defaultFilter.useCustomDateRange;
         defaultCustomStartDate = settings.defaultFilter.customStartDate;
         defaultCustomEndDate = settings.defaultFilter.customEndDate;
       });
@@ -446,7 +444,8 @@ class _FiltersSettingsPageState extends ConsumerState<FiltersSettingsPage> {
                   context: context,
                   initialDate: defaultCustomEndDate ?? DateTime.now(),
                   firstDate:
-                      defaultCustomStartDate ?? FilterValidator.getMinimumDate(),
+                      defaultCustomStartDate ??
+                      FilterValidator.getMinimumDate(),
                   lastDate: FilterValidator.getMaximumDate(),
                   builder: (context, child) {
                     return Theme(
@@ -522,7 +521,7 @@ class _FiltersSettingsPageState extends ConsumerState<FiltersSettingsPage> {
 
   Future<void> _saveSettings() async {
     final l10n = AppLocalizations.of(context)!;
-    
+
     final dateValidation = FilterValidator.validateDateRange(
       defaultCustomStartDate,
       defaultCustomEndDate,

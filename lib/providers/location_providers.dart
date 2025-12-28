@@ -4,66 +4,55 @@ import 'package:geolocator/geolocator.dart';
 import 'settings_provider.dart';
 import '../models/earthquake.dart';
 
-// --- Settings Providers (Shortcuts) ---
-
 final locationEnabledSettingProvider = Provider<bool>((ref) {
-  return ref.watch(settingsProvider).valueOrNull?.locationEnabled ?? false;
+  return ref.watch(settingsProvider).value?.locationEnabled ?? false;
 });
 
 final showUserLocationSettingProvider = Provider<bool>((ref) {
-  return ref.watch(settingsProvider).valueOrNull?.showUserLocation ?? false;
+  return ref.watch(settingsProvider).value?.showUserLocation ?? false;
 });
 
 final locationRadiusKmProvider = Provider<int>((ref) {
-  return ref.watch(settingsProvider).valueOrNull?.locationRadiusKm ?? 100;
+  return ref.watch(settingsProvider).value?.locationRadiusKm ?? 100;
 });
 
-// --- Core Location Providers ---
-
-/// Stream of the user's current position.
-/// Automatically handles settings (enabled/disabled) and permission checks.
 final userPositionProvider = StreamProvider<Position?>((ref) async* {
-  final settings = ref.watch(settingsProvider).valueOrNull;
+  final settings = ref.watch(settingsProvider).value;
 
-  // 1. Check App Settings
-  if (settings == null || !settings.locationEnabled || !settings.showUserLocation) {
+  if (settings == null ||
+      !settings.locationEnabled ||
+      !settings.showUserLocation) {
     yield null;
     return;
   }
 
-  // 2. Check System Service Status
   final serviceEnabled = await Geolocator.isLocationServiceEnabled();
   if (!serviceEnabled) {
     yield null;
     return;
   }
 
-  // 3. Check Permissions
   var permission = await Geolocator.checkPermission();
   if (permission == LocationPermission.denied) {
-    // Note: We don't request permission here to avoid UI popups from a provider.
-    // Permissions should be requested via the LocationController.
     yield null;
     return;
   }
-  
+
   if (permission == LocationPermission.deniedForever) {
     yield null;
     return;
   }
 
-  // 4. Get Position Stream
   try {
-     // Emit last known position first for speed
     final lastKnown = await Geolocator.getLastKnownPosition();
     if (lastKnown != null) {
       yield lastKnown;
     }
-    
+
     final stream = Geolocator.getPositionStream(
       locationSettings: const LocationSettings(
         accuracy: LocationAccuracy.high,
-        distanceFilter: 10, // Update every 10 meters
+        distanceFilter: 10,
       ),
     );
 
@@ -74,20 +63,15 @@ final userPositionProvider = StreamProvider<Position?>((ref) async* {
   }
 });
 
-/// Helper provider to check permission status reactively
-final locationPermissionStatusProvider = FutureProvider<LocationPermission>((ref) async {
-  // We depend on userPositionProvider to trigger refreshes, 
-  // or we can just fetch it.
+final locationPermissionStatusProvider = FutureProvider<LocationPermission>((
+  ref,
+) async {
   return Geolocator.checkPermission();
 });
-
-
-// --- Location Controller (Actions) ---
 
 class LocationController extends AsyncNotifier<void> {
   @override
   Future<void> build() async {
-    // No initial state needed really
   }
 
   Future<bool> requestPermission() async {
@@ -95,7 +79,10 @@ class LocationController extends AsyncNotifier<void> {
     try {
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
-        state = AsyncError('Location services are disabled', StackTrace.current);
+        state = AsyncError(
+          'Location services are disabled',
+          StackTrace.current,
+        );
         return false;
       }
 
@@ -110,13 +97,13 @@ class LocationController extends AsyncNotifier<void> {
 
       if (permission == LocationPermission.deniedForever) {
         state = AsyncError(
-            'Location permission permanently denied. Enable in settings.',
-            StackTrace.current);
+          'Location permission permanently denied. Enable in settings.',
+          StackTrace.current,
+        );
         return false;
       }
 
       state = const AsyncData(null);
-      // Invalidate providers to re-check permissions and restart streams
       ref.invalidate(userPositionProvider);
       return true;
     } catch (e, st) {
@@ -124,7 +111,7 @@ class LocationController extends AsyncNotifier<void> {
       return false;
     }
   }
-  
+
   Future<bool> openAppSettings() async {
     return Geolocator.openAppSettings();
   }
@@ -134,11 +121,8 @@ class LocationController extends AsyncNotifier<void> {
   }
 }
 
-final locationControllerProvider = AsyncNotifierProvider<LocationController, void>(
-  LocationController.new,
-);
-
-// --- Proximity Logic ---
+final locationControllerProvider =
+    AsyncNotifierProvider<LocationController, void>(LocationController.new);
 
 final earthquakeProximityProvider = Provider.family<bool, EarthquakeFeature>((
   ref,
@@ -177,8 +161,8 @@ final earthquakeDetailProximityProvider = Provider.family<bool, Earthquake>((
   final dMeters = Geolocator.distanceBetween(
     userPosition.latitude,
     userPosition.longitude,
-    earthquake.latitude,
-    earthquake.longitude,
+    earthquake.geometry?.latitude ?? 0.0,
+    earthquake.geometry?.longitude ?? 0.0,
   );
 
   return dMeters <= (radiusKm * 1000);

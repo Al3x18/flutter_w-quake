@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../l10n/app_localizations.dart';
 import '../models/earthquake.dart';
 import '../models/earthquake_filter.dart';
 import '../models/earthquake_source.dart';
@@ -10,310 +9,6 @@ class EarthquakeViewModel {
 
   EarthquakeViewModel({EarthquakeApiService? apiService})
     : _apiService = apiService ?? EarthquakeApiService();
-
-  DateTime _parseUtcToLocal(String timeString) {
-    String utcString = timeString.endsWith('Z') ? timeString : '${timeString}Z';
-    final utcDateTime = DateTime.parse(utcString);
-    return utcDateTime.toLocal();
-  }
-
-  String getDateCategory(String? timeString) {
-    if (timeString == null) return 'previous';
-
-    try {
-      final localDateTime = _parseUtcToLocal(timeString);
-      final now = DateTime.now();
-      final today = DateTime(now.year, now.month, now.day);
-      final yesterday = today.subtract(const Duration(days: 1));
-      final eventDate = DateTime(
-        localDateTime.year,
-        localDateTime.month,
-        localDateTime.day,
-      );
-
-      if (eventDate == today) {
-        return 'today';
-      } else if (eventDate == yesterday) {
-        return 'yesterday';
-      } else {
-        return 'previous';
-      }
-    } catch (e) {
-      return 'previous';
-    }
-  }
-
-  List<EarthquakeFeature> filterEarthquakesByMagnitude(
-    List<EarthquakeFeature> earthquakes,
-    double minMagnitude,
-  ) {
-    return earthquakes
-        .where(
-          (earthquake) => (earthquake.properties?.mag ?? 0.0) >= minMagnitude,
-        )
-        .toList();
-  }
-
-  List<EarthquakeFeature> sortEarthquakesByTime(
-    List<EarthquakeFeature> earthquakes,
-  ) {
-    final sortedList = List<EarthquakeFeature>.from(earthquakes);
-    sortedList.sort((a, b) {
-      final timeA = a.properties?.time != null
-          ? DateTime.parse(a.properties!.time!)
-          : DateTime(1970);
-      final timeB = b.properties?.time != null
-          ? DateTime.parse(b.properties!.time!)
-          : DateTime(1970);
-      return timeB.compareTo(timeA);
-    });
-    return sortedList;
-  }
-
-  Map<String, dynamic> calculateEarthquakeStats(
-    List<EarthquakeFeature> earthquakes,
-  ) {
-    if (earthquakes.isEmpty) {
-      return {
-        'total': 0,
-        'maxMagnitude': 0.0,
-        'minMagnitude': 0.0,
-        'averageMagnitude': 0.0,
-        'strongestEarthquake': null,
-        'mostRecentEarthquake': null,
-      };
-    }
-
-    final magnitudes = earthquakes
-        .map((e) => e.properties?.mag ?? 0.0)
-        .toList();
-    final maxMagnitude = magnitudes.reduce((a, b) => a > b ? a : b);
-    final minMagnitude = magnitudes.reduce((a, b) => a < b ? a : b);
-    final averageMagnitude =
-        magnitudes.reduce((a, b) => a + b) / magnitudes.length;
-
-    final strongestEarthquake = earthquakes.reduce(
-      (a, b) => (a.properties?.mag ?? 0.0) > (b.properties?.mag ?? 0.0) ? a : b,
-    );
-
-    final mostRecentEarthquake = earthquakes.reduce((a, b) {
-      final timeA = a.properties?.time != null
-          ? DateTime.parse(a.properties!.time!)
-          : DateTime(1970);
-      final timeB = b.properties?.time != null
-          ? DateTime.parse(b.properties!.time!)
-          : DateTime(1970);
-      return timeB.isAfter(timeA) ? b : a;
-    });
-
-    return {
-      'total': earthquakes.length,
-      'maxMagnitude': maxMagnitude,
-      'minMagnitude': minMagnitude,
-      'averageMagnitude': averageMagnitude,
-      'strongestEarthquake': strongestEarthquake,
-      'mostRecentEarthquake': mostRecentEarthquake,
-    };
-  }
-
-  String getEarthquakeIntensityCategory(double magnitude) {
-    if (magnitude >= 7.0) return 'Major';
-    if (magnitude >= 6.0) return 'Strong';
-    if (magnitude >= 5.0) return 'Moderate';
-    if (magnitude >= 4.0) return 'Light';
-    if (magnitude >= 3.0) return 'Minor';
-    return 'Micro';
-  }
-
-  Color getMagnitudeColor(double magnitude) {
-    if (magnitude >= 6.0) return const Color(0xFFD32F2F);
-    if (magnitude >= 5.0) return const Color(0xFFEF5350);
-    if (magnitude >= 4.0) return const Color(0xFFFB8C00);
-    if (magnitude >= 3.0) return const Color(0xFFFDD835);
-    if (magnitude >= 2.0) return const Color(0xFF4CAF50);
-    return Colors.white;
-  }
-
-  String formatEarthquakeTime(String? timeString, AppLocalizations l10n) {
-    if (timeString == null) return l10n.unknownDate;
-
-    try {
-      final localDateTime = _parseUtcToLocal(timeString);
-      final now = DateTime.now();
-      final difference = now.difference(localDateTime);
-
-      if (difference.inDays > 0) {
-        return l10n.daysAgo(difference.inDays);
-      } else if (difference.inHours > 0) {
-        final totalMinutes = difference.inMinutes;
-        final hours = totalMinutes ~/ 60;
-        final remainingMinutes = totalMinutes % 60;
-
-        if (remainingMinutes >= 23 && remainingMinutes <= 52) {
-          if (hours == 1) {
-            return l10n.oneAndHalfHoursAgo;
-          } else {
-            return l10n.hoursAndHalfAgo(hours);
-          }
-        } else if (remainingMinutes > 52) {
-          return l10n.hoursAgo(hours + 1);
-        } else {
-          if (hours == 1) {
-            return l10n.oneHourAgo;
-          } else {
-            return l10n.hoursAgo(hours);
-          }
-        }
-      } else if (difference.inMinutes > 0) {
-        return l10n.minutesAgo(difference.inMinutes);
-      } else {
-        return l10n.now;
-      }
-    } catch (e) {
-      return l10n.invalidDate;
-    }
-  }
-
-  String formatTime(String? timeString) {
-    if (timeString == null) return '--:--';
-
-    try {
-      final localDateTime = _parseUtcToLocal(timeString);
-      return '${localDateTime.hour.toString().padLeft(2, '0')}:${localDateTime.minute.toString().padLeft(2, '0')}';
-    } catch (e) {
-      return '--:--';
-    }
-  }
-
-  String getTimeAgo(String? timeString, AppLocalizations l10n) {
-    if (timeString == null) return l10n.unknown;
-
-    try {
-      final localDateTime = _parseUtcToLocal(timeString);
-      final now = DateTime.now();
-      final difference = now.difference(localDateTime);
-
-      if (difference.inDays > 0) {
-        return l10n.daysAgo(difference.inDays);
-      } else if (difference.inHours > 0) {
-        final totalMinutes = difference.inMinutes;
-        final hours = totalMinutes ~/ 60;
-        final remainingMinutes = totalMinutes % 60;
-
-        if (remainingMinutes >= 23 && remainingMinutes <= 52) {
-          if (hours == 1) {
-            return l10n.oneAndHalfHoursAgo;
-          } else {
-            return l10n.hoursAndHalfAgo(hours);
-          }
-        } else if (remainingMinutes > 52) {
-          return l10n.hrsAgo(hours + 1);
-        } else {
-          return l10n.hrsAgo(hours);
-        }
-      } else if (difference.inMinutes > 0) {
-        return l10n.minsAgo(difference.inMinutes);
-      } else {
-        return l10n.justNow;
-      }
-    } catch (e) {
-      return l10n.unknown;
-    }
-  }
-
-  String formatDate(String? timeString) {
-    if (timeString == null) return '--/--/----';
-
-    try {
-      final localDateTime = _parseUtcToLocal(timeString);
-      return '${localDateTime.day.toString().padLeft(2, '0')}/${localDateTime.month.toString().padLeft(2, '0')}/${localDateTime.year}';
-    } catch (e) {
-      return '--/--/----';
-    }
-  }
-
-  String extractMainLocation(String place) {
-    if (place.contains('(')) {
-      final parts = place.split('(');
-      if (parts.length > 1) {
-        final mainPart = parts[0].trim();
-
-        if (mainPart.contains('km')) {
-          final cityMatch = RegExp(r'(\w+)\s*$').firstMatch(mainPart);
-          if (cityMatch != null) {
-            return cityMatch.group(1) ?? mainPart;
-          }
-        }
-        return mainPart;
-      }
-    }
-
-    if (place.contains('[')) {
-      return place.split('[')[0].trim();
-    }
-
-    return place;
-  }
-
-  String extractSubLocation(String place) {
-    if (place.contains('(') && place.contains(')')) {
-      final match = RegExp(r'\(([^)]+)\)').firstMatch(place);
-      if (match != null) {
-        final subLocation = match.group(1) ?? '';
-
-        if (place.contains('km')) {
-          final distanceMatch = RegExp(r'(\d+\s*km\s*\w+)').firstMatch(place);
-          if (distanceMatch != null) {
-            return '${distanceMatch.group(1)}, $subLocation';
-          }
-        }
-
-        return subLocation;
-      }
-    }
-
-    if (place.contains('[') && place.contains(']')) {
-      final match = RegExp(r'\[([^\]]+)\]').firstMatch(place);
-      if (match != null) {
-        return match.group(1) ?? '';
-      }
-    }
-
-    return '';
-  }
-
-  String extractProvince(String place) {
-    if (place.contains('(') && place.contains(')')) {
-      final match = RegExp(r'\(([^)]+)\)').firstMatch(place);
-      if (match != null) {
-        final content = match.group(1) ?? '';
-
-        if (content.contains(',')) {
-          final parts = content.split(',');
-          if (parts.length > 1) {
-            return parts.last.trim();
-          }
-        }
-
-        return content;
-      }
-    }
-
-    return '';
-  }
-
-  String extractDistance(String place) {
-    final distanceMatch = RegExp(r'(\d+\s*km\s*[A-Z]+)').firstMatch(place);
-    if (distanceMatch != null) {
-      return distanceMatch.group(1) ?? '';
-    }
-
-    return '';
-  }
-
-  bool isSignificantEarthquake(EarthquakeFeature earthquake) {
-    return (earthquake.properties?.mag ?? 0.0) >= 4.0;
-  }
 
   Map<String, List<EarthquakeFeature>> groupEarthquakesByRegion(
     List<EarthquakeFeature> earthquakes,
@@ -333,7 +28,6 @@ class EarthquakeViewModel {
     return grouped;
   }
 
-  /// This function is weird i know and probably not complete, should be refactored, but it works for now i think :)
   String _extractRegionFromPlace(String place) {
     if (place.contains('Sicilia') || place.contains('Siciliana')) {
       return 'Sicily';
@@ -388,21 +82,23 @@ class EarthquakeViewModel {
     if (place.contains('Chad')) return 'Chad';
     if (place.contains('Nigeria')) return 'Nigeria';
     if (place.contains('Cameroon')) return 'Cameroon';
-    if (place.contains('Central African Republic')) return 'Central African Republic';
-    if (place.contains('Chad')) return 'Chad';
+    if (place.contains('Central African Republic')) {
+      return 'Central African Republic';
+    }
+    if (place.contains('Congo Democratic Republic')) {
+      return 'Congo Democratic Republic';
+    }
     if (place.contains('Congo')) return 'Congo';
-    if (place.contains('Congo Democratic Republic')) return 'Congo Democratic Republic';
     if (place.contains('Gabon')) return 'Gabon';
     if (place.contains('Equatorial Guinea')) return 'Equatorial Guinea';
     if (place.contains('Sao Tome and Principe')) return 'Sao Tome and Principe';
     if (place.contains('Benin')) return 'Benin';
-    if (place.contains('Togo')) return 'Togo';
     if (place.contains('Burkina Faso')) return 'Burkina Faso';
     if (place.contains('Mali')) return 'Mali';
     if (place.contains('Senegal')) return 'Senegal';
     if (place.contains('Gambia')) return 'Gambia';
-    if (place.contains('Guinea')) return 'Guinea';
     if (place.contains('Guinea-Bissau')) return 'Guinea-Bissau';
+    if (place.contains('Guinea')) return 'Guinea';
     if (place.contains('Liberia')) return 'Liberia';
     if (place.contains('Sierra Leone')) return 'Sierra Leone';
     if (place.contains('Ivory Coast')) return 'Ivory Coast';
@@ -410,36 +106,6 @@ class EarthquakeViewModel {
     if (place.contains('Togo')) return 'Togo';
     debugPrint('[EarthquakeViewModel] Unknown region: $place');
     return 'Other regions';
-  }
-
-  String getFilterDescription(EarthquakeFilter filter, AppLocalizations l10n) {
-    final area = filter.area.getTranslatedName(l10n).toLowerCase();
-    final magnitude = filter.minMagnitude;
-    final daysBack = filter.daysBack;
-
-    if (filter.useCustomDateRange) {
-      if (filter.customStartDate != null && filter.customEndDate != null) {
-        final startDate =
-            '${filter.customStartDate!.day}/${filter.customStartDate!.month}/${filter.customStartDate!.year}';
-        final endDate =
-            '${filter.customEndDate!.day}/${filter.customEndDate!.month}/${filter.customEndDate!.year}';
-        return l10n.eventsInAreaDateRange(area, startDate, endDate, magnitude);
-      } else if (filter.customStartDate != null) {
-        final startDate =
-            '${filter.customStartDate!.day}/${filter.customStartDate!.month}/${filter.customStartDate!.year}';
-        return l10n.eventsInAreaFromDate(area, startDate, magnitude);
-      } else if (filter.customEndDate != null) {
-        final endDate =
-            '${filter.customEndDate!.day}/${filter.customEndDate!.month}/${filter.customEndDate!.year}';
-        return l10n.eventsInAreaUntilDate(area, endDate, magnitude);
-      }
-    }
-
-    if (daysBack == 1) {
-      return l10n.eventsInAreaLast24Hours(area, magnitude);
-    } else {
-      return l10n.eventsInAreaLastDays(area, daysBack, magnitude);
-    }
   }
 
   Future<List<EarthquakeFeature>> fetchEarthquakesWithFilters({

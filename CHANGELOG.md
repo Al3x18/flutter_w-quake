@@ -1,20 +1,50 @@
 # Changelog
 
+## [1.1.0] - 2025-12-28
+
+### Changed
+
+- **Provider Architecture**: Major refactoring of provider structure for improved maintainability and code cleanliness
+  - Simplified MVVM pattern by removing redundancies
+  - Added factory constructor `Earthquake.fromFeature()` to eliminate code duplication
+  - Optimized provider dependencies and removed unnecessary providers
+  - Streamlined `selectedEarthquakeProvider` and `allEarthquakesProvider` for better performance
+
+- **Map Improvements**: Enhanced map UI and interaction management
+  - Improved initial zoom level when opening earthquake details (now 12.0 for better detail view)
+  - Fixed "center on user location" button functionality with proper zoom level (14.0)
+  - Implemented in-place event selection system: clicking map markers now updates the detail view without navigation
+  - Fixed marker contrast: events with magnitude < 2.0 now display black text and border on white background for better readability
+  - Enhanced MapController management for smoother map interactions
+
+- **Code Quality**: Comprehensive code cleanup
+  - Improved error handling in provider initialization
+
+### Fixed
+
+- **Provider State Management**: Fixed unsafe provider access in `dispose()` methods using `Future.microtask()`
+- **Map Navigation**: Fixed map not centering on selected earthquake when opening detail page
+- **Location Providers**: Fixed distance calculation using correct geometry accessors
+- **Filter Dialog**: Fixed reference to non-existent `defaultSettingsProvider`
+
 ## [1.0.0] - 2025-12-14
 
 ### Added
+
 - **Multi-Source Support**: Added USGS (World) as a selectable data source alongside INGV (Italy).
 - **Data Source Settings**: New dedicated settings page for selecting earthquake data provider.
 - **Interactive Map**: Map markers are now clickable and navigate to the respective earthquake detail page.
 - **Global Event Visibility**: Detail map now displays all filtered events as smaller markers for better context.
 
 ### Changed
+
 - **Navigation**: Improved back navigation from map interactions to always return to the event list.
 - **UI/UX**: Refined earthquake detail view to dynamically hide missing data fields (e.g., when viewing USGS events).
 - **Settings**: Modernized settings UI, replacing dialogs with dedicated pages for a consistent experience.
 - **Localization**: Added full Italian/English support for new features.
 
 ### Fixed
+
 - **Notifications**: Disabled notification UI temporarily pending Firebase integration.
 
 ## [0.9.0] - 2025-10-29
@@ -46,7 +76,7 @@
 
 - **Nearby earthquakes indicator**: Events within user-defined radius are marked with orange indicators
 - **Location radius settings**: Configurable search radius (20-300 km) with real-time updates
-- **Enhanced location features**: 
+- **Enhanced location features**:
   - Orange vertical bar on earthquake cards for nearby events
   - "Near you" badge in earthquake details when within radius
   - Real-time indicator updates when changing radius settings
@@ -56,11 +86,11 @@
 
 ### Architecture Improvements
 
-- **Major architecture simplification**: Reduced provider complexity 
+- **Major architecture simplification**: Reduced provider complexity
 - **Unified provider structure**: Consolidated earthquake, language, and information providers
-- **Streamlined provider files**: 
+- **Streamlined provider files**:
   - `earthquake_providers.dart`: Centralized main providers
-  - `location_providers.dart`: Essential location providers only 
+  - `location_providers.dart`: Essential location providers only
   - `language_providers.dart`: Minimal service provider
   - `information_providers.dart`: Minimal service provider
 - **Enhanced maintainability**: Single source of truth for main application logic

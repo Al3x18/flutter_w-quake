@@ -44,7 +44,6 @@ class InformationState {
 }
 
 class InformationNotifier extends AsyncNotifier<InformationState> {
-  // Static configuration
   static const String _appName = 'W-Quake';
   static const String _appDescription = 'Real-time earthquake monitoring app';
   static const String _developerName = 'Alex De Pasquale';
@@ -65,7 +64,7 @@ class InformationNotifier extends AsyncNotifier<InformationState> {
   Future<InformationState> _loadAppInformation() async {
     try {
       final packageInfo = await PackageInfo.fromPlatform();
-      
+
       return InformationState(
         appVersion: '${packageInfo.version} (${packageInfo.buildNumber})',
         versionOnly: packageInfo.version,
@@ -80,8 +79,6 @@ class InformationNotifier extends AsyncNotifier<InformationState> {
       return const InformationState();
     }
   }
-
-  // --- External Actions ---
 
   Future<bool> _launchUrl(String url) async {
     try {
@@ -105,8 +102,6 @@ class InformationNotifier extends AsyncNotifier<InformationState> {
   Future<bool> launchUsgsWebsite() => _launchUrl(_usgsWebsite);
   Future<bool> launchUsgsApiDocumentation() => _launchUrl(_usgsApiUrl);
 
-  // --- Getters for static info ---
-
   String getAppWebsite() => _appWebsite;
   String getPrivacyPolicyUrl() => _privacyPolicyUrl;
   String getTermsOfServiceUrl() => _termsOfServiceUrl;
@@ -114,19 +109,19 @@ class InformationNotifier extends AsyncNotifier<InformationState> {
   String getIngvApiUrl() => _ingvApiUrl;
 
   Map<String, String> getCredits() => {
-        'data_source': 'INGV (Istituto Nazionale di Geofisica e Vulcanologia)',
-        'api_url': _ingvApiUrl,
-        'ingv_website': _ingvWebsite,
-        'developer': _developerName,
-        'app_website': _appWebsite,
-      };
+    'data_source': 'INGV (Istituto Nazionale di Geofisica e Vulcanologia)',
+    'api_url': _ingvApiUrl,
+    'ingv_website': _ingvWebsite,
+    'developer': _developerName,
+    'app_website': _appWebsite,
+  };
 
   Map<String, String> getLegalInfo() => {
-        'privacy_policy': _privacyPolicyUrl,
-        'terms_of_service': _termsOfServiceUrl,
-        'data_source': 'INGV Web Services API',
-        'data_license': 'Open Data License',
-      };
+    'privacy_policy': _privacyPolicyUrl,
+    'terms_of_service': _termsOfServiceUrl,
+    'data_source': 'INGV Web Services API',
+    'data_license': 'Open Data License',
+  };
 }
 
 final informationProvider =

@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../l10n/app_localizations.dart';
 import '../models/earthquake_filter.dart';
 import '../providers/earthquake_providers.dart';
-import '../providers/settings_providers.dart';
+import '../providers/settings_provider.dart';
 import '../utils/filter_validator.dart';
 import 'custom_snackbar.dart';
 
@@ -465,8 +465,7 @@ class _FilterDialogState extends ConsumerState<FilterDialog> {
       actions: [
         TextButton(
           onPressed: () {
-            final defaultSettings = ref.read(defaultSettingsProvider);
-            final defaultFilter = defaultSettings.defaultFilter;
+            final defaultFilter = ref.read(settingsProvider).value?.defaultFilter ?? const EarthquakeFilter();
 
             setState(() {
               selectedArea = defaultFilter.area;

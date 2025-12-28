@@ -36,7 +36,7 @@ class LanguageNotifier extends AsyncNotifier<LanguageState> {
     try {
       final prefs = await SharedPreferences.getInstance();
       final savedCode = prefs.getString(_languageKey) ?? _defaultLanguageCode;
-      
+
       return LanguageState(
         currentLocale: Locale(savedCode),
         isInitialized: true,
@@ -55,19 +55,23 @@ class LanguageNotifier extends AsyncNotifier<LanguageState> {
 
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_languageKey, languageCode);
-    
-    state = AsyncData(state.value!.copyWith(currentLocale: Locale(languageCode)));
+
+    state = AsyncData(
+      state.value!.copyWith(currentLocale: Locale(languageCode)),
+    );
   }
 
   Future<void> resetToDefault() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_languageKey);
-    
-    state = AsyncData(state.value!.copyWith(currentLocale: const Locale(_defaultLanguageCode)));
+
+    state = AsyncData(
+      state.value!.copyWith(currentLocale: const Locale(_defaultLanguageCode)),
+    );
   }
 
   Map<String, String> getAvailableLanguages() => _supportedLanguages;
-  
+
   String getLanguageName(String code) => _supportedLanguages[code] ?? 'English';
 }
 

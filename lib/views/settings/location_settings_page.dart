@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:permission_handler/permission_handler.dart';
 import '../../l10n/app_localizations.dart';
-import '../../viewmodels/location_viewmodel.dart';
 import '../../providers/settings_provider.dart';
 import '../../providers/location_providers.dart';
 
@@ -15,21 +13,21 @@ class LocationSettingsPage extends ConsumerStatefulWidget {
 }
 
 class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
-  
   Future<void> _toggleLocationEnabled(bool enabled) async {
     try {
       await ref.read(settingsProvider.notifier).setLocationEnabled(enabled);
-      
+
       if (enabled) {
-        final success = await ref.read(locationControllerProvider.notifier).requestPermission();
-        
-        // Wait a bit for stream to emit
+        final success = await ref
+            .read(locationControllerProvider.notifier)
+            .requestPermission();
+
         await Future.delayed(const Duration(milliseconds: 500));
         final hasPosition = ref.read(userPositionProvider).value != null;
 
         if (success && hasPosition) {
           await ref.read(settingsProvider.notifier).setShowUserLocation(true);
-          
+
           if (mounted) {
             final l10n = AppLocalizations.of(context)!;
             ScaffoldMessenger.of(context).showSnackBar(
@@ -64,7 +62,6 @@ class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
   Future<void> _toggleShowUserLocation(bool show) async {
     try {
       await ref.read(settingsProvider.notifier).setShowUserLocation(show);
-      // No need to manually start/stop updates, provider watches settings.
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -102,18 +99,26 @@ class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
         ),
       ),
       error: (err, stack) => Scaffold(
-         backgroundColor: Colors.black,
-         body: Center(child: Text('Error: $err', style: const TextStyle(color: Colors.white))),
+        backgroundColor: Colors.black,
+        body: Center(
+          child: Text(
+            'Error: $err',
+            style: const TextStyle(color: Colors.white),
+          ),
+        ),
       ),
       data: (settings) {
         final isLocationEnabled = settings.locationEnabled;
         final showUserLocation = settings.showUserLocation;
         final radiusKm = settings.locationRadiusKm;
-        
+
         final hasLocation = userPositionAsync.value != null;
-        final isLocationLoading = userPositionAsync.isLoading || controllerState.isLoading;
+        final isLocationLoading =
+            userPositionAsync.isLoading || controllerState.isLoading;
         final hasError = userPositionAsync.hasError || controllerState.hasError;
-        final errorMessage = controllerState.error?.toString() ?? userPositionAsync.error?.toString();
+        final errorMessage =
+            controllerState.error?.toString() ??
+            userPositionAsync.error?.toString();
 
         return Scaffold(
           backgroundColor: Colors.black,
@@ -176,7 +181,9 @@ class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
                   const SizedBox(height: 16),
                 ],
 
-                if (isLocationEnabled && !hasLocation && !isLocationLoading) ...[
+                if (isLocationEnabled &&
+                    !hasLocation &&
+                    !isLocationLoading) ...[
                   _buildActionCard(
                     icon: Icons.settings,
                     title: l10n.openAppSettings,
@@ -247,7 +254,11 @@ class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
     );
   }
 
-  Widget _buildStatusCard(bool hasLocation, bool isLoading, AppLocalizations l10n) {
+  Widget _buildStatusCard(
+    bool hasLocation,
+    bool isLoading,
+    AppLocalizations l10n,
+  ) {
     Color statusColor;
     String statusText;
     IconData statusIcon;
@@ -470,7 +481,9 @@ class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
               label: '$radiusKm km',
               onChanged: (v) async {
                 final int km = v.round();
-                await ref.read(settingsProvider.notifier).setLocationRadiusKm(km);
+                await ref
+                    .read(settingsProvider.notifier)
+                    .setLocationRadiusKm(km);
               },
             ),
           ],

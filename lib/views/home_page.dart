@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../l10n/app_localizations.dart';
+import '../models/earthquake_extensions.dart';
 import '../models/earthquake_filter.dart';
 import '../providers/earthquake_providers.dart';
 import '../widgets/earthquake_card.dart';
@@ -30,7 +31,6 @@ class _HomePageState extends ConsumerState<HomePage> {
     final l10n = AppLocalizations.of(context)!;
     final earthquakesAsync = ref.watch(earthquakesFutureProvider);
     final stats = ref.watch(earthquakeStatsProvider);
-    final viewModel = ref.watch(earthquakeViewModelProvider);
     final filterState = ref.watch(filterProvider);
 
     return Scaffold(
@@ -254,10 +254,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      viewModel.getFilterDescription(
-                        filterState.currentFilter,
-                        l10n,
-                      ),
+                      filterState.currentFilter.getDescription(l10n),
                       style: Theme.of(
                         context,
                       ).textTheme.bodyMedium?.copyWith(color: Colors.grey[200]),
@@ -309,9 +306,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                         final withinRadius = ref.watch(
                           earthquakeProximityProvider(earthquake),
                         );
-                        final currentCategory = viewModel.getDateCategory(
-                          earthquake.properties?.time,
-                        );
+                        final currentCategory = earthquake.getDateCategory();
 
                         bool showSeparator = false;
                         String? separatorText;
@@ -327,9 +322,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                           }
                         } else {
                           final previousEarthquake = earthquakeList[index - 1];
-                          final previousCategory = viewModel.getDateCategory(
-                            previousEarthquake.properties?.time,
-                          );
+                          final previousCategory =
+                              previousEarthquake.getDateCategory();
 
                           if (currentCategory != previousCategory) {
                             showSeparator = true;
@@ -386,7 +380,6 @@ class _HomePageState extends ConsumerState<HomePage> {
                               ),
                             EarthquakeCard(
                               earthquake: earthquake,
-                              viewModel: viewModel,
                               highlightNear: withinRadius,
                             ),
                           ],

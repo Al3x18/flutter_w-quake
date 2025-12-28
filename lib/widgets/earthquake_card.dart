@@ -2,25 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../l10n/app_localizations.dart';
 import '../models/earthquake.dart';
-import '../viewmodels/earthquake_viewmodel.dart';
+import '../models/earthquake_extensions.dart';
 
 class EarthquakeCard extends StatelessWidget {
   final EarthquakeFeature earthquake;
-  final EarthquakeViewModel? viewModel;
   final bool highlightNear;
 
   const EarthquakeCard({
     super.key,
     required this.earthquake,
-    this.viewModel,
     this.highlightNear = false,
   });
 
   String _buildLocationTitle(String place) {
-    if (viewModel == null) return place;
-
-    final mainLocation = viewModel!.extractMainLocation(place);
-    final province = viewModel!.extractProvince(place);
+    final mainLocation = earthquake.mainLocation;
+    final province = earthquake.province;
 
     if (province.isNotEmpty) {
       return '$mainLocation ($province)';
@@ -35,10 +31,6 @@ class EarthquakeCard extends StatelessWidget {
     final properties = earthquake.properties;
     final magnitude = properties?.mag ?? 0.0;
     final place = properties?.place ?? 'Luogo sconosciuto';
-
-    if (viewModel == null) {
-      return const SizedBox.shrink();
-    }
 
     return GestureDetector(
       onTap: () {
@@ -94,9 +86,7 @@ class EarthquakeCard extends StatelessWidget {
                                   TextSpan(
                                     children: [
                                       TextSpan(
-                                        text: viewModel!.formatDate(
-                                          properties?.time,
-                                        ),
+                                        text: earthquake.formattedDate,
                                         style: Theme.of(context)
                                             .textTheme
                                             .bodySmall
@@ -106,13 +96,9 @@ class EarthquakeCard extends StatelessWidget {
                                             ),
                                       ),
 
-                                      if (viewModel!
-                                          .extractDistance(place)
-                                          .trim()
-                                          .isNotEmpty)
+                                      if (earthquake.distance.trim().isNotEmpty)
                                         TextSpan(
-                                          text:
-                                              ' • ${viewModel!.extractDistance(place)}',
+                                          text: ' • ${earthquake.distance}',
                                           style: Theme.of(context)
                                               .textTheme
                                               .bodySmall
@@ -164,7 +150,7 @@ class EarthquakeCard extends StatelessWidget {
                             FittedBox(
                               fit: BoxFit.scaleDown,
                               child: Text(
-                                viewModel!.formatTime(properties?.time),
+                                earthquake.formattedTime,
                                 style: Theme.of(context).textTheme.bodyMedium
                                     ?.copyWith(
                                       color: Colors.grey[200],
@@ -176,7 +162,7 @@ class EarthquakeCard extends StatelessWidget {
                             FittedBox(
                               fit: BoxFit.scaleDown,
                               child: Text(
-                                '(${viewModel!.getTimeAgo(properties?.time, l10n)})',
+                                '(${earthquake.getTimeAgo(l10n)})',
                                 style: Theme.of(context).textTheme.bodySmall
                                     ?.copyWith(
                                       color: Colors.grey[400],
@@ -201,9 +187,7 @@ class EarthquakeCard extends StatelessWidget {
                                 magnitude.toStringAsFixed(1),
                                 style: Theme.of(context).textTheme.headlineSmall
                                     ?.copyWith(
-                                      color: viewModel!.getMagnitudeColor(
-                                        magnitude,
-                                      ),
+                                      color: earthquake.magnitudeColor,
                                       fontSize: 24,
                                       fontWeight: FontWeight.bold,
                                     ),

@@ -44,6 +44,24 @@ class Earthquake {
       _$EarthquakeFromJson(json);
 
   Map<String, dynamic> toJson() => _$EarthquakeToJson(this);
+
+  factory Earthquake.fromFeature(EarthquakeFeature feature) {
+    return Earthquake(
+      eventId: feature.properties?.eventId,
+      eventIdString: feature.id,
+      originId: feature.properties?.originId,
+      time: feature.properties?.time,
+      author: feature.properties?.author,
+      magType: feature.properties?.magType,
+      mag: feature.properties?.mag,
+      magAuthor: feature.properties?.magAuthor,
+      type: feature.properties?.type,
+      place: feature.properties?.place,
+      version: feature.properties?.version,
+      geojsonCreationTime: feature.properties?.geojsonCreationTime,
+      geometry: feature.geometry,
+    );
+  }
 }
 
 @JsonSerializable()
@@ -136,64 +154,4 @@ class EarthquakeProperties {
   }
 
   Map<String, dynamic> toJson() => _$EarthquakePropertiesToJson(this);
-}
-
-extension EarthquakeExtensions on Earthquake {
-  double get longitude => geometry?.longitude ?? 0.0;
-  double get latitude => geometry?.latitude ?? 0.0;
-  double get depth => geometry?.depth ?? 0.0;
-
-  String get formattedMagnitude =>
-      '${mag?.toStringAsFixed(1) ?? 'N/A'} ${magType ?? ''}';
-  String get formattedDepth => '${depth.toStringAsFixed(1)} km';
-
-  String get mainLocation {
-    if (place == null) return 'Unknown Location';
-
-    final parts = place!.split(',');
-    if (parts.isNotEmpty) {
-      return parts[0].trim();
-    }
-    return place!;
-  }
-
-  String get province {
-    if (place == null) return '';
-
-    final regex = RegExp(r'\(([A-Z]{2})\)');
-    final match = regex.firstMatch(place!);
-    return match?.group(1) ?? '';
-  }
-
-  String get distance {
-    if (place == null) return '';
-
-    final regex = RegExp(r'(\d+\s*km\s*[NSEW]+)');
-    final match = regex.firstMatch(place!);
-    return match?.group(1) ?? '';
-  }
-
-  String get reviewStatus {
-    if (author == null) return 'UNKNOWN';
-
-    if (author!.contains('SURVEY')) {
-      return 'MANUAL / REVIEWED';
-    } else if (author!.contains('AUTOMATIC')) {
-      return 'AUTOMATIC';
-    } else {
-      return 'MANUAL / REVIEWED';
-    }
-  }
-
-  String get agency {
-    if (author == null) return 'UNKNOWN';
-
-    if (author!.contains('INGV')) {
-      return 'INGV';
-    } else if (author!.contains('SURVEY')) {
-      return 'INGV';
-    } else {
-      return author!;
-    }
-  }
 }

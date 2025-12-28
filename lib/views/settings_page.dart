@@ -17,8 +17,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final settingsAsync = ref.watch(settingsProvider);
-    final source =
-        settingsAsync.valueOrNull?.source ?? EarthquakeSource.ingv;
+    final source = settingsAsync.value?.source ?? EarthquakeSource.ingv;
 
     return Scaffold(
       backgroundColor: Colors.black,

@@ -102,7 +102,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get enableNotifications => 'Enable and manage event notifications';
 
   @override
-  String get customizeNotificationFilters => 'Customize notification filters for events';
+  String get customizeNotificationFilters =>
+      'Customize notification filters for events';
 
   @override
   String get selectAppLanguage => 'Select application language';
@@ -142,7 +143,12 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String eventsInAreaDateRange(String area, String startDate, String endDate, double magnitude) {
+  String eventsInAreaDateRange(
+    String area,
+    String startDate,
+    String endDate,
+    double magnitude,
+  ) {
     return 'Events in $area from $startDate to $endDate (mag ≥ $magnitude)';
   }
 
@@ -258,10 +264,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get previousDaysEvents => 'Previous days events';
 
   @override
-  String get enablePushNotifications => 'Enable push notifications for earthquake events';
+  String get enablePushNotifications =>
+      'Enable push notifications for earthquake events';
 
   @override
-  String get setMinimumMagnitudeForNotifications => 'Set minimum magnitude for notifications';
+  String get setMinimumMagnitudeForNotifications =>
+      'Set minimum magnitude for notifications';
 
   @override
   String get minMagnitude => 'Min Magnitude';
@@ -273,7 +281,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notificationArea => 'Notification Area';
 
   @override
-  String get selectNotificationArea => 'Select geographic area for notifications';
+  String get selectNotificationArea =>
+      'Select geographic area for notifications';
 
   @override
   String get appVersion => 'App Version';
@@ -303,7 +312,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get viewDocumentation => 'View Documentation';
 
   @override
-  String get ingvInstitute => 'INGV (Istituto Nazionale di Geofisica e Vulcanologia)';
+  String get ingvInstitute =>
+      'INGV (Istituto Nazionale di Geofisica e Vulcanologia)';
 
   @override
   String get earthquakeDataProvider => 'Earthquake Data Provider';
@@ -432,7 +442,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get locationPermission => 'Location Permission';
 
   @override
-  String get locationPermissionDescription => 'This app needs access to location to show your position on the earthquake map.';
+  String get locationPermissionDescription =>
+      'This app needs access to location to show your position on the earthquake map.';
 
   @override
   String get enableLocation => 'Enable Location';
@@ -447,25 +458,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get locationDisabled => 'Location services disabled';
 
   @override
-  String get locationDisabledDescription => 'Location services are disabled. Enable them in settings to see your position on the map.';
+  String get locationDisabledDescription =>
+      'Location services are disabled. Enable them in settings to see your position on the map.';
 
   @override
   String get locationPermissionDenied => 'Location permission denied';
 
   @override
-  String get locationPermissionDeniedDescription => 'Location permission was denied. Enable it to see your position on the map.';
+  String get locationPermissionDeniedDescription =>
+      'Location permission was denied. Enable it to see your position on the map.';
 
   @override
-  String get locationPermissionPermanentlyDenied => 'Location permission permanently denied';
+  String get locationPermissionPermanentlyDenied =>
+      'Location permission permanently denied';
 
   @override
-  String get locationPermissionPermanentlyDeniedDescription => 'Location permission was permanently denied. Enable it in app settings.';
+  String get locationPermissionPermanentlyDeniedDescription =>
+      'Location permission was permanently denied. Enable it in app settings.';
 
   @override
   String get unableToGetLocation => 'Unable to get location';
 
   @override
-  String get unableToGetLocationDescription => 'An error occurred while retrieving location. Please try again later.';
+  String get unableToGetLocationDescription =>
+      'An error occurred while retrieving location. Please try again later.';
 
   @override
   String get yourLocation => 'Your location';
@@ -495,10 +511,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get openAppSettings => 'Open App Settings';
 
   @override
-  String get enableLocationPermissionsManually => 'Manually enable location permissions';
+  String get enableLocationPermissionsManually =>
+      'Manually enable location permissions';
 
   @override
-  String get locationEnabledSuccess => 'Location enabled! Your position will be shown on the map.';
+  String get locationEnabledSuccess =>
+      'Location enabled! Your position will be shown on the map.';
 
   @override
   String get searchRadius => 'Search radius';
@@ -513,10 +531,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get locationPermissionRequired => 'Location permission required';
 
   @override
-  String get locationPermissionRequiredMessage => 'To center on your location, grant permission in settings';
+  String get locationPermissionRequiredMessage =>
+      'To center on your location, grant permission in settings';
 
   @override
-  String earthquakeDescription(String magnitude, String magType, String magnitudeDescription) {
+  String earthquakeDescription(
+    String magnitude,
+    String magType,
+    String magnitudeDescription,
+  ) {
     return 'This earthquake has a magnitude of $magnitude $magType, which is classified as $magnitudeDescription.';
   }
 
@@ -527,10 +550,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get minuteAgo => 'minute ago';
 
   @override
-  String get nearbyIndicatorDescription => 'Events within your selected radius are marked with an orange indicator';
+  String get nearbyIndicatorDescription =>
+      'Events within your selected radius are marked with an orange indicator';
 
   @override
-  String get selectDataSourceDescription => 'Select the provider for earthquake data';
+  String get selectDataSourceDescription =>
+      'Select the provider for earthquake data';
 
   @override
   String get sourceIngv => 'INGV (Italy)';

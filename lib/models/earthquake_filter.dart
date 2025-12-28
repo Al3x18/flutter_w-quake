@@ -1,3 +1,5 @@
+import '../l10n/app_localizations.dart';
+
 enum EarthquakeFilterArea {
   world(null, null, null, null),
 
@@ -108,5 +110,40 @@ class EarthquakeFilter {
     if (area.maxLon != null) params['maxlongitude'] = area.maxLon!.toString();
 
     return params;
+  }
+
+  String getDescription(AppLocalizations l10n) {
+    final areaName = area.getTranslatedName(l10n).toLowerCase();
+    final magnitude = minMagnitude;
+    final days = daysBack;
+
+    if (useCustomDateRange) {
+      if (customStartDate != null && customEndDate != null) {
+        final startDate =
+            '${customStartDate!.day}/${customStartDate!.month}/${customStartDate!.year}';
+        final endDate =
+            '${customEndDate!.day}/${customEndDate!.month}/${customEndDate!.year}';
+        return l10n.eventsInAreaDateRange(
+          areaName,
+          startDate,
+          endDate,
+          magnitude,
+        );
+      } else if (customStartDate != null) {
+        final startDate =
+            '${customStartDate!.day}/${customStartDate!.month}/${customStartDate!.year}';
+        return l10n.eventsInAreaFromDate(areaName, startDate, magnitude);
+      } else if (customEndDate != null) {
+        final endDate =
+            '${customEndDate!.day}/${customEndDate!.month}/${customEndDate!.year}';
+        return l10n.eventsInAreaUntilDate(areaName, endDate, magnitude);
+      }
+    }
+
+    if (days == 1) {
+      return l10n.eventsInAreaLast24Hours(areaName, magnitude);
+    } else {
+      return l10n.eventsInAreaLastDays(areaName, days, magnitude);
+    }
   }
 }
