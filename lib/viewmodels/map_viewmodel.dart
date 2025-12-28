@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import '../models/earthquake.dart';
-import '../viewmodels/location_viewmodel.dart';
+import '../providers/location_providers.dart';
 
 class MapViewModel extends Notifier<MapState> {
   @override
@@ -22,22 +22,20 @@ class MapViewModel extends Notifier<MapState> {
   }
 
   Future<void> centerOnUserLocation() async {
-    final locationState = ref.read(locationViewModelProvider);
+    final userPosition = ref.read(userPositionProvider).value;
 
-    if (locationState.hasPermission && locationState.currentPosition != null) {
-      final position = locationState.currentPosition!;
+    if (userPosition != null) {
       state = state.copyWith(
-        center: LatLng(position.latitude, position.longitude),
+        center: LatLng(userPosition.latitude, userPosition.longitude),
         zoom: 12.0,
       );
     }
   }
 
   Future<void> centerOnBothLocations(Earthquake earthquake) async {
-    final locationState = ref.read(locationViewModelProvider);
+    final userPosition = ref.read(userPositionProvider).value;
 
-    if (locationState.hasPermission && locationState.currentPosition != null) {
-      final userPosition = locationState.currentPosition!;
+    if (userPosition != null) {
       final earthquakeLatLng = LatLng(
         earthquake.latitude,
         earthquake.longitude,

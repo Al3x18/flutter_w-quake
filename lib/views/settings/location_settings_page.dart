@@ -21,12 +21,13 @@ class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
       await ref.read(settingsProvider.notifier).setLocationEnabled(enabled);
       
       if (enabled) {
-        final locationViewModel = ref.read(locationViewModelProvider.notifier);
-        await locationViewModel.requestLocationPermission();
+        final success = await ref.read(locationControllerProvider.notifier).requestPermission();
+        
+        // Wait a bit for stream to emit
+        await Future.delayed(const Duration(milliseconds: 500));
+        final hasPosition = ref.read(userPositionProvider).value != null;
 
-        final locationState = ref.read(locationViewModelProvider);
-        if (locationState.hasPermission &&
-            locationState.currentPosition != null) {
+        if (success && hasPosition) {
           await ref.read(settingsProvider.notifier).setShowUserLocation(true);
           
           if (mounted) {
@@ -46,8 +47,6 @@ class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
           }
         }
       } else {
-        final locationViewModel = ref.read(locationViewModelProvider.notifier);
-        locationViewModel.stopLocationUpdates();
         await ref.read(settingsProvider.notifier).setShowUserLocation(false);
       }
     } catch (e) {
@@ -65,13 +64,7 @@ class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
   Future<void> _toggleShowUserLocation(bool show) async {
     try {
       await ref.read(settingsProvider.notifier).setShowUserLocation(show);
-
-      final isLocationEnabled = ref.read(locationEnabledSettingProvider);
-      
-      if (show && isLocationEnabled) {
-        final locationViewModel = ref.read(locationViewModelProvider.notifier);
-        await locationViewModel.startLocationUpdates();
-      }
+      // No need to manually start/stop updates, provider watches settings.
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -85,13 +78,14 @@ class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
   }
 
   Future<void> _openAppSettings() async {
-    await openAppSettings();
+    await ref.read(locationControllerProvider.notifier).openAppSettings();
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final locationState = ref.watch(locationViewModelProvider);
+    final userPositionAsync = ref.watch(userPositionProvider);
+    final controllerState = ref.watch(locationControllerProvider);
     final settingsAsync = ref.watch(settingsProvider);
 
     return settingsAsync.when(
@@ -115,15 +109,11 @@ class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
         final isLocationEnabled = settings.locationEnabled;
         final showUserLocation = settings.showUserLocation;
         final radiusKm = settings.locationRadiusKm;
-
-        ref.listen<LocationState>(locationViewModelProvider, (previous, next) {
-          if (isLocationEnabled &&
-              next.hasPermission &&
-              next.currentPosition != null &&
-              !showUserLocation) {
-            ref.read(settingsProvider.notifier).setShowUserLocation(true);
-          }
-        });
+        
+        final hasLocation = userPositionAsync.value != null;
+        final isLocationLoading = userPositionAsync.isLoading || controllerState.isLoading;
+        final hasError = userPositionAsync.hasError || controllerState.hasError;
+        final errorMessage = controllerState.error?.toString() ?? userPositionAsync.error?.toString();
 
         return Scaffold(
           backgroundColor: Colors.black,
@@ -170,23 +160,23 @@ class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  if (ref.watch(locationViewModelProvider).hasPermission) ...[
+                  if (hasLocation) ...[
                     _buildRadiusCard(l10n, radiusKm),
                     const SizedBox(height: 16),
                   ],
                 ],
 
                 if (isLocationEnabled) ...[
-                  _buildStatusCard(locationState, l10n),
+                  _buildStatusCard(hasLocation, isLocationLoading, l10n),
                   const SizedBox(height: 16),
                 ],
 
-                if (locationState.hasError) ...[
-                  _buildErrorCard(locationState.error!, l10n),
+                if (hasError && errorMessage != null) ...[
+                  _buildErrorCard(errorMessage, l10n),
                   const SizedBox(height: 16),
                 ],
 
-                if (locationState.hasPermission == false) ...[
+                if (isLocationEnabled && !hasLocation && !isLocationLoading) ...[
                   _buildActionCard(
                     icon: Icons.settings,
                     title: l10n.openAppSettings,
@@ -257,16 +247,16 @@ class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
     );
   }
 
-  Widget _buildStatusCard(LocationState locationState, AppLocalizations l10n) {
+  Widget _buildStatusCard(bool hasLocation, bool isLoading, AppLocalizations l10n) {
     Color statusColor;
     String statusText;
     IconData statusIcon;
 
-    if (locationState.hasLocation) {
+    if (hasLocation) {
       statusColor = Colors.green;
       statusText = l10n.locationAccessGranted;
       statusIcon = Icons.check_circle;
-    } else if (locationState.isLoading) {
+    } else if (isLoading) {
       statusColor = Colors.orange;
       statusText = l10n.requestingLocationAccess;
       statusIcon = Icons.hourglass_empty;

@@ -4,7 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'l10n/app_localizations.dart';
 import 'router/app_router.dart';
-import 'providers/language_providers.dart';
+import 'providers/language_provider.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,13 +16,14 @@ class MainApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final languageState = ref.watch(languageProvider);
+    final languageAsync = ref.watch(languageProvider);
+    final locale = languageAsync.valueOrNull?.currentLocale ?? const Locale('en');
 
     return MaterialApp.router(
       title: 'W-Quake',
       debugShowCheckedModeBanner: false,
       routerConfig: AppRouter.router,
-      locale: Locale(languageState.currentLanguage),
+      locale: locale,
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,

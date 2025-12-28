@@ -69,15 +69,15 @@ class EarthquakeDetailPage extends ConsumerWidget {
     );
 
     final viewModel = ref.watch(earthquakeDetailViewModelProvider(earthquake));
-    final locationState = ref.watch(locationViewModelProvider);
+    final userPositionAsync = ref.watch(userPositionProvider);
     final locationEnabled = ref.watch(locationEnabledSettingProvider);
     final mapViewModel = ref.watch(mapViewModelProvider.notifier);
     final l10n = AppLocalizations.of(context)!;
 
     void centerOnUserLocation() async {
-      if (locationEnabled &&
-          locationState.hasPermission &&
-          locationState.currentPosition != null) {
+      final hasLocation = ref.read(userPositionProvider).value != null;
+      
+      if (locationEnabled && hasLocation) {
         await mapViewModel.centerOnUserLocation();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -157,7 +157,7 @@ class EarthquakeDetailPage extends ConsumerWidget {
                         icon: Icon(
                           Icons.my_location,
                           color:
-                              (locationEnabled && locationState.hasPermission)
+                              (locationEnabled && userPositionAsync.value != null)
                               ? Colors.orange
                               : Colors.grey,
                           size: 24,

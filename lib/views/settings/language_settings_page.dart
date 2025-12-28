@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../l10n/app_localizations.dart';
-import '../../providers/language_providers.dart';
+import '../../providers/language_provider.dart';
 import '../../widgets/custom_snackbar.dart';
 
 class LanguageSettingsPage extends ConsumerStatefulWidget {
@@ -21,17 +21,20 @@ class _LanguageSettingsPageState extends ConsumerState<LanguageSettingsPage> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final languageState = ref.read(languageProvider);
-      setState(() {
-        selectedLanguage = languageState.currentLanguage;
-      });
+      final languageState = ref.read(languageProvider).valueOrNull;
+      if (languageState != null) {
+        setState(() {
+          selectedLanguage = languageState.currentLocale.languageCode;
+        });
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final languageState = ref.watch(languageProvider);
+    final languageAsync = ref.watch(languageProvider);
+    final currentLanguageCode = languageAsync.valueOrNull?.currentLocale.languageCode ?? 'en';
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -60,11 +63,11 @@ class _LanguageSettingsPageState extends ConsumerState<LanguageSettingsPage> {
             ),
             const SizedBox(height: 18),
 
-            ...ref.read(languageProvider.notifier).getAvailableLanguages().map((
-              language,
+            ...ref.read(languageProvider.notifier).getAvailableLanguages().entries.map((
+              entry,
             ) {
-              final code = language['code']!;
-              final name = language['name']!;
+              final code = entry.key;
+              final name = entry.value;
               final isSelected = selectedLanguage == code;
 
               return Card(
@@ -144,7 +147,7 @@ class _LanguageSettingsPageState extends ConsumerState<LanguageSettingsPage> {
               child: ElevatedButton(
                 onPressed:
                     selectedLanguage != null &&
-                        selectedLanguage != languageState.currentLanguage
+                        selectedLanguage != currentLanguageCode
                     ? () => _saveLanguage(selectedLanguage!)
                     : null,
                 style: ElevatedButton.styleFrom(
