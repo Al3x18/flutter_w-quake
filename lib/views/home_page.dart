@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../l10n/app_localizations.dart';
@@ -116,6 +117,7 @@ class _HomePageState extends ConsumerState<HomePage> {
         actions: [
           IconButton(
             onPressed: () {
+              HapticFeedback.lightImpact();
               context.push('/settings');
             },
             icon: const Icon(Icons.settings),
@@ -124,6 +126,7 @@ class _HomePageState extends ConsumerState<HomePage> {
 
           IconButton(
             onPressed: () {
+              HapticFeedback.lightImpact();
               showDialog(
                 context: context,
                 barrierColor: Colors.transparent,

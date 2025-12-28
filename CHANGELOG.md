@@ -38,6 +38,10 @@
   - Consistent button styling: legal and credit buttons now use black background with grey borders matching app design
   - Removed success snackbars when opening URLs (only error messages shown)
 
+- **User Experience**: Enhanced haptic feedback
+  - Added light haptic feedback when tapping app bar buttons (Settings and Filter)
+  - Improves tactile response and user interaction feedback
+
 - **Code Quality**: Comprehensive code cleanup
   - Improved error handling in provider initialization
   - Extracted location banner into separate reusable widget

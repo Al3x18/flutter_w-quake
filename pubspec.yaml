@@ -1,7 +1,7 @@
 name: w_quake
 description: A Flutter application for monitoring and displaying earthquake data in real-time from multiple sources (INGV and USGS). Features interactive maps, location tracking, advanced filtering, and multi-language support.
 publish_to: 'none'
-version: 1.1.0+07
+version: 1.1.0+08
 
 environment:
   sdk: ^3.9.2
