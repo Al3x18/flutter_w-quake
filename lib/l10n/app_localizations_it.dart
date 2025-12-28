@@ -452,6 +452,13 @@ class AppLocalizationsIt extends AppLocalizations {
   String get enableLocation => 'Abilita Posizione';
 
   @override
+  String get goToLocationSettings => 'Vai alle Impostazioni di Localizzazione';
+
+  @override
+  String get locationCanBeEnabledLater =>
+      'La localizzazione può essere abilitata successivamente nelle impostazioni';
+
+  @override
   String get allowLocationAccess =>
       'Consenti all\'app di accedere alla tua posizione';
 
@@ -579,4 +586,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get viewSourceCode => 'Visualizza Codice Sorgente';
+
+  @override
+  String get developerWebsite => 'Sito Web Sviluppatore';
 }

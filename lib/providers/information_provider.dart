@@ -47,9 +47,10 @@ class InformationNotifier extends AsyncNotifier<InformationState> {
   static const String _appName = 'W-Quake';
   static const String _appDescription = 'Real-time earthquake monitoring app';
   static const String _developerName = 'Alex De Pasquale';
-  static const String _appWebsite = 'https://github.com/Al3x18/flutter_w-quake';
-  static const String _privacyPolicyUrl = '';
-  static const String _termsOfServiceUrl = '';
+  static const String _developerWebsite = 'https://alexdepasquale.dev';
+  static const String _appSourceCodeUrl = 'https://github.com/Al3x18/flutter_w-quake';
+  static const String _privacyPolicyUrl = 'https://alexdepasquale.dev/w-quake-policy';
+  static const String _termsOfServiceUrl = 'https://alexdepasquale.dev/w-quake-terms';
   static const String _ingvApiUrl = 'https://webservices.ingv.it/';
   static const String _ingvWebsite = 'https://www.ingv.it/';
   static const String _usgsApiUrl =
@@ -84,7 +85,10 @@ class InformationNotifier extends AsyncNotifier<InformationState> {
     try {
       final uri = Uri.parse(url);
       if (await canLaunchUrl(uri)) {
-        await launchUrl(uri);
+        await launchUrl(
+          uri,
+          mode: LaunchMode.externalApplication,
+        );
         return true;
       }
       return false;
@@ -94,7 +98,8 @@ class InformationNotifier extends AsyncNotifier<InformationState> {
     }
   }
 
-  Future<bool> launchAppWebsite() => _launchUrl(_appWebsite);
+  Future<bool> launchDeveloperWebsite() => _launchUrl(_developerWebsite);
+  Future<bool> launchAppSourceCode() => _launchUrl(_appSourceCodeUrl);
   Future<bool> launchPrivacyPolicy() => _launchUrl(_privacyPolicyUrl);
   Future<bool> launchTermsOfService() => _launchUrl(_termsOfServiceUrl);
   Future<bool> launchIngvWebsite() => _launchUrl(_ingvWebsite);
@@ -102,7 +107,8 @@ class InformationNotifier extends AsyncNotifier<InformationState> {
   Future<bool> launchUsgsWebsite() => _launchUrl(_usgsWebsite);
   Future<bool> launchUsgsApiDocumentation() => _launchUrl(_usgsApiUrl);
 
-  String getAppWebsite() => _appWebsite;
+  String getDeveloperWebsite() => _developerWebsite;
+  String getAppSourceCode() => _appSourceCodeUrl;
   String getPrivacyPolicyUrl() => _privacyPolicyUrl;
   String getTermsOfServiceUrl() => _termsOfServiceUrl;
   String getIngvWebsite() => _ingvWebsite;
@@ -113,7 +119,7 @@ class InformationNotifier extends AsyncNotifier<InformationState> {
     'api_url': _ingvApiUrl,
     'ingv_website': _ingvWebsite,
     'developer': _developerName,
-    'app_website': _appWebsite,
+    'app_source_code': _appSourceCodeUrl,
   };
 
   Map<String, String> getLegalInfo() => {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
+//import 'package:w_quake/providers/first_launch_provider.dart';
 import 'l10n/app_localizations.dart';
 import 'router/app_router.dart';
 import 'providers/language_provider.dart';
@@ -18,6 +19,10 @@ class MainApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final languageAsync = ref.watch(languageProvider);
     final locale = languageAsync.value?.currentLocale ?? const Locale('en');
+
+    // Only for development purposes: Reset first launch to true to show the welcome screen again
+    //final firstLaunchAsync = ref.read(firstLaunchProvider.notifier);
+    //firstLaunchAsync.reset();
 
     return MaterialApp.router(
       title: 'W-Quake',

@@ -913,6 +913,18 @@ abstract class AppLocalizations {
   /// **'Enable Location'**
   String get enableLocation;
 
+  /// Button text to navigate to location settings page
+  ///
+  /// In en, this message translates to:
+  /// **'Go to Location Settings'**
+  String get goToLocationSettings;
+
+  /// Message shown when user dismisses location banner
+  ///
+  /// In en, this message translates to:
+  /// **'Location can be enabled later in settings'**
+  String get locationCanBeEnabledLater;
+
   /// Subtitle to explain enabling location
   ///
   /// In en, this message translates to:
@@ -1132,6 +1144,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'View Source Code'**
   String get viewSourceCode;
+
+  /// Button text to open developer website
+  ///
+  /// In en, this message translates to:
+  /// **'Developer Website'**
+  String get developerWebsite;
 }
 
 class _AppLocalizationsDelegate

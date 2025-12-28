@@ -135,6 +135,8 @@
   "locationPermission": "Permessi di Posizione",
   "locationPermissionDescription": "Questa app ha bisogno dell'accesso alla posizione per mostrare la tua posizione sulla mappa dei terremoti.",
   "enableLocation": "Abilita Posizione",
+  "goToLocationSettings": "Vai alle Impostazioni di Localizzazione",
+  "locationCanBeEnabledLater": "La localizzazione può essere abilitata successivamente nelle impostazioni",
   "allowLocationAccess": "Consenti all'app di accedere alla tua posizione",
   "showLocationOnMap": "Mostra la tua posizione sulla mappa dei terremoti",
   "locationDisabled": "Servizi di posizione disabilitati",
@@ -170,5 +172,6 @@
   "sourceUsgs": "USGS (Mondo)",
   "errorSavingSettings": "Errore nel salvataggio delle impostazioni: {error}",
   "openSourceCode": "Questa applicazione è Open Source.",
-  "viewSourceCode": "Visualizza Codice Sorgente"
+  "viewSourceCode": "Visualizza Codice Sorgente",
+  "developerWebsite": "Sito Web Sviluppatore"
 }

@@ -630,6 +630,14 @@
   "@enableLocation": {
     "description": "Enable location button text"
   },
+  "goToLocationSettings": "Go to Location Settings",
+  "@goToLocationSettings": {
+    "description": "Button text to navigate to location settings page"
+  },
+  "locationCanBeEnabledLater": "Location can be enabled later in settings",
+  "@locationCanBeEnabledLater": {
+    "description": "Message shown when user dismisses location banner"
+  },
   "allowLocationAccess": "Allow app to access your location",
   "@allowLocationAccess": {"description": "Subtitle to explain enabling location"},
   "showLocationOnMap": "Show your location on the earthquake map",
@@ -767,5 +775,9 @@
   "viewSourceCode": "View Source Code",
   "@viewSourceCode": {
     "description": "Button text to view source code on GitHub"
+  },
+  "developerWebsite": "Developer Website",
+  "@developerWebsite": {
+    "description": "Button text to open developer website"
   }
 }

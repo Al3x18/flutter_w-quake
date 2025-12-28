@@ -2,6 +2,19 @@
 
 ## [1.1.0] - 2025-12-28
 
+### Added
+
+- **First Launch Location Banner**: Added compact location permission banner on first app launch
+  - Compact orange banner with black text and buttons
+  - Prompts users to enable location services on first launch
+  - Dismissible with informative snackbar message
+  - Navigates to location settings page
+  - Extracted as reusable `LocationBanner` widget
+
+- **Android Permissions**: Added missing Android permissions in manifest
+  - Added `INTERNET` permission for API calls and URL launching
+  - Added query intents for HTTP/HTTPS URLs to support `url_launcher` on Android 11+
+
 ### Changed
 
 - **Provider Architecture**: Major refactoring of provider structure for improved maintainability and code cleanliness
@@ -17,8 +30,17 @@
   - Fixed marker contrast: events with magnitude < 2.0 now display black text and border on white background for better readability
   - Enhanced MapController management for smoother map interactions
 
+- **Information Page UI**: Improved consistency and usability
+  - Unified color scheme: all containers now use black background to match app theme
+  - Standardized button sizes: all buttons now have consistent 48px height
+  - Enhanced button text scaling: text automatically scales to fit button width using FittedBox
+  - Improved documentation button layout: "View Documentation" text now displays on two lines without increasing button size
+  - Consistent button styling: legal and credit buttons now use black background with grey borders matching app design
+  - Removed success snackbars when opening URLs (only error messages shown)
+
 - **Code Quality**: Comprehensive code cleanup
   - Improved error handling in provider initialization
+  - Extracted location banner into separate reusable widget
 
 ### Fixed
 
@@ -26,6 +48,12 @@
 - **Map Navigation**: Fixed map not centering on selected earthquake when opening detail page
 - **Location Providers**: Fixed distance calculation using correct geometry accessors
 - **Filter Dialog**: Fixed reference to non-existent `defaultSettingsProvider`
+- **URL Launcher on Android**: Fixed `url_launcher` not working on Android 11+ by adding required query intents in manifest
+  - Added HTTP/HTTPS query intents for proper URL handling
+  - Added `LaunchMode.externalApplication` for consistent browser opening
+- **Android Splash Screen**: Fixed splash screen logo size issue on Android
+  - Regenerated splash screen using `splash-logo.png` instead of `app_logo.png` for proper icon sizing
+  - Logo now fits correctly within the circular splash screen area
 
 ## [1.0.0] - 2025-12-14
 

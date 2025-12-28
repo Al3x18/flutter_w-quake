@@ -449,6 +449,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get enableLocation => 'Enable Location';
 
   @override
+  String get goToLocationSettings => 'Go to Location Settings';
+
+  @override
+  String get locationCanBeEnabledLater => 'Location can be enabled later in settings';
+
+  @override
   String get allowLocationAccess => 'Allow app to access your location';
 
   @override
@@ -573,4 +579,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get viewSourceCode => 'View Source Code';
+
+  @override
+  String get developerWebsite => 'Developer Website';
 }

@@ -9,12 +9,10 @@ class InformationSettingsPage extends ConsumerStatefulWidget {
   const InformationSettingsPage({super.key});
 
   @override
-  ConsumerState<InformationSettingsPage> createState() =>
-      _InformationSettingsPageState();
+  ConsumerState<InformationSettingsPage> createState() => _InformationSettingsPageState();
 }
 
-class _InformationSettingsPageState
-    extends ConsumerState<InformationSettingsPage> {
+class _InformationSettingsPageState extends ConsumerState<InformationSettingsPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -36,14 +34,9 @@ class _InformationSettingsPageState
         ),
       ),
       body: informationAsync.when(
-        loading: () => const Center(
-          child: CircularProgressIndicator(color: Colors.orange),
-        ),
+        loading: () => const Center(child: CircularProgressIndicator(color: Colors.orange)),
         error: (error, stack) => Center(
-          child: Text(
-            'Error loading info: $error',
-            style: const TextStyle(color: Colors.white),
-          ),
+          child: Text('Error loading info: $error', style: const TextStyle(color: Colors.white)),
         ),
         data: (informationState) => SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
@@ -76,24 +69,16 @@ class _InformationSettingsPageState
   Widget _buildSectionTitle(String title) {
     return Text(
       title,
-      style: const TextStyle(
-        color: Colors.white,
-        fontSize: 18,
-        fontWeight: FontWeight.bold,
-      ),
+      style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
     );
   }
 
-  Widget _buildAppInfoCard(
-    AppLocalizations l10n,
-    InformationState state,
-    InformationNotifier notifier,
-  ) {
+  Widget _buildAppInfoCard(AppLocalizations l10n, InformationState state, InformationNotifier notifier) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.grey[900],
+        color: Colors.black,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.grey[800]!, width: 1),
       ),
@@ -104,10 +89,7 @@ class _InformationSettingsPageState
             children: [
               Container(
                 padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Colors.orange.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
+                decoration: BoxDecoration(color: Colors.orange.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(8)),
                 child: const Icon(Icons.info, color: Colors.orange, size: 20),
               ),
               const SizedBox(width: 12),
@@ -117,16 +99,9 @@ class _InformationSettingsPageState
                   children: [
                     Text(
                       state.appName,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
                     ),
-                    Text(
-                      state.appDescription,
-                      style: TextStyle(color: Colors.grey[400], fontSize: 12),
-                    ),
+                    Text(state.appDescription, style: TextStyle(color: Colors.grey[400], fontSize: 12)),
                   ],
                 ),
               ),
@@ -138,38 +113,52 @@ class _InformationSettingsPageState
           _buildInfoRow(l10n.developer, state.developerName),
           _buildInfoRow(l10n.license, 'MIT License'),
           const SizedBox(height: 12),
-          Text(
-            l10n.openSourceCode,
-            style: TextStyle(color: Colors.grey[400], fontSize: 12),
+          Text(l10n.openSourceCode, style: TextStyle(color: Colors.grey[400], fontSize: 12)),
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              onPressed: () async {
+                final success = await notifier.launchAppSourceCode();
+                if (mounted && !success) {
+                  AnimatedSnackBarHelper.showError(context, 'Failed to open GitHub');
+                }
+              },
+              icon: const Icon(Icons.code, size: 16),
+              label: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(l10n.viewSourceCode, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.orange,
+                foregroundColor: Colors.black,
+                fixedSize: const Size(double.infinity, 48),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              ),
+            ),
           ),
           const SizedBox(height: 12),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton.icon(
               onPressed: () async {
-                final success = await notifier.launchAppWebsite();
-                if (mounted) {
-                  if (success) {
-                    AnimatedSnackBarHelper.showSuccess(
-                      context,
-                      'GitHub opened successfully',
-                    );
-                  } else {
-                    AnimatedSnackBarHelper.showError(
-                      context,
-                      'Failed to open GitHub',
-                    );
-                  }
+                final success = await notifier.launchDeveloperWebsite();
+                if (mounted && !success) {
+                  AnimatedSnackBarHelper.showError(context, 'Failed to open developer website');
                 }
               },
-              icon: const Icon(Icons.code, size: 16),
-              label: Text(l10n.viewSourceCode),
+              icon: const Icon(Icons.person, size: 16),
+              label: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(l10n.developerWebsite, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+              ),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.orange,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 8),
+                backgroundColor: Colors.black,
+                foregroundColor: Colors.orange,
+                fixedSize: const Size(double.infinity, 48),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
+                  side: BorderSide(color: Colors.orange, width: 1),
                 ),
               ),
             ),
@@ -179,15 +168,12 @@ class _InformationSettingsPageState
     );
   }
 
-  Widget _buildCreditsCard(
-    AppLocalizations l10n,
-    InformationNotifier notifier,
-  ) {
+  Widget _buildCreditsCard(AppLocalizations l10n, InformationNotifier notifier) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.grey[900],
+        color: Colors.black,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.grey[800]!, width: 1),
       ),
@@ -198,20 +184,13 @@ class _InformationSettingsPageState
             children: [
               Container(
                 padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Colors.blue.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
+                decoration: BoxDecoration(color: Colors.blue.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(8)),
                 child: const Icon(Icons.people, color: Colors.blue, size: 20),
               ),
               const SizedBox(width: 12),
               Text(
                 l10n.credits,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ],
           ),
@@ -219,48 +198,28 @@ class _InformationSettingsPageState
 
           Text(
             l10n.sourceIngv,
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 14,
-            ),
+            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
           ),
           const SizedBox(height: 4),
           _buildInfoRow(l10n.dataProvider, l10n.ingvInstitute),
           Row(
             children: [
               Expanded(
-                child: _buildLinkButton(
-                  l10n.openWebsite,
-                  Icons.open_in_new,
-                  () async {
-                    final success = await notifier.launchIngvWebsite();
-                    if (mounted) {
-                      _showSnackBar(
-                        success,
-                        'INGV website opened',
-                        'Failed to open INGV website',
-                      );
-                    }
-                  },
-                ),
+                child: _buildLinkButton(l10n.openWebsite, Icons.open_in_new, () async {
+                  final success = await notifier.launchIngvWebsite();
+                  if (mounted && !success) {
+                    AnimatedSnackBarHelper.showError(context, 'Failed to open INGV website');
+                  }
+                }),
               ),
               const SizedBox(width: 8),
               Expanded(
-                child: _buildLinkButton(
-                  l10n.viewDocumentation,
-                  Icons.description,
-                  () async {
-                    final success = await notifier.launchIngvApiDocumentation();
-                    if (mounted) {
-                      _showSnackBar(
-                        success,
-                        'API documentation opened',
-                        'Failed to open API documentation',
-                      );
-                    }
-                  },
-                ),
+                child: _buildLinkButton(l10n.viewDocumentation, Icons.description, () async {
+                  final success = await notifier.launchIngvApiDocumentation();
+                  if (mounted && !success) {
+                    AnimatedSnackBarHelper.showError(context, 'Failed to open API documentation');
+                  }
+                }, allowMultiline: true),
               ),
             ],
           ),
@@ -271,51 +230,28 @@ class _InformationSettingsPageState
 
           Text(
             l10n.sourceUsgs,
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 14,
-            ),
+            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
           ),
           const SizedBox(height: 4),
-          _buildInfoRow(
-            l10n.dataProvider,
-            'USGS (United States Geological Survey)',
-          ),
+          _buildInfoRow(l10n.dataProvider, 'USGS (United States Geological Survey)'),
           Row(
             children: [
               Expanded(
-                child: _buildLinkButton(
-                  l10n.openWebsite,
-                  Icons.open_in_new,
-                  () async {
-                    final success = await notifier.launchUsgsWebsite();
-                    if (mounted) {
-                      _showSnackBar(
-                        success,
-                        'USGS website opened',
-                        'Failed to open USGS website',
-                      );
-                    }
-                  },
-                ),
+                child: _buildLinkButton(l10n.openWebsite, Icons.open_in_new, () async {
+                  final success = await notifier.launchUsgsWebsite();
+                  if (mounted && !success) {
+                    AnimatedSnackBarHelper.showError(context, 'Failed to open USGS website');
+                  }
+                }),
               ),
               const SizedBox(width: 8),
               Expanded(
-                child: _buildLinkButton(
-                  l10n.viewDocumentation,
-                  Icons.description,
-                  () async {
-                    final success = await notifier.launchUsgsApiDocumentation();
-                    if (mounted) {
-                      _showSnackBar(
-                        success,
-                        'API documentation opened',
-                        'Failed to open API documentation',
-                      );
-                    }
-                  },
-                ),
+                child: _buildLinkButton(l10n.viewDocumentation, Icons.description, () async {
+                  final success = await notifier.launchUsgsApiDocumentation();
+                  if (mounted && !success) {
+                    AnimatedSnackBarHelper.showError(context, 'Failed to open API documentation');
+                  }
+                }, allowMultiline: true),
               ),
             ],
           ),
@@ -324,37 +260,40 @@ class _InformationSettingsPageState
     );
   }
 
-  Widget _buildLinkButton(String label, IconData icon, VoidCallback onPressed) {
+  Widget _buildLinkButton(String label, IconData icon, VoidCallback onPressed, {bool allowMultiline = false}) {
     return ElevatedButton.icon(
       onPressed: onPressed,
-      icon: Icon(icon, size: 14),
-      label: Text(label, style: const TextStyle(fontSize: 12)),
+      icon: Icon(icon, size: 16),
+      label: allowMultiline
+          ? Text(
+              label,
+              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            )
+          : FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+            ),
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.grey[800],
+        backgroundColor: Colors.black,
         foregroundColor: Colors.white,
-        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+        fixedSize: const Size(double.infinity, 48),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+          side: BorderSide(color: Colors.grey[800]!, width: 1),
+        ),
       ),
     );
   }
 
-  void _showSnackBar(bool success, String successMsg, String errorMsg) {
-    if (success) {
-      AnimatedSnackBarHelper.showSuccess(context, successMsg);
-    } else {
-      AnimatedSnackBarHelper.showError(context, errorMsg);
-    }
-  }
-
-  Widget _buildLegalInfoCard(
-    AppLocalizations l10n,
-    InformationNotifier notifier,
-  ) {
+  Widget _buildLegalInfoCard(AppLocalizations l10n, InformationNotifier notifier) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.grey[900],
+        color: Colors.black,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.grey[800]!, width: 1),
       ),
@@ -365,20 +304,13 @@ class _InformationSettingsPageState
             children: [
               Container(
                 padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Colors.green.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
+                decoration: BoxDecoration(color: Colors.green.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(8)),
                 child: const Icon(Icons.gavel, color: Colors.green, size: 20),
               ),
               const SizedBox(width: 12),
               Text(
                 l10n.legalInformation,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ],
           ),
@@ -389,28 +321,22 @@ class _InformationSettingsPageState
                 child: ElevatedButton.icon(
                   onPressed: () async {
                     final success = await notifier.launchPrivacyPolicy();
-                    if (mounted) {
-                      if (success) {
-                        AnimatedSnackBarHelper.showSuccess(
-                          context,
-                          'Privacy policy opened',
-                        );
-                      } else {
-                        AnimatedSnackBarHelper.showError(
-                          context,
-                          'Failed to open privacy policy',
-                        );
-                      }
+                    if (mounted && !success) {
+                      AnimatedSnackBarHelper.showError(context, 'Failed to open privacy policy');
                     }
                   },
                   icon: const Icon(Icons.privacy_tip, size: 16),
-                  label: Text(l10n.privacyPolicy),
+                  label: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(l10n.privacyPolicy, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+                  ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
+                    backgroundColor: Colors.black,
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    fixedSize: const Size(double.infinity, 48),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
+                      side: BorderSide(color: Colors.grey[800]!, width: 1),
                     ),
                   ),
                 ),
@@ -420,28 +346,22 @@ class _InformationSettingsPageState
                 child: ElevatedButton.icon(
                   onPressed: () async {
                     final success = await notifier.launchTermsOfService();
-                    if (mounted) {
-                      if (success) {
-                        AnimatedSnackBarHelper.showSuccess(
-                          context,
-                          'Terms of service opened',
-                        );
-                      } else {
-                        AnimatedSnackBarHelper.showError(
-                          context,
-                          'Failed to open terms of service',
-                        );
-                      }
+                    if (mounted && !success) {
+                      AnimatedSnackBarHelper.showError(context, 'Failed to open terms of service');
                     }
                   },
                   icon: const Icon(Icons.description, size: 16),
-                  label: Text(l10n.termsOfService),
+                  label: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(l10n.termsOfService, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+                  ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
+                    backgroundColor: Colors.black,
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    fixedSize: const Size(double.infinity, 48),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
+                      side: BorderSide(color: Colors.grey[800]!, width: 1),
                     ),
                   ),
                 ),
@@ -453,15 +373,12 @@ class _InformationSettingsPageState
     );
   }
 
-  Widget _buildDataSourceCard(
-    AppLocalizations l10n,
-    InformationNotifier notifier,
-  ) {
+  Widget _buildDataSourceCard(AppLocalizations l10n, InformationNotifier notifier) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.grey[900],
+        color: Colors.black,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.grey[800]!, width: 1),
       ),
@@ -472,32 +389,18 @@ class _InformationSettingsPageState
             children: [
               Container(
                 padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Colors.purple.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
+                decoration: BoxDecoration(color: Colors.purple.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(8)),
                 child: const Icon(Icons.api, color: Colors.purple, size: 20),
               ),
               const SizedBox(width: 12),
               Text(
                 l10n.dataSource,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ],
           ),
           const SizedBox(height: 12),
-          Text(
-            'This application aggregates data from multiple public seismological agencies.',
-            style: TextStyle(
-              color: Colors.grey[300],
-              fontSize: 13,
-              height: 1.4,
-            ),
-          ),
+          Text('This application aggregates data from multiple public seismological agencies.', style: TextStyle(color: Colors.grey[300], fontSize: 13, height: 1.4)),
           const SizedBox(height: 12),
           _buildInfoRow('Primary Source', 'INGV (Europe/Italy)'),
           _buildInfoRow('Global Source', 'USGS (Worldwide)'),
@@ -516,16 +419,10 @@ class _InformationSettingsPageState
         children: [
           SizedBox(
             width: 100,
-            child: Text(
-              label,
-              style: TextStyle(color: Colors.grey[400], fontSize: 12),
-            ),
+            child: Text(label, style: TextStyle(color: Colors.grey[400], fontSize: 12)),
           ),
           Expanded(
-            child: Text(
-              value,
-              style: const TextStyle(color: Colors.white, fontSize: 12),
-            ),
+            child: Text(value, style: const TextStyle(color: Colors.white, fontSize: 12)),
           ),
         ],
       ),

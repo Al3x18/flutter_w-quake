@@ -1,6 +1,7 @@
 {
     "cSpell.words": [
         "alexdp",
+        "dists",
         "FDSNWS",
         "geolocator",
         "INGV",
@@ -21,5 +22,7 @@
         "Usgs",
         "viewmodel",
         "viewmodels"
-    ]
+    ],
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "cmake.sourceDirectory": "/Users/Alex/Desktop/Flutter Workspace/flutter_projects/w_quake/linux"
 }
