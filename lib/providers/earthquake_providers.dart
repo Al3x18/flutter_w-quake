@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/earthquake.dart';
 import '../models/earthquake_filter.dart';
 import '../services/earthquake_api_service.dart';
-import 'settings_providers.dart';
+import 'settings_provider.dart';
 import '../viewmodels/earthquake_viewmodel.dart';
 import '../viewmodels/earthquake_detail_viewmodel.dart';
 
@@ -24,15 +24,19 @@ final earthquakeDetailViewModelProvider =
 
 final effectiveFilterProvider = Provider<EarthquakeFilter>((ref) {
   final filter = ref.watch(filterProvider);
-  final defaults = ref.watch(defaultSettingsProvider);
-  return filter.isFilterActive ? filter.currentFilter : defaults.defaultFilter;
+  final settingsAsync = ref.watch(settingsProvider);
+  final defaultFilter = settingsAsync.valueOrNull?.defaultFilter ?? const EarthquakeFilter();
+  
+  return filter.isFilterActive ? filter.currentFilter : defaultFilter;
 });
 
 final earthquakesFutureProvider =
     FutureProvider.autoDispose<List<EarthquakeFeature>>((ref) async {
       final vm = ref.watch(earthquakeViewModelProvider);
       final filter = ref.watch(effectiveFilterProvider);
-      final settings = ref.watch(defaultSettingsProvider);
+      
+      // Ensure settings are loaded to get the correct source
+      final settings = await ref.watch(settingsProvider.future);
 
       final list = await vm.fetchEarthquakesWithFilter(
         filter,
@@ -64,14 +68,18 @@ class FilterState {
 class FilterNotifier extends Notifier<FilterState> {
   @override
   FilterState build() {
-    ref.listen(defaultSettingsProvider, (previous, next) {
-      if (next.isInitialized) {
-        _updateFilterFromDefaults(next.defaultFilter);
-      }
+    ref.listen(settingsProvider, (previous, next) {
+      next.whenData((settings) {
+        if (settings.isInitialized) {
+          _updateFilterFromDefaults(settings.defaultFilter);
+        }
+      });
     });
 
-    final defaultSettings = ref.read(defaultSettingsProvider);
-    return _createInitialState(defaultSettings.defaultFilter);
+    final settingsAsync = ref.read(settingsProvider);
+    final defaultFilter = settingsAsync.valueOrNull?.defaultFilter ?? const EarthquakeFilter();
+    
+    return _createInitialState(defaultFilter);
   }
 
   FilterState _createInitialState(EarthquakeFilter defaultFilter) {
@@ -79,12 +87,18 @@ class FilterNotifier extends Notifier<FilterState> {
   }
 
   void _updateFilterFromDefaults(EarthquakeFilter defaultFilter) {
+    // Only update if we are not currently filtering or if we want to sync with defaults
+    // The previous logic seemed to force update on initialization.
+    // We'll keep the logic: if defaults change (and we are listening), we update the base state.
+    // But if isFilterActive is true, maybe we should preserve it?
+    // The previous code: state = state.copyWith(currentFilter: defaultFilter, isFilterActive: false);
+    // This implies that loading defaults RESETS the current filter.
     state = state.copyWith(currentFilter: defaultFilter, isFilterActive: false);
   }
 
   void updateFilter(EarthquakeFilter filter) {
-    final defaultSettings = ref.read(defaultSettingsProvider);
-    final defaultFilter = defaultSettings.defaultFilter;
+    final settingsAsync = ref.read(settingsProvider);
+    final defaultFilter = settingsAsync.valueOrNull?.defaultFilter ?? const EarthquakeFilter();
 
     final isActive =
         filter.area != defaultFilter.area ||
@@ -98,8 +112,9 @@ class FilterNotifier extends Notifier<FilterState> {
   }
 
   void resetFilter() {
-    final defaultSettings = ref.read(defaultSettingsProvider);
-    _updateFilterFromDefaults(defaultSettings.defaultFilter);
+    final settingsAsync = ref.read(settingsProvider);
+    final defaultFilter = settingsAsync.valueOrNull?.defaultFilter ?? const EarthquakeFilter();
+    _updateFilterFromDefaults(defaultFilter);
   }
 
   void toggleFilter() {
@@ -107,8 +122,9 @@ class FilterNotifier extends Notifier<FilterState> {
   }
 
   void applyDefaultSettings() {
-    final defaultSettings = ref.read(defaultSettingsProvider);
-    _updateFilterFromDefaults(defaultSettings.defaultFilter);
+    final settingsAsync = ref.read(settingsProvider);
+    final defaultFilter = settingsAsync.valueOrNull?.defaultFilter ?? const EarthquakeFilter();
+    _updateFilterFromDefaults(defaultFilter);
   }
 }
 

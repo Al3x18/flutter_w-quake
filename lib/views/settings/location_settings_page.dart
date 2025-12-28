@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../l10n/app_localizations.dart';
 import '../../viewmodels/location_viewmodel.dart';
-import '../../services/settings_storage_service.dart';
+import '../../providers/settings_provider.dart';
 import '../../providers/location_providers.dart';
 
 class LocationSettingsPage extends ConsumerStatefulWidget {
@@ -15,51 +15,11 @@ class LocationSettingsPage extends ConsumerStatefulWidget {
 }
 
 class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
-  late SettingsStorageService _settingsService;
-  bool _isLocationEnabled = false;
-  bool _showUserLocation = false;
-  bool _isLoading = true;
-  int _radiusKm = 100;
-
-  @override
-  void initState() {
-    super.initState();
-    _settingsService = SettingsStorageService();
-    _loadSettings();
-  }
-
-  Future<void> _loadSettings() async {
-    try {
-      final locationEnabled = await _settingsService.loadLocationEnabled();
-      final showUserLocation = await _settingsService.loadShowUserLocation();
-      final radiusKm = await _settingsService.loadLocationRadiusKm();
-
-      setState(() {
-        _isLocationEnabled = locationEnabled;
-        _showUserLocation = showUserLocation;
-        _isLoading = false;
-        _radiusKm = radiusKm;
-      });
-
-      ref.invalidate(locationRadiusKmProvider);
-    } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
-    }
-  }
-
+  
   Future<void> _toggleLocationEnabled(bool enabled) async {
     try {
-      await _settingsService.saveLocationEnabled(enabled);
-      setState(() {
-        _isLocationEnabled = enabled;
-      });
-
-      ref.invalidate(locationEnabledSettingProvider);
-      ref.invalidate(showUserLocationSettingProvider);
-      ref.invalidate(userPositionProvider);
-
+      await ref.read(settingsProvider.notifier).setLocationEnabled(enabled);
+      
       if (enabled) {
         final locationViewModel = ref.read(locationViewModelProvider.notifier);
         await locationViewModel.requestLocationPermission();
@@ -67,26 +27,20 @@ class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
         final locationState = ref.read(locationViewModelProvider);
         if (locationState.hasPermission &&
             locationState.currentPosition != null) {
-          await _settingsService.saveShowUserLocation(true);
-          setState(() {
-            _showUserLocation = true;
-          });
-
-          ref.invalidate(showUserLocationSettingProvider);
-          ref.invalidate(userPositionProvider);
-
+          await ref.read(settingsProvider.notifier).setShowUserLocation(true);
+          
           if (mounted) {
             final l10n = AppLocalizations.of(context)!;
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(
                   l10n.locationEnabledSuccess,
-                  style: TextStyle(color: Colors.black),
+                  style: const TextStyle(color: Colors.black),
                 ),
                 backgroundColor: Colors.white,
                 behavior: SnackBarBehavior.floating,
-                margin: EdgeInsets.only(bottom: 20, left: 16, right: 16),
-                duration: Duration(seconds: 3),
+                margin: const EdgeInsets.only(bottom: 20, left: 16, right: 16),
+                duration: const Duration(seconds: 3),
               ),
             );
           }
@@ -94,14 +48,7 @@ class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
       } else {
         final locationViewModel = ref.read(locationViewModelProvider.notifier);
         locationViewModel.stopLocationUpdates();
-
-        await _settingsService.saveShowUserLocation(false);
-        setState(() {
-          _showUserLocation = false;
-        });
-
-        ref.invalidate(showUserLocationSettingProvider);
-        ref.invalidate(userPositionProvider);
+        await ref.read(settingsProvider.notifier).setShowUserLocation(false);
       }
     } catch (e) {
       if (mounted) {
@@ -117,15 +64,11 @@ class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
 
   Future<void> _toggleShowUserLocation(bool show) async {
     try {
-      await _settingsService.saveShowUserLocation(show);
-      setState(() {
-        _showUserLocation = show;
-      });
+      await ref.read(settingsProvider.notifier).setShowUserLocation(show);
 
-      ref.invalidate(showUserLocationSettingProvider);
-      ref.invalidate(userPositionProvider);
-
-      if (show && _isLocationEnabled) {
+      final isLocationEnabled = ref.read(locationEnabledSettingProvider);
+      
+      if (show && isLocationEnabled) {
         final locationViewModel = ref.read(locationViewModelProvider.notifier);
         await locationViewModel.startLocationUpdates();
       }
@@ -149,21 +92,10 @@ class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final locationState = ref.watch(locationViewModelProvider);
+    final settingsAsync = ref.watch(settingsProvider);
 
-    ref.listen<LocationState>(locationViewModelProvider, (previous, next) {
-      if (_isLocationEnabled &&
-          next.hasPermission &&
-          next.currentPosition != null &&
-          !_showUserLocation) {
-        _settingsService.saveShowUserLocation(true);
-        setState(() {
-          _showUserLocation = true;
-        });
-      }
-    });
-
-    if (_isLoading) {
-      return Scaffold(
+    return settingsAsync.when(
+      loading: () => Scaffold(
         backgroundColor: Colors.black,
         appBar: AppBar(
           title: Text(l10n.locationPermission),
@@ -174,82 +106,100 @@ class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
         body: const Center(
           child: CircularProgressIndicator(color: Colors.orange),
         ),
-      );
-    }
-
-    return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
-        title: Text(l10n.locationPermission),
-        backgroundColor: Colors.black,
-        foregroundColor: Colors.white,
-        elevation: 0,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              l10n.locationPermissionDescription,
-              style: Theme.of(
-                context,
-              ).textTheme.bodyMedium?.copyWith(color: Colors.grey[300]),
-            ),
-            const SizedBox(height: 24),
+      error: (err, stack) => Scaffold(
+         backgroundColor: Colors.black,
+         body: Center(child: Text('Error: $err', style: const TextStyle(color: Colors.white))),
+      ),
+      data: (settings) {
+        final isLocationEnabled = settings.locationEnabled;
+        final showUserLocation = settings.showUserLocation;
+        final radiusKm = settings.locationRadiusKm;
 
-            _buildSettingsCard(
-              icon: Icons.location_on,
-              title: l10n.enableLocation,
-              subtitle: l10n.allowLocationAccess,
-              trailing: Switch.adaptive(
-                value: _isLocationEnabled,
-                onChanged: _toggleLocationEnabled,
-                activeThumbColor: Colors.orange,
-              ),
-            ),
-            const SizedBox(height: 16),
+        ref.listen<LocationState>(locationViewModelProvider, (previous, next) {
+          if (isLocationEnabled &&
+              next.hasPermission &&
+              next.currentPosition != null &&
+              !showUserLocation) {
+            ref.read(settingsProvider.notifier).setShowUserLocation(true);
+          }
+        });
 
-            if (_isLocationEnabled) ...[
-              _buildSettingsCard(
-                icon: Icons.my_location,
-                title: l10n.showMyLocation,
-                subtitle: l10n.showLocationOnMap,
-                trailing: Switch.adaptive(
-                  value: _showUserLocation,
-                  onChanged: _toggleShowUserLocation,
-                  activeThumbColor: Colors.orange,
+        return Scaffold(
+          backgroundColor: Colors.black,
+          appBar: AppBar(
+            title: Text(l10n.locationPermission),
+            backgroundColor: Colors.black,
+            foregroundColor: Colors.white,
+            elevation: 0,
+          ),
+          body: SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.locationPermissionDescription,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(color: Colors.grey[300]),
                 ),
-              ),
-              const SizedBox(height: 16),
-              if (ref.watch(locationViewModelProvider).hasPermission) ...[
-                _buildRadiusCard(l10n),
+                const SizedBox(height: 24),
+
+                _buildSettingsCard(
+                  icon: Icons.location_on,
+                  title: l10n.enableLocation,
+                  subtitle: l10n.allowLocationAccess,
+                  trailing: Switch.adaptive(
+                    value: isLocationEnabled,
+                    onChanged: _toggleLocationEnabled,
+                    activeThumbColor: Colors.orange,
+                  ),
+                ),
                 const SizedBox(height: 16),
+
+                if (isLocationEnabled) ...[
+                  _buildSettingsCard(
+                    icon: Icons.my_location,
+                    title: l10n.showMyLocation,
+                    subtitle: l10n.showLocationOnMap,
+                    trailing: Switch.adaptive(
+                      value: showUserLocation,
+                      onChanged: _toggleShowUserLocation,
+                      activeThumbColor: Colors.orange,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  if (ref.watch(locationViewModelProvider).hasPermission) ...[
+                    _buildRadiusCard(l10n, radiusKm),
+                    const SizedBox(height: 16),
+                  ],
+                ],
+
+                if (isLocationEnabled) ...[
+                  _buildStatusCard(locationState, l10n),
+                  const SizedBox(height: 16),
+                ],
+
+                if (locationState.hasError) ...[
+                  _buildErrorCard(locationState.error!, l10n),
+                  const SizedBox(height: 16),
+                ],
+
+                if (locationState.hasPermission == false) ...[
+                  _buildActionCard(
+                    icon: Icons.settings,
+                    title: l10n.openAppSettings,
+                    subtitle: l10n.enableLocationPermissionsManually,
+                    onTap: _openAppSettings,
+                  ),
+                  const SizedBox(height: 16),
+                ],
               ],
-            ],
-
-            if (_isLocationEnabled) ...[
-              _buildStatusCard(locationState, l10n),
-              const SizedBox(height: 16),
-            ],
-
-            if (locationState.hasError) ...[
-              _buildErrorCard(locationState.error!, l10n),
-              const SizedBox(height: 16),
-            ],
-
-            if (locationState.hasPermission == false) ...[
-              _buildActionCard(
-                icon: Icons.settings,
-                title: l10n.openAppSettings,
-                subtitle: l10n.enableLocationPermissionsManually,
-                onTap: _openAppSettings,
-              ),
-              const SizedBox(height: 16),
-            ],
-          ],
-        ),
-      ),
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -440,7 +390,7 @@ class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
     );
   }
 
-  Widget _buildRadiusCard(AppLocalizations l10n) {
+  Widget _buildRadiusCard(AppLocalizations l10n, int radiusKm) {
     return Card(
       color: Colors.black,
       elevation: 0,
@@ -509,7 +459,7 @@ class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
                     border: Border.all(color: Colors.white24),
                   ),
                   child: Text(
-                    '$_radiusKm km',
+                    '$radiusKm km',
                     style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
@@ -521,19 +471,16 @@ class _LocationSettingsPageState extends ConsumerState<LocationSettingsPage> {
             ),
             const SizedBox(height: 12),
             Slider(
-              value: _radiusKm.toDouble(),
+              value: radiusKm.toDouble(),
               min: 20,
               max: 300,
               divisions: 28,
               activeColor: Colors.orange,
               inactiveColor: Colors.grey[700],
-              label: '$_radiusKm km',
+              label: '$radiusKm km',
               onChanged: (v) async {
                 final int km = v.round();
-                setState(() => _radiusKm = km);
-
-                ref.invalidate(locationRadiusKmProvider);
-                await _settingsService.saveLocationRadiusKm(km);
+                await ref.read(settingsProvider.notifier).setLocationRadiusKm(km);
               },
             ),
           ],

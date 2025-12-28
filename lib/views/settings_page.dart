@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../l10n/app_localizations.dart';
 import '../models/earthquake_source.dart';
-import '../providers/settings_providers.dart';
+import '../providers/settings_provider.dart';
 
 class SettingsPage extends ConsumerStatefulWidget {
   const SettingsPage({super.key});
@@ -16,7 +16,9 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final settingsState = ref.watch(defaultSettingsProvider);
+    final settingsAsync = ref.watch(settingsProvider);
+    final source =
+        settingsAsync.valueOrNull?.source ?? EarthquakeSource.ingv;
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -42,7 +44,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             _buildSettingsCard(
               icon: Icons.storage,
               title: l10n.dataSource,
-              subtitle: settingsState.source == EarthquakeSource.ingv
+              subtitle: source == EarthquakeSource.ingv
                   ? l10n.sourceIngv
                   : l10n.sourceUsgs,
               onTap: () {

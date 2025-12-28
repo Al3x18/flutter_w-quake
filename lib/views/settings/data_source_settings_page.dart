@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/earthquake_source.dart';
-import '../../providers/settings_providers.dart';
+import '../../providers/settings_provider.dart';
 import '../../widgets/custom_snackbar.dart';
 
 class DataSourceSettingsPage extends ConsumerStatefulWidget {
@@ -23,17 +23,20 @@ class _DataSourceSettingsPageState
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final settingsState = ref.read(defaultSettingsProvider);
-      setState(() {
-        selectedSource = settingsState.source;
-      });
+      final settings = ref.read(settingsProvider).valueOrNull;
+      if (settings != null) {
+        setState(() {
+          selectedSource = settings.source;
+        });
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final settingsState = ref.watch(defaultSettingsProvider);
+    final settingsAsync = ref.watch(settingsProvider);
+    final currentSource = settingsAsync.valueOrNull?.source ?? EarthquakeSource.ingv;
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -160,7 +163,7 @@ class _DataSourceSettingsPageState
               child: ElevatedButton(
                 onPressed:
                     selectedSource != null &&
-                        selectedSource != settingsState.source
+                        selectedSource != currentSource
                     ? () => _saveSource(selectedSource!)
                     : null,
                 style: ElevatedButton.styleFrom(
@@ -189,7 +192,7 @@ class _DataSourceSettingsPageState
   Future<void> _saveSource(EarthquakeSource source) async {
     try {
       await ref
-          .read(defaultSettingsProvider.notifier)
+          .read(settingsProvider.notifier)
           .setEarthquakeSource(source);
 
       if (mounted) {

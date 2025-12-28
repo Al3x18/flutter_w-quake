@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../l10n/app_localizations.dart';
-import '../../providers/information_providers.dart';
+import '../../providers/information_provider.dart';
 import '../../widgets/custom_snackbar.dart';
 
 class InformationSettingsPage extends ConsumerStatefulWidget {
@@ -18,7 +18,7 @@ class _InformationSettingsPageState
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final informationState = ref.watch(informationProvider);
+    final informationAsync = ref.watch(informationProvider);
     final informationNotifier = ref.read(informationProvider.notifier);
 
     return Scaffold(
@@ -35,9 +35,20 @@ class _InformationSettingsPageState
           },
         ),
       ),
-      body: informationState.isLoading
-          ? const Center(child: CircularProgressIndicator(color: Colors.orange))
-          : SingleChildScrollView(
+      body: informationAsync.when(
+        loading:
+            () => const Center(
+              child: CircularProgressIndicator(color: Colors.orange),
+            ),
+        error:
+            (error, stack) => Center(
+              child: Text(
+                'Error loading info: $error',
+                style: const TextStyle(color: Colors.white),
+              ),
+            ),
+        data:
+            (informationState) => SingleChildScrollView(
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -65,6 +76,7 @@ class _InformationSettingsPageState
                 ],
               ),
             ),
+      ),
     );
   }
 

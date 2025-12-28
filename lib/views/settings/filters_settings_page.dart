@@ -3,7 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/earthquake_filter.dart';
-import '../../providers/settings_providers.dart';
+import '../../providers/settings_provider.dart';
+import '../../utils/filter_validator.dart';
 import '../../widgets/custom_snackbar.dart';
 
 class FiltersSettingsPage extends ConsumerStatefulWidget {
@@ -32,16 +33,20 @@ class _FiltersSettingsPageState extends ConsumerState<FiltersSettingsPage> {
   }
 
   Future<void> _loadSavedDefaultFilter() async {
-    final defaultSettings = ref.read(defaultSettingsProvider);
-    setState(() {
-      selectedDefaultArea = defaultSettings.defaultFilter.area;
-      defaultMinMagnitude = defaultSettings.defaultFilter.minMagnitude;
-      defaultDaysBack = defaultSettings.defaultFilter.daysBack;
-      defaultUseCustomDateRange =
-          defaultSettings.defaultFilter.useCustomDateRange;
-      defaultCustomStartDate = defaultSettings.defaultFilter.customStartDate;
-      defaultCustomEndDate = defaultSettings.defaultFilter.customEndDate;
-    });
+    // Wait for settings to be loaded
+    final settings = await ref.read(settingsProvider.future);
+    
+    if (mounted) {
+      setState(() {
+        selectedDefaultArea = settings.defaultFilter.area;
+        defaultMinMagnitude = settings.defaultFilter.minMagnitude;
+        defaultDaysBack = settings.defaultFilter.daysBack;
+        defaultUseCustomDateRange =
+            settings.defaultFilter.useCustomDateRange;
+        defaultCustomStartDate = settings.defaultFilter.customStartDate;
+        defaultCustomEndDate = settings.defaultFilter.customEndDate;
+      });
+    }
   }
 
   @override
@@ -159,8 +164,7 @@ class _FiltersSettingsPageState extends ConsumerState<FiltersSettingsPage> {
   }
 
   Widget _buildAreaSelector(AppLocalizations l10n) {
-    final viewModel = ref.watch(settingsViewModelProvider);
-    final availableAreas = viewModel.getAvailableFilterAreas();
+    final availableAreas = FilterValidator.getAvailableFilterAreas();
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
@@ -367,14 +371,13 @@ class _FiltersSettingsPageState extends ConsumerState<FiltersSettingsPage> {
             const SizedBox(height: 4),
             InkWell(
               onTap: () async {
-                final viewModel = ref.read(settingsViewModelProvider);
                 final date = await showDatePicker(
                   context: context,
                   initialDate:
                       defaultCustomStartDate ??
                       DateTime.now().subtract(const Duration(days: 30)),
-                  firstDate: viewModel.getMinimumDate(),
-                  lastDate: viewModel.getMaximumDate(),
+                  firstDate: FilterValidator.getMinimumDate(),
+                  lastDate: FilterValidator.getMaximumDate(),
                   builder: (context, child) {
                     return Theme(
                       data: Theme.of(context).copyWith(
@@ -439,13 +442,12 @@ class _FiltersSettingsPageState extends ConsumerState<FiltersSettingsPage> {
             const SizedBox(height: 4),
             InkWell(
               onTap: () async {
-                final viewModel = ref.read(settingsViewModelProvider);
                 final date = await showDatePicker(
                   context: context,
                   initialDate: defaultCustomEndDate ?? DateTime.now(),
                   firstDate:
-                      defaultCustomStartDate ?? viewModel.getMinimumDate(),
-                  lastDate: viewModel.getMaximumDate(),
+                      defaultCustomStartDate ?? FilterValidator.getMinimumDate(),
+                  lastDate: FilterValidator.getMaximumDate(),
                   builder: (context, child) {
                     return Theme(
                       data: Theme.of(context).copyWith(
@@ -520,9 +522,8 @@ class _FiltersSettingsPageState extends ConsumerState<FiltersSettingsPage> {
 
   Future<void> _saveSettings() async {
     final l10n = AppLocalizations.of(context)!;
-    final viewModel = ref.read(settingsViewModelProvider);
-
-    final dateValidation = viewModel.validateDateRange(
+    
+    final dateValidation = FilterValidator.validateDateRange(
       defaultCustomStartDate,
       defaultCustomEndDate,
     );
@@ -531,7 +532,7 @@ class _FiltersSettingsPageState extends ConsumerState<FiltersSettingsPage> {
       return;
     }
 
-    final magnitudeValidation = viewModel.validateMagnitude(
+    final magnitudeValidation = FilterValidator.validateMagnitude(
       defaultMinMagnitude,
     );
     if (magnitudeValidation != null) {
@@ -539,7 +540,7 @@ class _FiltersSettingsPageState extends ConsumerState<FiltersSettingsPage> {
       return;
     }
 
-    final newDefaultFilter = viewModel.createFilterFromSettings(
+    final newDefaultFilter = EarthquakeFilter(
       area: selectedDefaultArea,
       minMagnitude: defaultMinMagnitude,
       daysBack: defaultDaysBack,
@@ -549,7 +550,7 @@ class _FiltersSettingsPageState extends ConsumerState<FiltersSettingsPage> {
     );
 
     await ref
-        .read(defaultSettingsProvider.notifier)
+        .read(settingsProvider.notifier)
         .setDefaultFilter(newDefaultFilter);
 
     if (mounted) {
@@ -562,8 +563,7 @@ class _FiltersSettingsPageState extends ConsumerState<FiltersSettingsPage> {
 
   Future<void> _resetToDefaults() async {
     final l10n = AppLocalizations.of(context)!;
-    final viewModel = ref.read(settingsViewModelProvider);
-    final defaultFilter = viewModel.getDefaultFilter();
+    const defaultFilter = EarthquakeFilter();
 
     setState(() {
       selectedDefaultArea = defaultFilter.area;
@@ -574,7 +574,7 @@ class _FiltersSettingsPageState extends ConsumerState<FiltersSettingsPage> {
       defaultCustomEndDate = defaultFilter.customEndDate;
     });
 
-    await ref.read(defaultSettingsProvider.notifier).resetToDefaults();
+    await ref.read(settingsProvider.notifier).resetToDefaults();
 
     if (mounted) {
       AnimatedSnackBarHelper.showInfo(context, l10n.settingsResetToDefaults);
