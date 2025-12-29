@@ -28,6 +28,7 @@ class EarthquakeViewModel {
     return grouped;
   }
 
+	/// This code is weird i know but it works for now i guess, need some changes in future definitely :)
   String _extractRegionFromPlace(String place) {
     if (place.contains('Sicilia') || place.contains('Siciliana')) {
       return 'Sicily';
