@@ -2,10 +2,6 @@
 
 A Flutter application for monitoring and displaying earthquake data in real-time.
 
-## Project Status
-
-🚧 **Work in Progress** - This project is currently under active development.
-
 ## Architecture
 
 This project follows the **MVVM (Model-View-ViewModel)** architectural pattern with the following key technologies:
